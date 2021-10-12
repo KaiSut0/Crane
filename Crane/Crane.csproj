@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{76268530-E1C6-453C-B8AF-D53040509757}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Crane</RootNamespace>
+    <AssemblyName>Crane</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CGNRNative64">
+      <HintPath>..\..\..\..\..\Users\dqm2k\source\repos\Crane\x64\Release\CGNRNative64.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="RhinoCommon">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Rhino 6\System\rhinocommon.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Grasshopper">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Rhino 6\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GH_IO">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Rhino 6\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\Constraints\CylindricallyPeriodicComponent.cs" />
+    <Compile Include="Components\Constraints\DevelopableComponent.cs" />
+    <Compile Include="Components\Constraints\EdgeLengthMirrorComponent.cs" />
+    <Compile Include="Components\Constraints\EqualEdgeLengthComponent.cs" />
+    <Compile Include="Components\Constraints\FixEdgeLengthComponent.cs" />
+    <Compile Include="Components\Constraints\FixFoldAngleComponent.cs" />
+    <Compile Include="Components\Constraints\FlatFoldableComponent.cs" />
+    <Compile Include="Components\Constraints\GlueVertexToEdgeComponent.cs" />
+    <Compile Include="Components\Constraints\GlueVerticesComponent.cs" />
+    <Compile Include="Components\Constraints\MirrorSymmetryComponent.cs" />
+    <Compile Include="Components\Constraints\MountainOnlyFlatFoldableComponent.cs" />
+    <Compile Include="Components\Constraints\OnCurveComponent.cs" />
+    <Compile Include="Components\Constraints\OnMeshComponent.cs" />
+    <Compile Include="Components\Constraints\OnPlaneComponent.cs" />
+    <Compile Include="Components\Constraints\OnPointComponent.cs" />
+    <Compile Include="Components\Constraints\OnSurfaceComponent.cs" />
+    <Compile Include="Components\Constraints\SetMaxFoldAngleComponent.cs" />
+    <Compile Include="Components\Constraints\ValleyOnlyFlatFoldableComponent.cs" />
+    <Compile Include="Components\Inputs\CMeshFromMesh.cs" />
+    <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
+    <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
+    <Compile Include="Components\Inputs\ConstructCMesh.cs" />
+    <Compile Include="Components\Inputs\IndexPairsForSymmetry.cs" />
+    <Compile Include="Components\Inputs\PaperMesh.cs" />
+    <Compile Include="Components\Inputs\PeriodicRigidOrigamiFromCMeshAndConstraints.cs" />
+    <Compile Include="Components\Inputs\RigidOrigamiFromCMeshAndConstraints.cs" />
+    <Compile Include="Components\Inputs\RigidOrigamiFromRigidOrigami.cs" />
+    <Compile Include="Components\Misc\Approx2dSymmetryComponent.cs" />
+    <Compile Include="Components\Misc\CalculateCommutativeTransformComponent.cs" />
+    <Compile Include="Components\Misc\ScaleRotationComponent.cs" />
+    <Compile Include="Components\Outputs\DeconstructCMesh.cs" />
+    <Compile Include="Components\Outputs\DeconstructRigidOrigami.cs" />
+    <Compile Include="Components\Outputs\DevelopCMesh.cs" />
+    <Compile Include="Components\Outputs\GetPeriodicProperties.cs" />
+    <Compile Include="Components\Outputs\PlayRecords.cs" />
+    <Compile Include="Components\Patterns\ChairComponent.cs" />
+    <Compile Include="Components\Patterns\ChickenWireOnSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\DoublyPeriodicTessellationComponent.cs" />
+    <Compile Include="Components\Patterns\ExtrudedWaterbombOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\StarOrigamizeComponent.cs" />
+    <Compile Include="Components\Patterns\TruncatedStarOrigamizeComponent.cs" />
+    <Compile Include="Components\Patterns\TwistOrigamizeComponent.cs" />
+    <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\YoshimuraPatternOnSurfaceComponent.cs" />
+    <Compile Include="Components\Solver\CraneSolver.cs" />
+    <Compile Include="Components\Solver\SolutionSpaceDOF.cs" />
+    <Compile Include="Components\Util\AutoAssignMVLines.cs" />
+    <Compile Include="Components\Util\DevelopCMesh.cs" />
+    <Compile Include="Components\Util\DevelopMesh.cs" />
+    <Compile Include="Components\Util\GH_CMesh.cs" />
+    <Compile Include="Components\Util\GH_CMeshParam.cs" />
+    <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
+    <Compile Include="Constraints\SetMaxFoldAngle.cs" />
+    <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
+    <Compile Include="Misc\Approx2dSymmetry.cs" />
+    <Compile Include="Misc\CalculateCommutativeScaleRotations.cs" />
+    <Compile Include="Misc\CalculateCommutativeTransform.cs" />
+    <Compile Include="Misc\ScaleRotation.cs" />
+    <Compile Include="Patterns\Chair.cs" />
+    <Compile Include="Patterns\ChickenWireOnSurface.cs" />
+    <Compile Include="Constraints\Anchor.cs" />
+    <Compile Include="Constraints\AnchorToGround.cs" />
+    <Compile Include="Core\CMesh.cs" />
+    <Compile Include="Core\Constraint.cs" />
+    <Compile Include="Core\DevelopMesh.cs" />
+    <Compile Include="Core\Pattern.cs" />
+    <Compile Include="Core\PeriodicRigidOrigami.cs" />
+    <Compile Include="Constraints\CylindricallyPeriodic.cs" />
+    <Compile Include="Constraints\Developable.cs" />
+    <Compile Include="Constraints\DevelopableWithDevelopment.cs" />
+    <Compile Include="Constraints\EqualEdgeLength.cs" />
+    <Compile Include="Constraints\FixEdgeLength.cs" />
+    <Compile Include="Constraints\FixFoldAngle.cs" />
+    <Compile Include="Constraints\FixSectorAngle.cs" />
+    <Compile Include="Constraints\FlatFoldable.cs" />
+    <Compile Include="Constraints\FlatPanel.cs" />
+    <Compile Include="Constraints\GlueVertexToEdge.cs" />
+    <Compile Include="Constraints\GlueVertexToFace.cs" />
+    <Compile Include="Constraints\GlueVertices.cs" />
+    <Compile Include="Constraints\MirrorSymmetricEdgeLength.cs" />
+    <Compile Include="Constraints\MirrorSymmetry.cs" />
+    <Compile Include="Constraints\MountainIntersectPenalty.cs" />
+    <Compile Include="Constraints\OnCurve.cs" />
+    <Compile Include="Constraints\OnGeometry.cs" />
+    <Compile Include="Constraints\OnMesh.cs" />
+    <Compile Include="Constraints\OnPlane.cs" />
+    <Compile Include="Constraints\OnPoint.cs" />
+    <Compile Include="Constraints\OnSurface.cs" />
+    <Compile Include="CraneInfo.cs" />
+    <Compile Include="Patterns\DoublyPeriodicTessellation.cs" />
+    <Compile Include="Patterns\ExtrudedWaterbombOnDoubleSurface.cs" />
+    <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TruncatedStarOrigamize.cs" />
+    <Compile Include="Patterns\TwistOrigamize.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\RigidOrigami.cs" />
+    <Compile Include="Core\UnWeldMesh.cs" />
+    <Compile Include="Core\Utils.cs" />
+    <Compile Include="Constraints\RigidEdge.cs" />
+    <Compile Include="Constraints\RotationalSymmetry.cs" />
+    <Compile Include="Constraints\SelectiveDevelopable.cs" />
+    <Compile Include="Constraints\TransformSymmetry.cs" />
+    <Compile Include="Constraints\TransformSymmetryBase.cs" />
+    <Compile Include="Constraints\TranslationalSymmetry.cs" />
+    <Compile Include="Constraints\ValleyIntersectPenalty.cs" />
+    <Compile Include="Patterns\StarOrigamize.cs" />
+    <Compile Include="Patterns\TessellationOnDoubleSurface.cs" />
+    <Compile Include="Patterns\WaterbombOnDoubleSurface.cs" />
+    <Compile Include="Patterns\YoshimuraPatternOnSurface.cs" />
+    <Compile Include="Components\Constraints\RotationalSymmetryComponent.cs" />
+    <Compile Include="Components\Constraints\SelectiveDevelopableComponent.cs" />
+    <Compile Include="Components\Constraints\TransformSymmetryComponent.cs" />
+    <Compile Include="Components\Constraints\TranslationalSymmetryComponent.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core">
+      <Version>5.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="MathNet.Numerics">
+      <Version>5.0.0-alpha02</Version>
+    </PackageReference>
+    <PackageReference Include="OpenCvSharp-AnyCPU">
+      <Version>2.4.10.20170306</Version>
+    </PackageReference>
+    <PackageReference Include="YC.QuickGraph">
+      <Version>3.7.4</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
+Erase "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <FallbackCulture>en-US</FallbackCulture>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartProgram>C:\Program Files\Rhino 6\System\Rhino.exe</StartProgram>
+    <StartArguments>
+    </StartArguments>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+</Project>
