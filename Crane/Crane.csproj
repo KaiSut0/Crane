@@ -52,8 +52,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CGNRNative64">
-      <HintPath>..\..\..\..\..\Users\dqm2k\source\repos\Crane\x64\Release\CGNRNative64.dll</HintPath>
+    <Reference Include="CGNRNative64, Version=1.0.7885.6715, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\CGNRNative64.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -228,7 +230,12 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
+    <PostBuildEvent>Copy "$(ProjectDir)\dll\mkl_avx2.dll" "$(TragetDir)mkl_avx2.dll"
+Copy "$(ProjectDir)\dll\mkl_core.dll" "$(TragetDir)mkl_core.dll"
+Copy "$(ProjectDir)\dll\mkl_intel_thread.dll" "$(TragetDir)mkl_intel_thread.dll"
+Copy "$(ProjectDir)\dll\mkl_rt.dll" "$(TragetDir)mkl_rt.dll"
+Copy "$(ProjectDir)\dll\mkl_vml_avx2.dll" "$(TragetDir)mkl_vml_avx2.dll"
+Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
 Erase "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
