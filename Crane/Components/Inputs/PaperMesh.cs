@@ -751,7 +751,7 @@ namespace Crane
         {
             get
             {
-                return null;
+                return Properties.Resource.papermesh;
                 //return Crane.Properties.Resources.papermesh;
             }
         }

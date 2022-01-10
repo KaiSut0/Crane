@@ -204,6 +204,11 @@
     <Compile Include="Components\Constraints\SelectiveDevelopableComponent.cs" />
     <Compile Include="Components\Constraints\TransformSymmetryComponent.cs" />
     <Compile Include="Components\Constraints\TranslationalSymmetryComponent.cs" />
+    <Compile Include="Properties\Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Core">
@@ -219,7 +224,54 @@
       <Version>3.7.4</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\fold_angles.png" />
+    <None Include="Icons\develop_mesh.png" />
+    <None Include="Icons\cmesh_from_lines.png" />
+    <None Include="Icons\auto_assign_mv.png" />
+    <None Include="Icons\aaaaaaa.png" />
+    <None Include="Icons\aaa.png" />
+    <Content Include="Icons\add_tabs.png" />
+    <Content Include="Icons\anchor.png" />
+    <Content Include="Icons\anchor_to_ground.png" />
+    <None Include="Icons\yoshimura.png" />
+    <None Include="Icons\thicknessSelective.png" />
+    <None Include="Icons\solver.png" />
+    <None Include="Icons\sol.png" />
+    <None Include="Icons\quad.png" />
+    <None Include="Icons\prev.png" />
+    <None Include="Icons\papermesh.png" />
+    <None Include="Icons\MVT.png" />
+    <None Include="Icons\miura.png" />
+    <None Include="Icons\egg.png" />
+    <None Include="Icons\dev.png" />
+    <None Include="Icons\dec.png" />
+    <None Include="Icons\cmeshMV.png" />
+    <None Include="Icons\cmesh2.png" />
+    <None Include="Icons\cmesh.png" />
+    <None Include="Icons\chicken.png" />
+    <None Include="Icons\asfasdfasdfasdf.png" />
+    <Content Include="Icons\developable.png" />
+    <Content Include="Icons\edge_center.png" />
+    <Content Include="Icons\equal_length.png" />
+    <Content Include="Icons\equal_sector_angle.png" />
+    <Content Include="Icons\flat_foldable.png" />
+    <Content Include="Icons\glue_vertices.png" />
+    <Content Include="Icons\on_curve.png" />
+    <Content Include="Icons\on_plane.png" />
+    <Content Include="Icons\on_surface.png" />
+    <Content Include="Icons\preview_edge_ids.png" />
+    <Content Include="Icons\preview_vertex_ids.png" />
+    <Content Include="Icons\set_fold_angle.png" />
+    <Content Include="Icons\upper_fold_angle.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

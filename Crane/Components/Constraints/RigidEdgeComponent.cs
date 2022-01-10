@@ -14,7 +14,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         public RigidEdgeComponent()
           : base("Rigid Edge", "Rigid Edge",
-              "RigidEdgeComponent",
+              "Rigid edge constraint",
               "Crane", "Constraints")
         {
         }
