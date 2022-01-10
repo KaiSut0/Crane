@@ -134,7 +134,6 @@ namespace Crane.Core
             //this.Initial_edges_length = new List<double>(cMesh.Initial_edges_length.ToArray());
 
         }
-
         public CMesh(Mesh mesh, List<Line> M, List<Line> V)
         {
             SetCMeshFromMVT(mesh, M, V, new List<Line>());
@@ -321,7 +320,6 @@ namespace Crane.Core
             ComputeInitialProperties();
             HasDevelopment = false;
         }
-
         private void SetCMeshFromMVTWithDevelopment(Mesh mesh, List<Line> M, List<Line> V, List<Line> T, Point2d developmentOrigin, double developmentRotation = 0)
         {
             CMesh cMesh = new CMesh(mesh, M, V, T);
@@ -923,7 +921,6 @@ namespace Crane.Core
             var dev = new DevelopMesh(Mesh, new Point2d(origin.X, origin.Y), rotationAngle);
             return dev.DevelopedMesh;
         }
-
         public List<Line> GetLines(Mesh mesh, List<IndexPair> edges)
         {
             var lines = new List<Line>();
@@ -934,7 +931,6 @@ namespace Crane.Core
             }
             return lines;
         }
-
         private Boolean SortFacePair(MeshFace f, IndexPair e)
         {
             IndexPair f1 = new IndexPair(f.A, f.B);
@@ -966,7 +962,6 @@ namespace Crane.Core
             return face_pair;
 
         }
-
         private void SetConnectedTopologyVertices()
         {
             Mesh.TopologyVertices.SortEdges();
@@ -1012,7 +1007,6 @@ namespace Crane.Core
             }
             return id;
         }
-
         public void UpdateMesh(Vector<double> ptsVector)
         {
             MeshVerticesVector = ptsVector;

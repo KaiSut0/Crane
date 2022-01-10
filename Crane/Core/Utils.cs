@@ -438,5 +438,27 @@ namespace Crane.Core
                 new Vector3d(orthogonal[0, 0], orthogonal[0, 1], orthogonal[0, 2]),
                 new Vector3d(orthogonal[1, 0], orthogonal[1, 1], orthogonal[1, 2]));
         }
+
+        public static Point3d ToPoint3d(double[] coord)
+        {
+            return new Point3d(coord[0], coord[1], coord[2]);
+        }
+
+        public static MeshFace ToMeshFace(int[] face)
+        {
+            if (face.Length == 3)
+            {
+                return new MeshFace(face[0], face[1], face[2]);
+            }
+            else if (face.Length == 4)
+            {
+                return new MeshFace(face[0], face[1], face[2], face[3]);
+            }
+            else
+            {
+                throw new Exception("The number of indices is not 3 or 4.");
+            }
+
+        }
     }
 }

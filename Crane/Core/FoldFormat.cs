@@ -1,41 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Rhino;
+using Rhino.Geometry;
 
 namespace Crane.Core
 {
     public class FoldFormat
     {
-        [JsonPropertyName("edges_assignment")]
-        public string[] EdgesAssignment { get; set; } 
-        [JsonPropertyName("edges_foldAngle")]
-        public double[] EdgesFoldAngle { get; set; }
-        [JsonPropertyName("edges_vertices")]
-        public int[][] EdgesVertices { get; set; }
-        [JsonPropertyName("faces_vertices")]
-        public int[][] FacesVertices { get; set; }
         [JsonPropertyName("file_classes")]
         public string[] FileClasses { get; set; }
         [JsonPropertyName("file_creator")]
         public string FileCreator { get; set; }
         [JsonPropertyName("file_spec")]
-        public int FileSpec { get; set; }
+        public double FileSpec { get; set; }
         [JsonPropertyName("frame_classes")]
         public string[] FrameClasses { get; set; }
         [JsonPropertyName("frame_unit")]
         public string FrameUnit { get; set; }
+        [JsonPropertyName("frame_title")]
+        public string FrameTitle { get; set; }
+        [JsonPropertyName("frame_attributes")]
+        public string[] FrameAttributes { get; set; }
         [JsonPropertyName("vertices_coords")]
         public double[][] VerticesCoords { get; set; }
+        [JsonPropertyName("edges_assignment")]
+        public string[] EdgesAssignment { get; set; } 
+        [JsonPropertyName("edges_foldAngle")]
+        public double?[] EdgesFoldAngle { get; set; }
+        [JsonPropertyName("edges_vertices")]
+        public int[][] EdgesVertices { get; set; }
+        [JsonPropertyName("faces_vertices")]
+        public int[][] FacesVertices { get; set; }
 
+        public FoldFormat() { }
         public FoldFormat(CMesh cMesh)
         {
             FileClasses = new string[] { "singleModel" };
             FileCreator = "Crane";
-            FileSpec = 1;
+            FileSpec = 1.1;
             FrameClasses = new string[] { "foldedForm" };
             FrameUnit = ParseRhinoModelUnitSystem(RhinoDoc.ActiveDoc.ModelUnitSystem);
             VerticesCoords = new double[cMesh.Mesh.Vertices.Count][];
@@ -61,10 +69,17 @@ namespace Crane.Core
             EdgesAssignment = new string[cMesh.edgeInfo.Count];
             for (int i = 0; i < cMesh.edgeInfo.Count; i++)
             {
-                EdgesAssignment[i] = cMesh.edgeInfo[i].ToString();
+                if (cMesh.edgeInfo[i] == 'T')
+                {
+                    EdgesAssignment[i] = "F";
+                }
+                else
+                {
+                    EdgesAssignment[i] = cMesh.edgeInfo[i].ToString();
+                }
             }
 
-            EdgesFoldAngle = new double[cMesh.edgeInfo.Count];
+            EdgesFoldAngle = new double?[cMesh.edgeInfo.Count];
             var foldAngles = cMesh.GetFoldAngles();
             int id = 0;
             for (int i = 0; i < cMesh.edgeInfo.Count; i++)
@@ -76,7 +91,7 @@ namespace Crane.Core
                 }
                 else
                 {
-                    EdgesFoldAngle[i] = 0;
+                    EdgesFoldAngle[i] = null;
                 }
             }
 
@@ -95,7 +110,56 @@ namespace Crane.Core
             }
 
         }
+        public CMesh ToCMesh()
+        {
+            Mesh mesh = new Mesh();
+            mesh.Vertices.UseDoublePrecisionVertices = true;
+            for (int i = 0; i < VerticesCoords.Length; i++)
+            {
+                mesh.Vertices.Add(Utils.ToPoint3d(VerticesCoords[i]));
+            }
 
+            for (int i = 0; i < FacesVertices.Length; i++)
+            {
+                mesh.Faces.AddFace(Utils.ToMeshFace(FacesVertices[i]));
+            }
+
+            var mountain = new List<Line>();
+            var valley = new List<Line>();
+            var triangle = new List<Line>();
+            for (int i = 0; i < EdgesAssignment.Length; i++)
+            {
+                var assign = EdgesAssignment[i];
+                if (assign == "M")
+                {
+                    var e = EdgesVertices[i];
+                    mountain.Add(new Line(mesh.Vertices[e[0]], mesh.Vertices[e[1]]));
+                }
+
+                if (assign == "V")
+                {
+                    var e = EdgesVertices[i];
+                    valley.Add(new Line(mesh.Vertices[e[0]], mesh.Vertices[e[1]]));
+                }
+
+                if (assign == "F")
+                {
+                    var e = EdgesVertices[i];
+                    triangle.Add(new Line(mesh.Vertices[e[0]], mesh.Vertices[e[1]]));
+                }
+            }
+
+            mesh.Normals.ComputeNormals();
+            mesh.FaceNormals.ComputeFaceNormals();
+            return new CMesh(mesh, mountain, valley, triangle);
+        }
+
+        public static FoldFormat ReadFoldFormat(string path)
+        {
+            string jsonString = File.ReadAllText(path);
+            FoldFormat foldFormat = JsonSerializer.Deserialize<FoldFormat>(jsonString);
+            return foldFormat;
+        }
         private string ParseRhinoModelUnitSystem(Rhino.UnitSystem unitSystem)
         {
             string unit = "m";
