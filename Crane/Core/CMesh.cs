@@ -37,6 +37,7 @@ namespace Crane.Core
 
         public List<List<int>> ConnectedTopologyVerticesList { get; private set; }
         public List<List<int>> ConnectedTopologyEdgesList { get; private set; }
+
         #endregion
 
         #region Private Member
@@ -159,6 +160,11 @@ namespace Crane.Core
             PairsToLines(mesh, V_indexPairs), PairsToLines(mesh, T_indexPairs))
         { }
 
+        public CMesh(List<Line> lines, List<Line> M, List<Line> V, List<Line> T, int maxFaceValence, double tolerance)
+        {
+            Mesh mesh = Mesh.CreateFromLines(lines.Select(line => line.ToNurbsCurve()).ToArray(), maxFaceValence, tolerance);
+            SetCMeshFromMVT(mesh, M, V, T);
+        }
         private void SetCMeshFromMVT(Mesh mesh, List<Line> M, List<Line> V, List<Line> T)
         {
             this.Mesh = mesh.DuplicateMesh();
@@ -318,6 +324,7 @@ namespace Crane.Core
             this.SetConfigulationVector();
             this.SetPeriodicParameters();
             ComputeInitialProperties();
+            SetNgon();
             HasDevelopment = false;
         }
         private void SetCMeshFromMVTWithDevelopment(Mesh mesh, List<Line> M, List<Line> V, List<Line> T, Point2d developmentOrigin, double developmentRotation = 0)
@@ -1288,6 +1295,79 @@ namespace Crane.Core
             }
             this.valley_face_height_pairs = face_heignt_pairs;
             this.length_of_valley_diagonal_edges = edge_length_between_face_pairs;
+        }
+
+        private void SetNgon()
+        {
+            Dictionary<int, int> faceId2NgonId = new Dictionary<int, int>();
+
+            int nowNgonCount = 0;
+            foreach (var tri in triangulated_face_pairs)
+            {
+                int i = tri.I;
+                int j = tri.J;
+                if (faceId2NgonId.ContainsKey(i))
+                {
+                    faceId2NgonId[j] = faceId2NgonId[i];
+                }
+                else
+                {
+                    if (faceId2NgonId.ContainsKey(j))
+                    {
+                        faceId2NgonId[i] = faceId2NgonId[j];
+                    }
+                    else
+                    {
+                        faceId2NgonId[i] = faceId2NgonId[j] = nowNgonCount;
+                        nowNgonCount++;
+                    }
+                }
+            }
+
+            for (int i = 0; i < Mesh.Faces.Count; i++)
+            {
+                if (!faceId2NgonId.ContainsKey(i))
+                {
+                    faceId2NgonId[i] = nowNgonCount;
+                    nowNgonCount++;
+                }
+            }
+
+            List<int>[] faceIdLists = new List<int>[nowNgonCount];
+            List<int>[] vertexIdLists = new List<int>[nowNgonCount];
+            for (int i = 0; i < nowNgonCount; i++)
+            {
+                faceIdLists[i] = new List<int>();
+                vertexIdLists[i] = new List<int>();
+            }
+            for (int i = 0; i < Mesh.Faces.Count; i++)
+            {
+                var ngonId = faceId2NgonId[i];
+                faceIdLists[ngonId].Add(i);
+            }
+
+            for (int i = 0; i < nowNgonCount; i++)
+            {
+                var faceIdList = faceIdLists[i];
+                foreach (var fId in faceIdList)
+                {
+                    MeshFace face = Mesh.Faces[fId];
+                    int n = face.IsTriangle ? 3 : 4;
+                    for (int j = 0; j < n; j++)
+                    {
+                        if (!vertexIdLists[i].Contains(face[j]))
+                        {
+                            vertexIdLists[i].Add(face[j]);
+                        }
+                    }
+                }
+            }
+            Mesh.Ngons.Clear();
+            for (int i = 0; i < nowNgonCount; i++)
+            {
+                Mesh.Ngons.AddNgon(MeshNgon.Create(vertexIdLists[i], faceIdLists[i]));
+            }
+
         }
         public void ComputeInitialProperties()
         {

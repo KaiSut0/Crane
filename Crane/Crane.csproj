@@ -102,7 +102,9 @@
     <Compile Include="Components\Constraints\RigidEdgeComponent.cs" />
     <Compile Include="Components\Constraints\SetMaxFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\ValleyOnlyFlatFoldableComponent.cs" />
+    <Compile Include="Components\FabTools\OffsetThickPanel.cs" />
     <Compile Include="Components\Inputs\CMeshFromFoldFormat.cs" />
+    <Compile Include="Components\Inputs\CMeshFromLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMesh.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
@@ -138,10 +140,12 @@
     <Compile Include="Components\Util\GetFoldAngles.cs" />
     <Compile Include="Components\Util\GH_CMesh.cs" />
     <Compile Include="Components\Util\GH_CMeshParam.cs" />
+    <Compile Include="Components\Util\MapDev2Fold.cs" />
     <Compile Include="Components\Util\WriteFoldFormat.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
+    <Compile Include="Core\FabMesh.cs" />
     <Compile Include="Core\FoldFormat.cs" />
     <Compile Include="Core\RhinoCommonExtensions.cs" />
     <Compile Include="Misc\Approx2dSymmetry.cs" />
@@ -272,6 +276,7 @@
     <Content Include="Icons\set_fold_angle.png" />
     <Content Include="Icons\upper_fold_angle.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
