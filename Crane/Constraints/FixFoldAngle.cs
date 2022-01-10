@@ -11,13 +11,15 @@ namespace Crane.Constraints
 {
     public class FixFoldAngle : Constraint
     {
-        public FixFoldAngle(CMesh cMesh, Line[] edges, double[] setAngles, double tolerance)
+        public FixFoldAngle(CMesh cMesh, Line[] edges, double[] setAngles, double[] stiffness, double tolerance)
         {
             this.innerEdgeIds = edges.Select(e => cMesh.GetInnerEdgeIndex(e, tolerance)).ToArray();
             this.setAngles = setAngles;
+            this.stiffness = stiffness;
         }
         private readonly int[] innerEdgeIds;
         private readonly double[] setAngles;
+        private readonly double[] stiffness;
         public override Matrix<double> Jacobian(CMesh cMesh)
         {
             int rows = innerEdgeIds.Length;
@@ -37,6 +39,7 @@ namespace Crane.Constraints
 
                 double foldAngle = foldAngles[e_ind];
                 double setAngle = setAngles[id];
+                double k = Math.Sqrt(stiffness[id]);
 
                 /// Register indices
                 IndexPair edge_ind = cMesh.inner_edges[e_ind];
@@ -110,7 +113,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = normal_P_list[x] / h_P;
+                            double var = k * normal_P_list[x] / h_P;
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -122,7 +125,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = normal_Q_list[x] / h_Q;
+                            double var = k * normal_Q_list[x] / h_Q;
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -134,7 +137,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q);
+                            double var = k * (co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q));
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -146,7 +149,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q);
+                            double var = k * (co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q));
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -179,8 +182,9 @@ namespace Crane.Constraints
                 int id = innerEdgeIds[i];
                 double foldAngle = foldAngles[id];
                 double setAngle = setAngles[i];
+                double k = Math.Sqrt(stiffness[i]);
 
-                err[i] = foldAngle - setAngle;
+                err[i] = k * (foldAngle - setAngle);
 
                 //err[i] = 0.5 * Math.Pow(foldAngle - setAngle, 2);
             }

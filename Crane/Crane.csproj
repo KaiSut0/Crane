@@ -58,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Text.Json, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -95,6 +96,7 @@
     <Compile Include="Components\Constraints\OnPlaneComponent.cs" />
     <Compile Include="Components\Constraints\OnPointComponent.cs" />
     <Compile Include="Components\Constraints\OnSurfaceComponent.cs" />
+    <Compile Include="Components\Constraints\RigidEdgeComponent.cs" />
     <Compile Include="Components\Constraints\SetMaxFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\ValleyOnlyFlatFoldableComponent.cs" />
     <Compile Include="Components\Inputs\CMeshFromMesh.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Components\Patterns\ChickenWireOnSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\DoublyPeriodicTessellationComponent.cs" />
     <Compile Include="Components\Patterns\ExtrudedWaterbombOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\MapMiuraParameterComponent.cs" />
     <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\StarOrigamizeComponent.cs" />
     <Compile Include="Components\Patterns\TruncatedStarOrigamizeComponent.cs" />
@@ -129,14 +132,18 @@
     <Compile Include="Components\Util\AutoAssignMVLines.cs" />
     <Compile Include="Components\Util\DevelopCMesh.cs" />
     <Compile Include="Components\Util\DevelopMesh.cs" />
+    <Compile Include="Components\Util\GetFoldAngles.cs" />
     <Compile Include="Components\Util\GH_CMesh.cs" />
     <Compile Include="Components\Util\GH_CMeshParam.cs" />
+    <Compile Include="Components\Util\WriteFoldFormat.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
+    <Compile Include="Core\FoldFormat.cs" />
     <Compile Include="Misc\Approx2dSymmetry.cs" />
     <Compile Include="Misc\CalculateCommutativeScaleRotations.cs" />
     <Compile Include="Misc\CalculateCommutativeTransform.cs" />
+    <Compile Include="Misc\MapMiuraParameter.cs" />
     <Compile Include="Misc\ScaleRotation.cs" />
     <Compile Include="Patterns\Chair.cs" />
     <Compile Include="Patterns\ChickenWireOnSurface.cs" />

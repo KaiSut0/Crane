@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Rhino;
@@ -133,7 +134,6 @@ namespace Crane.Core
             //this.Initial_edges_length = new List<double>(cMesh.Initial_edges_length.ToArray());
 
         }
-
 
         public CMesh(Mesh mesh, List<Line> M, List<Line> V)
         {
@@ -1353,6 +1353,14 @@ namespace Crane.Core
             SetMeshVerticesVector();
             UpdateEdgeLengthSquared();
             SetWholeScale();
+        }
+
+        public string ToFoldFormat()
+        {
+            var foldFormat = new FoldFormat(this);
+            string ff = JsonSerializer.Serialize(foldFormat, new JsonSerializerOptions{WriteIndented = true});
+
+            return ff;
         }
     }
 }

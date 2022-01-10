@@ -27,6 +27,7 @@ namespace Crane.Components.Constraints
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
             pManager.AddLineParameter("Line", "Line", "The lines for detecting the inner edge to fix the fold angle.", GH_ParamAccess.list);
             pManager.AddNumberParameter("FoldAngle", "FoldAngle", "The fixing fold angles.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Strength", "Strength", "Strength", GH_ParamAccess.list);
             pManager.AddNumberParameter("Tolerance", "Tolerance", "The tolerance for detecting the inner edge from given line.", GH_ParamAccess.item, 1e-3);
             pManager[3].Optional = true;
         }
@@ -48,11 +49,13 @@ namespace Crane.Components.Constraints
             CMesh cMesh = null;
             List<Line> lines = new List<Line>();
             List<double> foldAngles = new List<double>();
+            List<double> strengths = new List<double>();
             double tolerance = 1e-3;
             DA.GetData(0,ref cMesh);
             DA.GetDataList(1, lines);
             DA.GetDataList(2, foldAngles);
-            DA.GetData(3, ref tolerance);
+            DA.GetDataList(3, strengths);
+            DA.GetData(4, ref tolerance);
             if (foldAngles.Count != lines.Count)
             {
                 for (int i = foldAngles.Count; i < lines.Count; i++)
@@ -61,7 +64,7 @@ namespace Crane.Components.Constraints
                 }
             }
 
-            FixFoldAngle constraint = new FixFoldAngle(cMesh, lines.ToArray(), foldAngles.ToArray(), tolerance);
+            FixFoldAngle constraint = new FixFoldAngle(cMesh, lines.ToArray(), foldAngles.ToArray(), strengths.ToArray(), tolerance);
             DA.SetData(0, constraint);
 
         }
