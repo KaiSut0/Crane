@@ -24,7 +24,7 @@ namespace Crane
         /// new tabs/panels will automatically be created.
         /// </summary>
         public PaperMeshComponent()
-          : base("PaperMesh", "PaperMesh",
+          : base("Paper Mesh", "Paper Mesh",
               "Generate flat mesh from scanned img",
               "Crane", "Inputs")
         {

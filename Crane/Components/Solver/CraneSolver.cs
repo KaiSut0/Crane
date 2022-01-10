@@ -49,7 +49,7 @@ namespace Crane.Components.Solver
         public double residual = 0;
 
         public CraneSolver()
-          : base("CraneSolver", "Solver",
+          : base("Crane Solver", "Solver",
               "Solver for a rigid folding simulation and a form finding.",
               "Crane", "Solver")
         {
@@ -79,9 +79,9 @@ namespace Crane.Components.Solver
         {
             pManager.AddGenericParameter("CMesh", "CMesh", "Input the CMesh.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Constraints", "Constraints", "Input the constraints", GH_ParamAccess.list);
-            pManager.AddNumberParameter("FoldSpeed", "FoldSpeed", "Input the parameter about folding speed between 0.0 - 1.0. Default is 0.3.", GH_ParamAccess.item, 0.3);
-            pManager.AddIntegerParameter("NRIteration", "NRIteration", "Each iteration of Newton method.", GH_ParamAccess.item, 10);
-            pManager.AddIntegerParameter("CGNRIteration", "CGNRIteration", "Each iteration of CGNR method for solving linear equation.", GH_ParamAccess.item, 100);
+            pManager.AddNumberParameter("Fold Speed", "Fold Speed", "Input the parameter about folding speed between 0.0 - 1.0. Default is 0.3.", GH_ParamAccess.item, 0.3);
+            pManager.AddIntegerParameter("NR Iteration", "NR Iteration", "Each iteration of Newton method.", GH_ParamAccess.item, 10);
+            pManager.AddIntegerParameter("CGNR Iteration", "CGNR Iteration", "Each iteration of CGNR method for solving linear equation.", GH_ParamAccess.item, 100);
             pManager.AddNumberParameter("Threshold", "Threshold", "Threshold", GH_ParamAccess.item, 1e-13);
             
             pManager[1].Optional = true;

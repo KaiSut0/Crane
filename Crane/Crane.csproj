@@ -111,7 +111,6 @@
     <Compile Include="Components\Inputs\PaperMesh.cs" />
     <Compile Include="Components\Inputs\PeriodicRigidOrigamiFromCMeshAndConstraints.cs" />
     <Compile Include="Components\Inputs\RigidOrigamiFromCMeshAndConstraints.cs" />
-    <Compile Include="Components\Inputs\RigidOrigamiFromRigidOrigami.cs" />
     <Compile Include="Components\Misc\Approx2dSymmetryComponent.cs" />
     <Compile Include="Components\Misc\CalculateCommutativeTransformComponent.cs" />
     <Compile Include="Components\Misc\ScaleRotationComponent.cs" />

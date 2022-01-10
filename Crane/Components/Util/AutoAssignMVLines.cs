@@ -12,7 +12,7 @@ namespace Crane.Components.Util
         /// Initializes a new instance of the AutoAssignMVLines class.
         /// </summary>
         public AutoAssignMVLines()
-          : base("AutoAssignMVLines", "AutoAssignMVLines",
+          : base("Auto Assign MV Lines", "Auto Assign MV Lines",
               "Automatically assign mountain and valley foldlines.",
               "Crane", "Util")
         {

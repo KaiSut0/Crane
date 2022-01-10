@@ -17,7 +17,7 @@ namespace Crane.Components.Solver
         /// Initializes a new instance of the SolutionSpaceDOF class.
         /// </summary>
         public SolutionSpaceDOF()
-          : base("SolutionSpaceDOF", "SolutionSpaceDOF",
+          : base("Solution Space DOF", "Solution Space DOF",
               "Calculate the solution space DOF",
               "Crane", "Solver")
         {
@@ -28,7 +28,7 @@ namespace Crane.Components.Solver
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("RigidOrigami", "RigidOrigami", "RigidOrigami", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Rigid Origami", "Rigid Origami", "Rigid Origami", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Compute", "Compute", "Compute", GH_ParamAccess.item, false);
         }
 

@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the SelectiveDevelopableComponent class.
         /// </summary>
         public SelectiveDevelopableComponent()
-          : base("SelectiveDevelopable", "SelectiveDevelopable",
+          : base("Selective Developable", "Selective Developable",
               "Selective developable component.",
               "Crane", "Constraints")
         {

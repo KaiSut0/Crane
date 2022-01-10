@@ -14,7 +14,7 @@ namespace Crane.Components.Inputs
         /// Initializes a new instance of the RigidOrigamiFromCMeshAndConstraints class.
         /// </summary>
         public RigidOrigamiFromCMeshAndConstraints()
-          : base("RigidOrigami", "RigidOrigami",
+          : base("Construct Rigid Origami", "Construct Rigid Origami",
               "Rigid Origami form the CMesh and constraints.",
               "Crane", "Inputs")
         {

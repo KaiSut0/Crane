@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the OnMeshConstraintComponent class.
         /// </summary>
         public OnMeshComponent()
-          : base("OnMesh", "OnMesh",
+          : base("On Mesh", "On Mesh",
               "Set the constraint to restrict the selected points onto the goal mesh.",
               "Crane", "Constraints")
         {

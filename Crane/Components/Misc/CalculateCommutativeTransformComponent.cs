@@ -14,7 +14,7 @@ namespace Crane.Components.Misc
         /// Initializes a new instance of the CalculateCommutativeTransformComponent class.
         /// </summary>
         public CalculateCommutativeTransformComponent()
-          : base("CalculateCommutativeTransform", "CommTransform",
+          : base("Calculate Commutative Transform", "Comm Transform",
               "Calculate two commutative transforms.",
               "Crane", "Misc")
         {

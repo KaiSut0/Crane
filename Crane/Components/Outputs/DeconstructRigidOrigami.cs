@@ -25,7 +25,7 @@ namespace Crane.Components.Outputs
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("RigidOrigami", "RigidOrigami", "RigidOrigami", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Rigid Origami", "Rigid Origami", "Rigid Origami", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -34,6 +34,7 @@ namespace Crane.Components.Outputs
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Constraints", "Constraints", "Constraints", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace Crane.Components.Outputs
             RigidOrigami rigidOrigami = new RigidOrigami();
             if (!DA.GetData(0, ref rigidOrigami)) { return; }
             DA.SetData(0, rigidOrigami.CMesh);
+            DA.SetDataList(1, rigidOrigami.Constraints);
 
         }
 

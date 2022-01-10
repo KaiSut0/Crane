@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the GlueVerticesComponent class.
         /// </summary>
         public GlueVerticesComponent()
-          : base("GlueVertices", "GlueVertices",
+          : base("Glue Vertices", "Glue Vertices",
               "Set glue the vertices constraint.",
               "Crane", "Constraints")
         {

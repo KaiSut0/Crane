@@ -12,7 +12,7 @@ namespace Crane.Components.Util
         /// Initializes a new instance of the DevelopCMesh class.
         /// </summary>
         public DevelopCMesh()
-          : base("DevelopCMesh", "DevelopCMesh",
+          : base("Develop CMesh", "Develop CMesh",
               "Develop crane mesh.",
               "Crane", "Util")
         {

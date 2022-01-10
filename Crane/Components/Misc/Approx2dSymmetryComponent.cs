@@ -12,7 +12,7 @@ namespace Crane.Components.Misc
         /// Initializes a new instance of the Approx2dSymmetryComponent class.
         /// </summary>
         public Approx2dSymmetryComponent()
-          : base("Approx2dSymmetry", "Approx2dSymmetry",
+          : base("Approx 2d Symmetry", "Approx 2d Symmetry",
               "Approximate 2d symmetry from 2d point pairs.",
               "Crane", "Misc")
         {

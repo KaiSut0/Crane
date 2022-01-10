@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the FixEdgeLengthComponent class.
         /// </summary>
         public FixEdgeLengthComponent()
-          : base("FixEdgeLength", "FixEdgeLength",
+          : base("Fix Edge Length", "Fix Edge Length",
               "Fix edge length component.",
               "Crane", "Constraints")
         {

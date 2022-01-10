@@ -14,7 +14,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the RotationalSymmetricConstraintComponent class.
         /// </summary>
         public RotationalSymmetryComponent()
-          : base("RotationalSymmetric", "RotationSymmetry",
+          : base("Rotational Symmetry", "Rotation Symmetry",
               "Set vertex rotational symmetric constraint.",
               "Crane", "Constraints")
         {

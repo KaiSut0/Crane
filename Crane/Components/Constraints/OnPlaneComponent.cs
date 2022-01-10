@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the OnPlaneConstraintComponent class.
         /// </summary>
         public OnPlaneComponent()
-          : base("OnPlane", "OnPlane",
+          : base("On Plane", "On Plane",
               "Set the constraint to restrict the selected point onto the goal plane.",
               "Crane", "Constraints")
         {

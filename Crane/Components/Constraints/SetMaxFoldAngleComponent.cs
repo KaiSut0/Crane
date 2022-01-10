@@ -12,7 +12,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the SetMaxFoldAngle class.
         /// </summary>
         public SetMaxFoldAngleComponent()
-          : base("SetMaxFoldAngle", "SetMaxFoldAngle",
+          : base("Set Max Fold Angle", "Set Max Fold Angle",
               "Set maximum fold angle. This enforce the fold angle to be smaller than set angle.",
               "Crane", "Constraints")
         {

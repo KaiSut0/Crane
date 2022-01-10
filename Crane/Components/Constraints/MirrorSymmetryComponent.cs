@@ -14,7 +14,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the VertexMirrorConstraintComponent class.
         /// </summary>
         public MirrorSymmetryComponent()
-          : base("MirrorSymmetry", "MirrorSymmetry",
+          : base("Mirror Symmetry", "Mirror Symmetry",
               "Set mirror symmetric constraint.",
               "Crane", "Constraints")
         {

@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the RigidEdgeComponent class.
         /// </summary>
         public RigidEdgeComponent()
-          : base("RigidEdgeComponent", "RigidEdgeComponent",
+          : base("Rigid Edge", "Rigid Edge",
               "RigidEdgeComponent",
               "Crane", "Constraints")
         {

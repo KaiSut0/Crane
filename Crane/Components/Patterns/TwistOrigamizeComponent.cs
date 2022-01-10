@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the TwistOrigamizeComponent class.
         /// </summary>
         public TwistOrigamizeComponent()
-          : base("TwistOrigamize", "Twist",
+          : base("Twist Origamize", "Twist",
               "Origamize the input mesh to generalized Resch pattern by inserting twisted tuck.",
               "Crane", "Pattern")
         {

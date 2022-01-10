@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the EdgeLengthMirrorConstraint class.
         /// </summary>
         public EdgeLengthMirrorComponent()
-          : base("EdgeLengthMirrorConstraint", "EdgeMirrorConst",
+          : base("Edge Length Mirror", "Edge Length Mirror",
               "Set edge length mirror symmetric constraint.",
               "Crane", "Constraints")
         {

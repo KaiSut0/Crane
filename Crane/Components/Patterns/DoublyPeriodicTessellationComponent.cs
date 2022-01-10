@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the DoublyPeriodicTessellationComponent class.
         /// </summary>
         public DoublyPeriodicTessellationComponent()
-          : base("DoublyPeriodicTessellation", "DoublyPeriodicTessellation",
+          : base("Doubly Periodic Tessellation", "Doubly Periodic Tessellation",
               "Create doubly periodic tessellation CMesh.",
               "Crane", "Pattern")
         {

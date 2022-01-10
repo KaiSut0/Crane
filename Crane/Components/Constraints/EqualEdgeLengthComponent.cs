@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the EqualEdgeLengthComponent class.
         /// </summary>
         public EqualEdgeLengthComponent()
-          : base("EqualEdgeLength", "EqualEdgeLength",
+          : base("Equal Edge Length", "Equal Edge Length",
               "Equal edge length constraint.",
               "Crane", "Constraints")
         {

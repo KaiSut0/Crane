@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the OnCurve class.
         /// </summary>
         public OnCurveComponent()
-          : base("OnCurve", "OnCurve",
+          : base("On Curve", "On Curve",
               "Set the constraint to restrict the selected point onto the goal curve.",
               "Crane", "Constraints")
         {

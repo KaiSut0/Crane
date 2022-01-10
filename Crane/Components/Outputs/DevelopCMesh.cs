@@ -12,7 +12,7 @@ namespace Crane.Components.Outputs
         /// Initializes a new instance of the DevelopCMesh class.
         /// </summary>
         public DevelopCMesh()
-          : base("DevelopCMesh", "DevCMesh",
+          : base("Develop CMesh", "Dev CMesh",
               "Develop CMesh if possible",
               "Crane", "Outputs")
         {
@@ -25,7 +25,7 @@ namespace Crane.Components.Outputs
         {
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
             pManager.AddPointParameter("Origin", "Origin", "Development origin.", GH_ParamAccess.item, Point3d.Origin);
-            pManager.AddNumberParameter("RotationAngle", "RotAng", "Development rotation angle.", GH_ParamAccess.item,
+            pManager.AddNumberParameter("Rotation Angle", "Rot Ang", "Development rotation angle.", GH_ParamAccess.item,
                 0);
             pManager[1].Optional = true;
             pManager[2].Optional = true;

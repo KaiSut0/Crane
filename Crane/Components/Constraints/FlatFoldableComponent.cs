@@ -12,7 +12,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the FlatFoldableComponent class.
         /// </summary>
         public FlatFoldableComponent()
-          : base("FlatFoldable", "FlatFoldable",
+          : base("Flat Foldable", "Flat Foldable",
               "Set flat-foldable constraint",
               "Crane", "Constraints")
         {

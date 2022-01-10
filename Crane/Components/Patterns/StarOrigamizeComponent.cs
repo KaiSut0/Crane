@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the StarOrigamize class.
         /// </summary>
         public StarOrigamizeComponent()
-          : base("StarOrigamize", "StarOrigamize",
+          : base("Star Origamize", "Star Origamize",
               "Origamize the input mesh to generalized Resch pattern by inserting star tuck.",
               "Crane", "Pattern")
         {

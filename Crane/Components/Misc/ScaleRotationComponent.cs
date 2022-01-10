@@ -12,7 +12,7 @@ namespace Crane.Components.Misc
         /// Initializes a new instance of the ScaleRotationComponent class.
         /// </summary>
         public ScaleRotationComponent()
-          : base("ScaleRotation", "ScaleRotation",
+          : base("Scale Rotation", "Scale Rotation",
               "Compute scale and rotation transform.",
               "Crane", "Misc")
         {

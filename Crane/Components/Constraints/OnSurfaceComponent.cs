@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the OnSurfaceConstraintComponent class.
         /// </summary>
         public OnSurfaceComponent()
-          : base("OnSurface", "OnSurface",
+          : base("On Surface", "On Surface",
               "Set the constraint to restrict the selected points onto the goal surface.",
               "Crane", "Constraints")
         {

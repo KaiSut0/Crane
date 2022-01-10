@@ -13,7 +13,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the WaterbombOnDoubleSurfaceComponent class.
         /// </summary>
         public WaterbombOnDoubleSurfaceComponent()
-          : base("WaterbombOnDoubleSurface", "WaterbombOnSurf",
+          : base("Waterbomb On Double Surface", "Waterbomb On Surf",
               "Create waterbomb pattern between double surface.",
               "Crane", "Pattern")
         {

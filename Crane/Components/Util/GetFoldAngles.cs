@@ -12,7 +12,7 @@ namespace Crane.Components.Util
         /// Initializes a new instance of the GetFoldAngles class.
         /// </summary>
         public GetFoldAngles()
-          : base("GetFoldAngles", "GetFoldAngles",
+          : base("Get Fold Angles", "Get Fold Angles",
               "Get fold angles.",
               "Crane", "Util")
         {

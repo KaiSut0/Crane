@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the MapMiuraParameterComponent class.
         /// </summary>
         public MapMiuraParameterComponent()
-          : base("MapMiuraParameter", "MapMiuraParameter",
+          : base("Map Miura Parameter", "Map Miura Parameter",
               "Compute Miura-ori parameters from 2 rectangle length.",
               "Crane", "Pattern")
         {

@@ -12,7 +12,7 @@ namespace Crane.Components.Outputs
         /// Initializes a new instance of the GetPeriodicProperies class.
         /// </summary>
         public GetPeriodicProperties()
-          : base("GetPeriodicProperties", "Get Periodic properties",
+          : base("Get Periodic Properties", "Get Periodic properties",
               "Get Periodic Properties",
               "Crane", "Outputs")
         {

@@ -12,7 +12,7 @@ namespace Crane.Components.Outputs
         /// Initializes a new instance of the PlayRecords class.
         /// </summary>
         public PlayRecords()
-          : base("PlayRecords", "PlayRecords",
+          : base("Play Records", "Play Records",
               "Play the recorded rigid origami motion and form finding processs.",
               "Crane", "Outputs")
         {
@@ -23,8 +23,8 @@ namespace Crane.Components.Outputs
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("RigidOrigami", "RO", "Rigid origami.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("FrameNumber", "Frame", "The frame to play.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Rigid Origami", "RO", "Rigid origami.", GH_ParamAccess.item);
+            pManager.AddIntegerParameter("Frame Number", "Frame", "The frame to play.", GH_ParamAccess.item);
         }
 
         /// <summary>

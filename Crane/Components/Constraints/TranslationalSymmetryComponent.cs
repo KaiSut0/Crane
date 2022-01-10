@@ -14,7 +14,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the TranslationalSymmetryComponent class.
         /// </summary>
         public TranslationalSymmetryComponent()
-          : base("TranslationalSymmetry", "TranslationalSymmetry",
+          : base("Translation Symmetry", "Translation Symmetry",
               "Set translational symmetric constraint.",
               "Crane", "Constraints")
         {

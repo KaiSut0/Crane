@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the FixFoldAngleComponent class.
         /// </summary>
         public FixFoldAngleComponent()
-          : base("FixFoldAngle", "FixFoldAngle",
+          : base("Fix Fold Angle", "Fix Fold Angle",
               "Set the constraint to fix the selected fold angle to the goal angle.",
               "Crane", "Constraints")
         {

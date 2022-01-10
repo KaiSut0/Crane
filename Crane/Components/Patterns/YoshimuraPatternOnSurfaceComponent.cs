@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the YoshimuraPatternOnSurfaceComponent class.
         /// </summary>
         public YoshimuraPatternOnSurfaceComponent()
-          : base("YoshimuraPatternOnSurface", "YoshimuraPatternOnSurf",
+          : base("Yoshimura Pattern On Surface", "Yoshimura Pattern On Surf",
               "Create Yoshimura pattern on a surface.",
               "Crane", "Pattern")
         {

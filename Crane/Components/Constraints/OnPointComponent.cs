@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the OnPointComponent class.
         /// </summary>
         public OnPointComponent()
-          : base("OnPoint", "OnPoint",
+          : base("On Point", "On Point",
               "Set the constraint to restrict the selected points onto the goal point.",
               "Crane", "Constraints")
         {

@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the MiuraFoldingOnDoubleSurface class.
         /// </summary>
         public MiuraFoldingOnDoubleSurfaceComponent()
-          : base("MiuraFoldingOnDoubleSurface", "MiuraFoldingOnSurf",
+          : base("Miura Folding On Double Surface", "Miura Folding On Surf",
               "Create Miura folding tessellation between double surfaces.",
               "Crane", "Pattern")
         {

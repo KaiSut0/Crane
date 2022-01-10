@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the ChickenWireOnSurfaceComponent class.
         /// </summary>
         public ChickenWireOnSurfaceComponent()
-          : base("ChickenWireOnSurface", "ChickenWireOnSurf",
+          : base("Chicken Wire On Surface", "Chicken Wire On Surf",
               "Create chiken-wire tessellation on a surface.",
               "Crane", "Pattern")
         {

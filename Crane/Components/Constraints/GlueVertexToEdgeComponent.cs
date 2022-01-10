@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         /// Initializes a new instance of the GlueVertexToEdgeComponent class.
         /// </summary>
         public GlueVertexToEdgeComponent()
-          : base("GlueVertexToEdge", "GlueVertexToEdge",
+          : base("Glue Vertex To Edge", "Glue Vertex To Edge",
               "Set glue the vertex to the edge constraint.",
               "Crane", "Constraints")
         {
