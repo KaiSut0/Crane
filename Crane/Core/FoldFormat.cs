@@ -66,25 +66,25 @@ namespace Crane.Core
                 EdgesVertices[i] = new int[] { e.I, e.J };
             }
 
-            EdgesAssignment = new string[cMesh.edgeInfo.Count];
-            for (int i = 0; i < cMesh.edgeInfo.Count; i++)
+            EdgesAssignment = new string[cMesh.EdgeInfo.Count];
+            for (int i = 0; i < cMesh.EdgeInfo.Count; i++)
             {
-                if (cMesh.edgeInfo[i] == 'T')
+                if (cMesh.EdgeInfo[i] == 'T')
                 {
                     EdgesAssignment[i] = "F";
                 }
                 else
                 {
-                    EdgesAssignment[i] = cMesh.edgeInfo[i].ToString();
+                    EdgesAssignment[i] = cMesh.EdgeInfo[i].ToString();
                 }
             }
 
-            EdgesFoldAngle = new double?[cMesh.edgeInfo.Count];
+            EdgesFoldAngle = new double?[cMesh.EdgeInfo.Count];
             var foldAngles = cMesh.GetFoldAngles();
             int id = 0;
-            for (int i = 0; i < cMesh.edgeInfo.Count; i++)
+            for (int i = 0; i < cMesh.EdgeInfo.Count; i++)
             {
-                if (cMesh.edgeInfo[i] != 'B')
+                if (cMesh.EdgeInfo[i] != 'B')
                 {
                     EdgesFoldAngle[i] = 180 * foldAngles[id] / Math.PI;
                     id++;

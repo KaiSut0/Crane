@@ -58,10 +58,10 @@ namespace Crane.Components.Outputs
             DA.GetData(2, ref rot);
 
             var dev = cmesh.GetDevelopment(origin, rot);
-            var m = cmesh.GetLines(dev, cmesh.mountain_edges);
-            var v = cmesh.GetLines(dev, cmesh.valley_edges);
-            var b = cmesh.GetLines(dev, cmesh.boundary_edges);
-            var t = cmesh.GetLines(dev, cmesh.triangulated_edges);
+            var m = cmesh.GetLines(dev, cmesh.MountainEdges);
+            var v = cmesh.GetLines(dev, cmesh.ValleyEdges);
+            var b = cmesh.GetLines(dev, cmesh.BoundaryEdges);
+            var t = cmesh.GetLines(dev, cmesh.TriangulatedEdges);
 
             DA.SetData(0, dev);
             DA.SetDataList(1, m);

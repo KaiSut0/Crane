@@ -27,18 +27,18 @@ namespace Crane.Constraints
 
             MeshVertexList vert = m.Vertices;
 
-            if (cm.valley_edges == null)
+            if (cm.ValleyEdges == null)
             {
                 return null;
             }
 
-            for (int e_ind = 0; e_ind < cm.valley_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < cm.ValleyEdges.Count; e_ind++)
             {
                 /// Register indices
-                IndexPair edge_ind = cm.valley_edges[e_ind];
+                IndexPair edge_ind = cm.ValleyEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cm.valley_face_pairs[e_ind];
+                IndexPair face_ind = cm.ValleyFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -47,9 +47,9 @@ namespace Crane.Constraints
                 int p = 0;
                 int q = 0;
 
-                double h_P_initial = cm.valley_face_height_pairs[e_ind].Item1;
-                double h_Q_initial = cm.valley_face_height_pairs[e_ind].Item2;
-                double len_e = cm.length_of_valley_diagonal_edges[e_ind];
+                double h_P_initial = cm.ValleyFaceHeightPairs[e_ind].Item1;
+                double h_Q_initial = cm.ValleyFaceHeightPairs[e_ind].Item2;
+                double len_e = cm.LengthOfValleyDiagonalEdges[e_ind];
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -160,13 +160,13 @@ namespace Crane.Constraints
             MeshVertexList vert = m.Vertices;
 
 
-            for (int e_ind = 0; e_ind < cm.valley_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < cm.ValleyEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = cm.valley_edges[e_ind];
+                IndexPair edge_ind = cm.ValleyEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cm.valley_face_pairs[e_ind];
+                IndexPair face_ind = cm.ValleyFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -175,9 +175,9 @@ namespace Crane.Constraints
                 int p = 0;
                 int q = 0;
 
-                double h_P_initial = cm.valley_face_height_pairs[e_ind].Item1;
-                double h_Q_initial = cm.valley_face_height_pairs[e_ind].Item2;
-                double len_e = cm.length_of_valley_diagonal_edges[e_ind];
+                double h_P_initial = cm.ValleyFaceHeightPairs[e_ind].Item1;
+                double h_Q_initial = cm.ValleyFaceHeightPairs[e_ind].Item2;
+                double len_e = cm.LengthOfValleyDiagonalEdges[e_ind];
 
                 for (int i = 0; i < 3; i++)
                 {

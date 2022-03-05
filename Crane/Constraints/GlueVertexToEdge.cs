@@ -16,10 +16,10 @@ namespace Crane.Constraints
             this.vertexIds = vertexIds;
             this.edgeIds = edgeIds;
         }
-        public GlueVertexToEdge(CMesh cMesh, Point3d vertex, Line edge, double threshold)
+        public GlueVertexToEdge(CMesh cMesh, Point3d vertex, Line edge)
         {
             vertexIds = Utils.GetPointID(cMesh.Mesh, vertex);
-            edgeIds = cMesh.GetEdgeIndex(edge, threshold);
+            edgeIds = cMesh.GetEdgeIndex(edge);
         }
         private int vertexIds;
         private int edgeIds;

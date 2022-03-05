@@ -205,7 +205,7 @@ namespace Crane.Components.Solver
                 }
                 else
                 {
-                    rigidOrigami.CMesh.MeshVerticesVector += moveVector;
+                    rigidOrigami.CMesh.UpdateMesh(rigidOrigami.CMesh.MeshVerticesVector + moveVector);
                     rigidOrigami.CMesh.UpdateProperties();
                 }
                 if(!rigidOrigami.IsRigidMode)

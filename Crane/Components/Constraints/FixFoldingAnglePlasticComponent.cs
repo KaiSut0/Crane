@@ -7,14 +7,14 @@ using Crane.Core;
 
 namespace Crane.Components.Constraints
 {
-    public class FixFoldAngleComponent : GH_Component
+    public class FixFoldingAnglePlasticComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the FixFoldAngleComponent class.
+        /// Initializes a new instance of the FixFoldingAnglePlasticComponent class.
         /// </summary>
-        public FixFoldAngleComponent()
-          : base("Fix Fold Angle", "Fix Fold Angle",
-              "Set the constraint to fix the selected fold angle to the goal angle.",
+        public FixFoldingAnglePlasticComponent()
+          : base("Fix Fold Angle Plastic", "Fix Fold Angle Plastic",
+              "Set the constraint to fix the selected fold angle to the goal angle with plastic moment.",
               "Crane", "Constraints")
         {
         }
@@ -28,8 +28,9 @@ namespace Crane.Components.Constraints
             pManager.AddLineParameter("Line", "Line", "The lines for detecting the inner edge to fix the fold angle.", GH_ParamAccess.list);
             pManager.AddNumberParameter("FoldAngle", "FoldAngle", "The fixing fold angles.", GH_ParamAccess.list);
             pManager.AddNumberParameter("Strength", "Strength", "Strength", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Tolerance", "Tolerance", "The tolerance for detecting the inner edge from given line.", GH_ParamAccess.item, 1e-3);
+            pManager.AddNumberParameter("Plastic Moment", "Plastic Moment", "Plastic moment", GH_ParamAccess.list);
             pManager[3].Optional = true;
+
         }
 
         /// <summary>
@@ -50,12 +51,12 @@ namespace Crane.Components.Constraints
             List<Line> lines = new List<Line>();
             List<double> foldAngles = new List<double>();
             List<double> strengths = new List<double>();
-            double tolerance = 1e-3;
+            List<double> plasticMoments = new List<double>();
             DA.GetData(0,ref cMesh);
             DA.GetDataList(1, lines);
             DA.GetDataList(2, foldAngles);
             DA.GetDataList(3, strengths);
-            DA.GetData(4, ref tolerance);
+            DA.GetDataList(4, plasticMoments);
             if (foldAngles.Count != lines.Count)
             {
                 for (int i = foldAngles.Count; i < lines.Count; i++)
@@ -64,7 +65,8 @@ namespace Crane.Components.Constraints
                 }
             }
 
-            FixFoldAngle constraint = new FixFoldAngle(cMesh, lines.ToArray(), foldAngles.ToArray(), strengths.ToArray());
+            PlasticMoment constraint = new PlasticMoment(cMesh, lines.ToArray(), foldAngles.ToArray(),
+                strengths.ToArray(), plasticMoments.ToArray());
             DA.SetData(0, constraint);
 
         }
@@ -78,7 +80,7 @@ namespace Crane.Components.Constraints
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.set_fold_angle;
+                return null;
             }
         }
 
@@ -87,7 +89,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("2f2aa817-490c-407a-b2a9-c7b7724e884d"); }
+            get { return new Guid("85386fa1-f672-436b-8145-cb05bce746f3"); }
         }
     }
 }

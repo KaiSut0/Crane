@@ -5,56 +5,43 @@ using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
-using Microsoft.FSharp.Core;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;
 
 namespace Crane.Constraints
 {
-    public class SetMaxFoldAngle : Constraint
+    public class PlasticMoment : Constraint
     {
-        public SetMaxFoldAngle(double maxFoldAngle, bool mountainOn, bool valleyOn)
+       public PlasticMoment(CMesh cMesh, Line[] edges, double[] setAngles, double[] hingeStiffness, double[] plasticMoments)
         {
-            this.maxFoldAngle = maxFoldAngle;
-            this.mountainOn = mountainOn;
-            this.valleyOn = valleyOn;
+            this._innerEdgeIds = edges.Select(e => cMesh.GetInnerEdgeIndex(e)).ToArray();
+            this._setAngles = setAngles;
+            this._hingeStiffness = hingeStiffness;
+            this._plasticMoments = plasticMoments;
         }
-        private double maxFoldAngle;
-        private bool mountainOn;
-        private bool valleyOn;
+        private readonly int[] _innerEdgeIds;
+        private readonly double[] _setAngles;
+        private readonly double[] _hingeStiffness;
+        private readonly double[] _plasticMoments;
         public override Matrix<double> Jacobian(CMesh cMesh)
         {
-            var foldAngles = cMesh.GetFoldAngles();
-            var excededAngles = new List<double>();
-            var excededEdgeIds = new List<int>();
-            for (int i = 0; i < foldAngles.Count; i++)
-            {
-                var foldAngle = foldAngles[i];
-                if(Math.Abs(foldAngle) > maxFoldAngle)
-                {
-                    if ((foldAngle > 0 && valleyOn) || (foldAngle < 0 && mountainOn))
-                    { 
-                        excededAngles.Add(foldAngle);
-                        excededEdgeIds.Add(i);
-                    }
-                }
-            }
-
-            int rows = excededEdgeIds.Count;
+            int rows = _innerEdgeIds.Length;
             int columns = cMesh.DOF;
             Mesh mesh = cMesh.Mesh;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            mesh.FaceNormals.ComputeFaceNormals();
-
             MeshVertexList vert = mesh.Vertices;
 
+            var foldAngles = cMesh.GetFoldAngles();
 
-            for (int id = 0; id < excededEdgeIds.Count; id++)
+            for (int id = 0; id < _innerEdgeIds.Length; id++)
             {
-                int e_ind = excededEdgeIds[id];
+                int e_ind = _innerEdgeIds[id];
 
+                double foldAngle = foldAngles[e_ind];
+                double setAngle = _setAngles[id];
+                double k = Math.Sqrt(_hingeStiffness[id]);
 
                 /// Register indices
                 IndexPair edge_ind = cMesh.InnerEdges[e_ind];
@@ -128,7 +115,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = normal_P_list[x] / h_P;
+                            double var = k * normal_P_list[x] / h_P;
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -140,7 +127,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = normal_Q_list[x] / h_Q;
+                            double var = k * normal_Q_list[x] / h_Q;
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -152,7 +139,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q);
+                            double var = k * (co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q));
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -164,7 +151,7 @@ namespace Crane.Constraints
                     {
                         for (int x = 0; x < 3; x++)
                         {
-                            double var = co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q);
+                            double var = k * (co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q));
                             //var *= foldAngle - setAngle;
                             int rind = id;
                             int cind = 3 * v_ind + x;
@@ -174,23 +161,58 @@ namespace Crane.Constraints
                     }
                 }
             }
+
             return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
         }
-
         public override Vector<double> Error(CMesh cMesh)
         {
+            int rows = _innerEdgeIds.Length;
             var foldAngles = cMesh.GetFoldAngles();
-            var errors = new List<double>();
-            foreach (var foldAngle in foldAngles)
+            var err = new double[rows];
+
+            for (int i = 0; i < rows; i++)
             {
-                if(Math.Abs(foldAngle) > maxFoldAngle)
+
+
+                int id = _innerEdgeIds[i];
+                double foldAngle = foldAngles[id];
+                double setAngle = _setAngles[i];
+                double k = Math.Sqrt(_hingeStiffness[i]);
+
+                double m_s = k * (foldAngle - setAngle);
+                double m_p = _plasticMoments[i];
+
+
+                if (foldAngle - setAngle > 0)
                 {
-                    if(foldAngle > 0 && valleyOn) errors.Add(foldAngle - maxFoldAngle);
-                    else if (foldAngle < 0 && mountainOn) errors.Add(foldAngle + maxFoldAngle);
+                    if (m_s < m_p)
+                    {
+                        err[i] = 0;
+                    }
+                    else
+                    {
+                        err[i] = m_s - m_p;
+                    }
                 }
+
+                else
+                {
+                    if (-m_s < m_p)
+                    {
+                        err[i] = 0;
+                    }
+                    else
+                    {
+                        err[i] = m_s + m_p;
+                    }
+                }
+
+ 
+                //err[i] = 0.5 * Math.Pow(foldAngle - setAngle, 2);
             }
 
-            return Vector<double>.Build.DenseOfArray(errors.ToArray());
+            return Vector<double>.Build.DenseOfArray(err);
+
         }
     }
 }

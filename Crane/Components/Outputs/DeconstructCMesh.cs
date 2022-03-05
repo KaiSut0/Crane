@@ -40,8 +40,7 @@ namespace Crane.Components.Outputs
             pManager.AddLineParameter("Unassigned", "U", "Unassigned Crease Lines", GH_ParamAccess.list);
             pManager.AddLineParameter("Triangulate", "T", "Triangulate Edges", GH_ParamAccess.list);
             pManager.AddLineParameter("Edges", "E", "Edges", GH_ParamAccess.list);
-            pManager.AddMeshParameter("Folding", "F", "Folding mesh", GH_ParamAccess.item);
-            pManager.AddMeshParameter("Development", "D", "Development", GH_ParamAccess.item);
+            pManager.AddLineParameter("Inner", "IE", "Inner edges", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -54,7 +53,8 @@ namespace Crane.Components.Outputs
 
             if (!DA.GetData(0, ref cmesh)) { return; }
 
-            Mesh mesh = ReconstructQuadMesh(cmesh);
+            //Mesh mesh = ReconstructQuadMesh(cmesh);
+            Mesh mesh = cmesh.Mesh;
             var edges = cmesh.Mesh.TopologyEdges;
 
             List<Line> m = new List<Line>();
@@ -63,11 +63,12 @@ namespace Crane.Components.Outputs
             List<Line> u = new List<Line>();
             List<Line> t = new List<Line>();
             List<Line> e = new List<Line>();
+            List<Line> ie = new List<Line>();
 
 
             for (int i = 0; i < edges.Count; i++)
             {
-                int info = cmesh.edgeInfo[i];
+                int info = cmesh.EdgeInfo[i];
 
                 if (info == 'M')
                 {
@@ -93,6 +94,8 @@ namespace Crane.Components.Outputs
                 e.Add(edges.EdgeLine(i));
             }
 
+            ie = cmesh.GetInnerEdgeLines();
+
             DA.SetData(0, mesh);
             DA.SetDataList(1, m);
             DA.SetDataList(2, v);
@@ -100,12 +103,11 @@ namespace Crane.Components.Outputs
             DA.SetDataList(4, u);
             DA.SetDataList(5, t);
             DA.SetDataList(6, e);
-            DA.SetData(7, cmesh.FoldingMesh());
-            DA.SetData(8, cmesh.Development());
+            DA.SetDataList(7, ie);
         }
         private Mesh ReconstructQuadMesh(CMesh cm)
         {
-            var faces = cm.orig_faces;
+            var faces = cm.OriginalFaces;
             Mesh mesh = cm.Mesh.DuplicateMesh();
             mesh.Faces.Destroy();
             mesh.Faces.AddFaces(faces);

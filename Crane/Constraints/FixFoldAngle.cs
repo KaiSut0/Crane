@@ -11,9 +11,9 @@ namespace Crane.Constraints
 {
     public class FixFoldAngle : Constraint
     {
-        public FixFoldAngle(CMesh cMesh, Line[] edges, double[] setAngles, double[] stiffness, double tolerance)
+        public FixFoldAngle(CMesh cMesh, Line[] edges, double[] setAngles, double[] stiffness)
         {
-            this.innerEdgeIds = edges.Select(e => cMesh.GetInnerEdgeIndex(e, tolerance)).ToArray();
+            innerEdgeIds = edges.Select(e => cMesh.GetInnerEdgeIndex(e)).ToArray();
             this.setAngles = setAngles;
             this.stiffness = stiffness;
         }
@@ -42,10 +42,10 @@ namespace Crane.Constraints
                 double k = Math.Sqrt(stiffness[id]);
 
                 /// Register indices
-                IndexPair edge_ind = cMesh.inner_edges[e_ind];
+                IndexPair edge_ind = cMesh.InnerEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cMesh.face_pairs[e_ind];
+                IndexPair face_ind = cMesh.FacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 

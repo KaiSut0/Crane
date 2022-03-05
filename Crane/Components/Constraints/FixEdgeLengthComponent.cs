@@ -27,9 +27,6 @@ namespace Crane.Components.Constraints
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
             pManager.AddLineParameter("Line", "Line", "The lines for detecting the edge to fix the fold angle.", GH_ParamAccess.list);
             pManager.AddNumberParameter("EdgeLength", "EdgeLength", "The edge length.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Tolerance", "Tolerance", "The tolerance for detecting the edge from given line.", GH_ParamAccess.item, 1e-3);
-            pManager[3].Optional = true;
-
         }
 
         /// <summary>
@@ -49,11 +46,9 @@ namespace Crane.Components.Constraints
             CMesh cMesh = null;
             List<Line> lines = new List<Line>();
             List<double> edgeLengths = new List<double>();
-            double tolerance = 1e-3;
             DA.GetData(0,ref cMesh);
             DA.GetDataList(1, lines);
             DA.GetDataList(2, edgeLengths);
-            DA.GetData(3, ref tolerance);
             if (edgeLengths.Count != lines.Count)
             {
                 for (int i = 0; i < lines.Count; i++)
@@ -62,7 +57,7 @@ namespace Crane.Components.Constraints
                 }
             }
 
-            FixEdgeLength constraint = new FixEdgeLength(cMesh, lines.ToArray(), edgeLengths.ToArray(), tolerance);
+            FixEdgeLength constraint = new FixEdgeLength(cMesh, lines.ToArray(), edgeLengths.ToArray());
             DA.SetData(0, constraint);
 
         }

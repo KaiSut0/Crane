@@ -56,7 +56,7 @@ namespace Crane.Components.Util
 
             var dev = new Core.DevelopMesh(cMesh.Mesh, new Point2d(devOrigin.X, devOrigin.Y));
             devMesh = dev.DevelopedMesh;
-            CMesh devCMesh = new CMesh(devMesh, cMesh.mountain_edges, cMesh.valley_edges, cMesh.triangulated_edges);
+            CMesh devCMesh = new CMesh(devMesh, cMesh.MountainEdges, cMesh.ValleyEdges, cMesh.TriangulatedEdges);
             DA.SetData(0, devCMesh);
         }
 

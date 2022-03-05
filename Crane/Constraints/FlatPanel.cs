@@ -18,7 +18,7 @@ namespace Crane.Constraints
         public FlatPanel(){}
         public override Matrix<double> Jacobian(CMesh cMesh)
         {
-            int rows = cMesh.triangulated_edges.Count;
+            int rows = cMesh.TriangulatedEdges.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
@@ -27,18 +27,18 @@ namespace Crane.Constraints
 
             MeshVertexList vert = m.Vertices;
 
-            if (cm.triangulated_edges == null)
+            if (cm.TriangulatedEdges == null)
             {
                 return null;
             }
 
-            for (int e_ind = 0; e_ind < cm.triangulated_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < cm.TriangulatedEdges.Count; e_ind++)
             {
                 /// Register indices
-                IndexPair edge_ind = cm.triangulated_edges[e_ind];
+                IndexPair edge_ind = cm.TriangulatedEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cm.triangulated_face_pairs[e_ind];
+                IndexPair face_ind = cm.TriangulatedFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -47,9 +47,9 @@ namespace Crane.Constraints
                 int p = 0;
                 int q = 0;
 
-                double h_P_initial = cm.triangulated_face_height_pairs[e_ind].Item1;
-                double h_Q_initial = cm.triangulated_face_height_pairs[e_ind].Item2;
-                double len_e = cm.length_of_triangulated_diagonal_edges[e_ind];
+                double h_P_initial = cm.TriangulatedFaceHeightPairs[e_ind].Item1;
+                double h_Q_initial = cm.TriangulatedFaceHeightPairs[e_ind].Item2;
+                double len_e = cm.LengthOfTriangulatedDiagonalEdges[e_ind];
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -145,19 +145,19 @@ namespace Crane.Constraints
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
 
-            double[] error_ = new double[cm.triangulated_edges.Count];
+            double[] error_ = new double[cm.TriangulatedEdges.Count];
 
             m.FaceNormals.ComputeFaceNormals();
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < cm.triangulated_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < cm.TriangulatedEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = cm.triangulated_edges[e_ind];
+                IndexPair edge_ind = cm.TriangulatedEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cm.triangulated_face_pairs[e_ind];
+                IndexPair face_ind = cm.TriangulatedFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -166,9 +166,9 @@ namespace Crane.Constraints
                 int p = 0;
                 int q = 0;
 
-                double h_P_initial = cm.triangulated_face_height_pairs[e_ind].Item1;
-                double h_Q_initial = cm.triangulated_face_height_pairs[e_ind].Item2;
-                double len_e = cm.length_of_triangulated_diagonal_edges[e_ind];
+                double h_P_initial = cm.TriangulatedFaceHeightPairs[e_ind].Item1;
+                double h_Q_initial = cm.TriangulatedFaceHeightPairs[e_ind].Item2;
+                double len_e = cm.LengthOfTriangulatedDiagonalEdges[e_ind];
 
                 for (int i = 0; i < 3; i++)
                 {

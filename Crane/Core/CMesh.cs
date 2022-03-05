@@ -13,18 +13,20 @@ namespace Crane.Core
     public class CMesh
     {
         #region Properties
-        public Mesh Mesh { get; set; }
-        public Mesh InitialMesh { get; set; }
-        public Vector<double> MeshVerticesVector { get; set; }
+        public Mesh Mesh { get; private set; }
+        public Mesh InitialMesh { get; private set; }
+        public PointCloud VerticesCloud { get; private set; }
+        public double VertexSearchTolerance { get; private set; }
+        public Vector<double> MeshVerticesVector { get; private set; }
         public Vector<double> ConfigulationVector { get; set; }
         public List<double> EdgeLengthSquared { get; set; }
         public double[] CylindricallyRotationAngles { get; set; }
         public double[] CylindricallyTranslationCoefficients { get; set; }
-        public Vector3d CylinderAxis;
-        public Point3d CylinderOrigin;
+        public Vector3d CylinderAxis { get; set; }
+        public Point3d CylinderOrigin { get; set; }
         public int DOF { get; set; }
-        public int NumberOfVertices { get; set; }
-        public int NumberOfEdges { get; set; }
+        public int NumberOfVertices { get; private set; }
+        public int NumberOfEdges { get; private set; }
         public double WholeScale { get; set; }
         public bool IsPeriodic { get; set; }
         public bool HasDevelopment { get; private set; } = false;
@@ -34,46 +36,35 @@ namespace Crane.Core
         public int NumberOfFoldingFaces { get; set; }
         public List<IndexPair> DevelopmentEdgeIndexPairs { get; private set; }
         public List<IndexPair> DevelopmentVertexIndexPairs { get; private set; }
-
         public List<List<int>> ConnectedTopologyVerticesList { get; private set; }
         public List<List<int>> ConnectedTopologyEdgesList { get; private set; }
-
-        #endregion
-
-        #region Private Member
-        public List<Char> edgeInfo;
-        public MeshFaceList orig_faces;
-        public List<Char> inner_edge_assignment;
-        public List<double> foldang;
-
-        public List<int> innerVertexIds;
-
-        public List<IndexPair> inner_edges;
-        public List<IndexPair> boundary_edges;
-        public List<int> inner_boundary_edges;
-        public List<IndexPair> triangulated_edges;
-        public List<IndexPair> mountain_edges;
-        public List<IndexPair> valley_edges;
-
-        public List<IndexPair> face_pairs;
-        public List<IndexPair> triangulated_face_pairs;
-        public List<IndexPair> mountain_face_pairs;
-        public List<IndexPair> valley_face_pairs;
-
-        public List<Tuple<double, double>> face_height_pairs;
-        public List<Tuple<double, double>> triangulated_face_height_pairs;
-        public List<Tuple<double, double>> mountain_face_height_pairs;
-        public List<Tuple<double, double>> valley_face_height_pairs;
-
-        public List<double> length_of_diagonal_edges;
-        public List<double> length_of_triangulated_diagonal_edges;
-        public List<double> length_of_mountain_diagonal_edges;
-        public List<double> length_of_valley_diagonal_edges;
-        public List<double> Initial_edges_length;
-
-
+        public double[] FoldingSpeed { get; private set; }
+        public List<Char> EdgeInfo { get; set; }
+        public MeshFaceList OriginalFaces { get; set; }
+        public List<Char> InnerEdgeAssignment { get; set; }
+        public List<int> InnerVertexIds { get; set; }
+        public List<IndexPair> InnerEdges { get; set; }
+        public List<IndexPair> BoundaryEdges { get; set; }
+        public List<int> InnerBoundaryEdges { get; set; }
+        public List<IndexPair> TriangulatedEdges { get; set; }
+        public List<IndexPair> MountainEdges { get; set; }
+        public List<IndexPair> ValleyEdges { get; set; }
+        public List<IndexPair> FacePairs { get; set; }
+        public List<IndexPair> TriangulatedFacePairs { get; set; }
+        public List<IndexPair> MountainFacePairs { get; set; }
+        public List<IndexPair> ValleyFacePairs { get; set; }
+        public List<Tuple<double, double>> FaceHeightPairs { get; set; }
+        public List<Tuple<double, double>> TriangulatedFaceHeightPairs { get; set; } 
+        public List<Tuple<double, double>> MountainFaceHeightPairs { get; set; }
+        public List<Tuple<double, double>> ValleyFaceHeightPairs { get; set; }
+        public List<double> LengthOfDiagonalEdges { get; set; }
+        public List<double> LengthOfTriangulatedDiagonalEdges { get; set; }
+        public List<double> LengthOfMountainDiagonalEdges { get; set; }
+        public List<double> LengthOfValleyDiagonalEdges { get; set; }
+        public List<double> InitialEdgesLength { get; set; }
         public Dictionary<int, int> EdgeIds2InnerEdgeIds { get; private set; }
-        #endregion
+
+#endregion
 
         public CMesh() { }
         public CMesh(Mesh mesh)
@@ -84,6 +75,7 @@ namespace Crane.Core
         {
             this.Mesh = cMesh.Mesh.DuplicateMesh();
             this.InitialMesh = cMesh.InitialMesh.DuplicateMesh();
+            UpdateVerticesCloud();
             this.MeshVerticesVector = Vector<double>.Build.DenseOfVector(cMesh.MeshVerticesVector);
             this.ConfigulationVector = Vector<double>.Build.DenseOfVector(cMesh.ConfigulationVector);
             this.EdgeLengthSquared = new List<double>(cMesh.EdgeLengthSquared.ToArray());
@@ -101,38 +93,39 @@ namespace Crane.Core
             this.NumberOfFoldingVertices = cMesh.NumberOfFoldingVertices;
             this.NumberOfFoldingFaces = cMesh.NumberOfFoldingFaces;
 
-            this.edgeInfo = new List<char>(cMesh.edgeInfo.ToArray());
-            this.orig_faces = this.InitialMesh.Faces;
-            this.inner_edge_assignment = new List<char>(cMesh.inner_edge_assignment.ToArray());
-            this.foldang = new List<double>(cMesh.foldang);
+            this.FoldingSpeed = cMesh.FoldingSpeed;
 
-            this.innerVertexIds = new List<int>(cMesh.innerVertexIds.ToArray());
+            this.EdgeInfo = new List<char>(cMesh.EdgeInfo.ToArray());
+            this.OriginalFaces = this.InitialMesh.Faces;
+            this.InnerEdgeAssignment = new List<char>(cMesh.InnerEdgeAssignment.ToArray());
 
-            this.inner_edges = Utils.CloneIndexPairs(cMesh.inner_edges).ToList();
-            this.boundary_edges = Utils.CloneIndexPairs(cMesh.boundary_edges).ToList();
-            this.inner_boundary_edges = new List<int>(cMesh.inner_boundary_edges.ToArray());
-            this.triangulated_edges = Utils.CloneIndexPairs(cMesh.triangulated_edges).ToList();
-            this.mountain_edges = Utils.CloneIndexPairs(cMesh.mountain_edges).ToList();
-            this.valley_edges = Utils.CloneIndexPairs(cMesh.valley_edges).ToList();
+            this.InnerVertexIds = new List<int>(cMesh.InnerVertexIds.ToArray());
 
-            this.face_pairs = Utils.CloneIndexPairs(cMesh.face_pairs).ToList();
-            this.triangulated_face_pairs = Utils.CloneIndexPairs(cMesh.triangulated_face_pairs).ToList();
-            this.mountain_face_pairs = Utils.CloneIndexPairs(cMesh.mountain_face_pairs).ToList();
-            this.valley_face_pairs = Utils.CloneIndexPairs(cMesh.valley_face_pairs).ToList();
+            this.InnerEdges = Utils.CloneIndexPairs(cMesh.InnerEdges).ToList();
+            this.BoundaryEdges = Utils.CloneIndexPairs(cMesh.BoundaryEdges).ToList();
+            this.InnerBoundaryEdges = new List<int>(cMesh.InnerBoundaryEdges.ToArray());
+            this.TriangulatedEdges = Utils.CloneIndexPairs(cMesh.TriangulatedEdges).ToList();
+            this.MountainEdges = Utils.CloneIndexPairs(cMesh.MountainEdges).ToList();
+            this.ValleyEdges = Utils.CloneIndexPairs(cMesh.ValleyEdges).ToList();
 
-            this.face_height_pairs = Utils.CloneTuples(cMesh.face_height_pairs).ToList();
-            this.triangulated_face_height_pairs = Utils.CloneTuples(cMesh.triangulated_face_height_pairs).ToList();
-            this.mountain_face_height_pairs = Utils.CloneTuples(cMesh.mountain_face_height_pairs).ToList();
-            this.valley_face_height_pairs = Utils.CloneTuples(cMesh.valley_face_height_pairs).ToList();
+            this.FacePairs = Utils.CloneIndexPairs(cMesh.FacePairs).ToList();
+            this.TriangulatedFacePairs = Utils.CloneIndexPairs(cMesh.TriangulatedFacePairs).ToList();
+            this.MountainFacePairs = Utils.CloneIndexPairs(cMesh.MountainFacePairs).ToList();
+            this.ValleyFacePairs = Utils.CloneIndexPairs(cMesh.ValleyFacePairs).ToList();
+
+            this.FaceHeightPairs = Utils.CloneTuples(cMesh.FaceHeightPairs).ToList();
+            this.TriangulatedFaceHeightPairs = Utils.CloneTuples(cMesh.TriangulatedFaceHeightPairs).ToList();
+            this.MountainFaceHeightPairs = Utils.CloneTuples(cMesh.MountainFaceHeightPairs).ToList();
+            this.ValleyFaceHeightPairs = Utils.CloneTuples(cMesh.ValleyFaceHeightPairs).ToList();
             
-            this.length_of_diagonal_edges = new List<double>(cMesh.length_of_diagonal_edges.ToArray());
-            this.length_of_triangulated_diagonal_edges = new List<double>(cMesh.length_of_triangulated_diagonal_edges.ToArray());
-            this.length_of_mountain_diagonal_edges = new List<double>(cMesh.length_of_mountain_diagonal_edges.ToArray());
-            this.length_of_valley_diagonal_edges = new List<double>(cMesh.length_of_valley_diagonal_edges.ToArray());
+            this.LengthOfDiagonalEdges = new List<double>(cMesh.LengthOfDiagonalEdges.ToArray());
+            this.LengthOfTriangulatedDiagonalEdges = new List<double>(cMesh.LengthOfTriangulatedDiagonalEdges.ToArray());
+            this.LengthOfMountainDiagonalEdges = new List<double>(cMesh.LengthOfMountainDiagonalEdges.ToArray());
+            this.LengthOfValleyDiagonalEdges = new List<double>(cMesh.LengthOfValleyDiagonalEdges.ToArray());
 
             this.ConnectedTopologyVerticesList = cMesh.ConnectedTopologyVerticesList;
             this.ConnectedTopologyEdgesList = cMesh.ConnectedTopologyEdgesList;
-            //this.Initial_edges_length = new List<double>(cMesh.Initial_edges_length.ToArray());
+            //this.InitialEdgesLength = new List<double>(cMesh.InitialEdgesLength.ToArray());
 
         }
         public CMesh(Mesh mesh, List<Line> M, List<Line> V)
@@ -173,91 +166,46 @@ namespace Crane.Core
             this.NumberOfVertices = mesh.Vertices.Count;
             this.NumberOfEdges = mesh.TopologyEdges.Count;
             this.Mesh.FaceNormals.ComputeFaceNormals();
-            this.orig_faces = mesh.Faces;
+            this.OriginalFaces = mesh.Faces;
             var tri = this.InsertTriangulate();
+            UpdateVerticesCloud();
 
             //this.Mesh.TopologyVertices.SortEdges();
             SetConnectedTopologyVertices();
             var edges = this.Mesh.TopologyEdges;
-            var verts = this.Mesh.TopologyVertices;
 
             SetInnerVertexIds();
 
-            this.edgeInfo = new List<Char>();
+            this.EdgeInfo = new List<Char>();
             for (int i = 0; i < edges.Count; i++)
             {
                 if (edges.IsNgonInterior(i))
                 {
-                    edgeInfo.Add('T');
+                    EdgeInfo.Add('T');
                 }
                 else
                 {
-                    edgeInfo.Add('U');
+                    EdgeInfo.Add('U');
                 }
             }
-
             foreach (Line m in M)
             {
-                Point3d a = m.From;
-                Point3d b = m.To;
-
-                int found = 0;
-                int vertsCount = verts.Count;
-                int j = 0;
-                int fromIndex = -1;
-                int toIndex = -1;
-                while (found != 2 && j < vertsCount)
-                {
-                    Point3d p = verts[j];
-
-                    if (p.DistanceTo(a) < 0.001)
-                    {
-                        fromIndex = j;
-                        found++;
-                    }
-                    else if (p.DistanceTo(b) < 0.001)
-                    {
-                        toIndex = j;
-                        found++;
-                    }
-                    j++;
-                }
+                int fromIndex = VerticesCloud.ClosestPoint(m.From);
+                int toIndex = VerticesCloud.ClosestPoint(m.To);
                 int ind = edges.GetEdgeIndex(fromIndex, toIndex);
                 if (ind != -1)
                 {
-                    edgeInfo[ind] = 'M';
+                    EdgeInfo[ind] = 'M';
                 }
             }
             foreach (Line v in V)
             {
-                Point3d a = v.From;
-                Point3d b = v.To;
-
-                int found = 0;
-                int vertsCount = verts.Count;
-                int j = 0;
-                int fromIndex = -1;
-                int toIndex = -1;
-                while (found != 2 && j < vertsCount)
-                {
-                    Point3d p = verts[j];
-
-                    if (p.DistanceTo(a) < 0.001)
-                    {
-                        fromIndex = j;
-                        found++;
-                    }
-                    else if (p.DistanceTo(b) < 0.001)
-                    {
-                        toIndex = j;
-                        found++;
-                    }
-                    j++;
-                }
+                int fromIndex = VerticesCloud.ClosestPoint(v.From);
+                int toIndex = VerticesCloud.ClosestPoint(v.To);
                 int ind = edges.GetEdgeIndex(fromIndex, toIndex);
                 if (ind != -1)
                 {
-                    edgeInfo[ind] = 'V';
+                    EdgeInfo[ind] = 'V';
                 }
             }
             if (tri.Count != 0)
@@ -267,41 +215,18 @@ namespace Crane.Core
                     int ind = edges.GetEdgeIndex(v[0], v[1]);
                     if (ind != -1)
                     {
-                        this.edgeInfo[ind] = 'T';
+                        this.EdgeInfo[ind] = 'T';
                     }
                 }
             }
-
             foreach (Line t in T)
             {
-                Point3d a = t.From;
-                Point3d b = t.To;
-
-                int found = 0;
-                int vertsCount = verts.Count;
-                int j = 0;
-                int fromIndex = -1;
-                int toIndex = -1;
-                while (found != 2 && j < vertsCount)
-                {
-                    Point3d p = verts[j];
-
-                    if (p.DistanceTo(a) < 0.001)
-                    {
-                        fromIndex = j;
-                        found++;
-                    }
-                    else if (p.DistanceTo(b) < 0.001)
-                    {
-                        toIndex = j;
-                        found++;
-                    }
-                    j++;
-                }
+                int fromIndex = VerticesCloud.ClosestPoint(t.From);
+                int toIndex = VerticesCloud.ClosestPoint(t.To);
                 int ind = edges.GetEdgeIndex(fromIndex, toIndex);
                 if (ind != -1)
                 {
-                    edgeInfo[ind] = 'T';
+                    EdgeInfo[ind] = 'T';
                 }
             }
 
@@ -312,19 +237,20 @@ namespace Crane.Core
                 if (edges.GetConnectedFaces(i).Count() == 1)
                 {
 
-                    this.edgeInfo[i] = 'B';
+                    this.EdgeInfo[i] = 'B';
                 }
             }
             SetMeshFundamentalInfo();
             SetTriangulatedFacePairBasicInfo();
             SetMountainFacePairBasicInfo();
             SetValleyFacePairBasicInfo();
-            this.inner_edge_assignment = GetInnerEdgeAssignment();
+            this.InnerEdgeAssignment = GetInnerEdgeAssignment();
             this.SetMeshVerticesVector();
             this.SetConfigulationVector();
             this.SetPeriodicParameters();
             ComputeInitialProperties();
             SetNgon();
+            SetFoldingSpeed(new double[this.InnerEdges.Count]);
             HasDevelopment = false;
         }
         private void SetCMeshFromMVTWithDevelopment(Mesh mesh, List<Line> M, List<Line> V, List<Line> T, Point2d developmentOrigin, double developmentRotation = 0)
@@ -412,9 +338,9 @@ namespace Crane.Core
         }
         public List<double> GetFoldAngles()
         {
-            var edges = this.inner_edges;
+            var edges = this.InnerEdges;
             var verts = this.Mesh.Vertices;
-            var faces = this.face_pairs;
+            var faces = this.FacePairs;
 
             List<double> foldang = new List<double>();
 
@@ -472,11 +398,11 @@ namespace Crane.Core
         public List<Char> GetInnerEdgeAssignment()
         {
             List<Char> inner_edge_info = new List<Char>();
-            for (int i = 0; i < this.edgeInfo.Count; i++)
+            for (int i = 0; i < this.EdgeInfo.Count; i++)
             {
-                if (edgeInfo[i] != 'B')
+                if (EdgeInfo[i] != 'B')
                 {
-                    inner_edge_info.Add(edgeInfo[i]);
+                    inner_edge_info.Add(EdgeInfo[i]);
                 }
             }
             return inner_edge_info;
@@ -484,86 +410,89 @@ namespace Crane.Core
         public List<Char> GetTrianglatedEdgeAssignment()
         {
             List<Char> trianglated_edge_info = new List<Char>();
-            for (int i = 0; i < this.edgeInfo.Count; i++)
+            for (int i = 0; i < this.EdgeInfo.Count; i++)
             {
-                if (edgeInfo[i] == 'T')
+                if (EdgeInfo[i] == 'T')
                 {
-                    trianglated_edge_info.Add(edgeInfo[i]);
+                    trianglated_edge_info.Add(EdgeInfo[i]);
                 }
             }
             return trianglated_edge_info;
         }
         public void SetMeshFundamentalInfo()
         {
-            this.inner_edges = new List<IndexPair>();
-            this.boundary_edges = new List<IndexPair>();
-            this.inner_boundary_edges = new List<int>();
-            this.face_pairs = new List<IndexPair>();
-            this.foldang = new List<double>();
-            this.triangulated_edges = new List<IndexPair>();
-            this.triangulated_face_pairs = new List<IndexPair>();
-            this.mountain_edges = new List<IndexPair>();
-            this.mountain_face_pairs = new List<IndexPair>();
-            this.valley_edges = new List<IndexPair>();
-            this.valley_face_pairs = new List<IndexPair>();
+            InnerEdges = new List<IndexPair>();
+            BoundaryEdges = new List<IndexPair>();
+            InnerBoundaryEdges = new List<int>();
+            FacePairs = new List<IndexPair>();
+            TriangulatedEdges = new List<IndexPair>();
+            TriangulatedFacePairs = new List<IndexPair>();
+            MountainEdges = new List<IndexPair>();
+            MountainFacePairs = new List<IndexPair>();
+            ValleyEdges = new List<IndexPair>();
+            ValleyFacePairs = new List<IndexPair>();
             List<int> inner_edges_id = new List<int>();
             List<int> boundary_edges_id = new List<int>();
+            EdgeIds2InnerEdgeIds = new Dictionary<int, int>();
+
+            int innerEdgeId = 0;
 
             for (int e = 0; e < this.Mesh.TopologyEdges.Count; e++)
             {
                 if (this.Mesh.TopologyEdges.GetConnectedFaces(e).Count() > 1)
                 {
+                    EdgeIds2InnerEdgeIds[e] = innerEdgeId;
                     IndexPair inner_edge = new IndexPair();
                     inner_edge.I = this.Mesh.TopologyEdges.GetTopologyVertices(e).I;
                     inner_edge.J = this.Mesh.TopologyEdges.GetTopologyVertices(e).J;
-                    this.inner_edges.Add(inner_edge);
+                    this.InnerEdges.Add(inner_edge);
                     inner_edges_id.Add(e);
 
                     IndexPair face_pair = GetFacePair(inner_edge, e);
-                    this.face_pairs.Add(face_pair);
+                    this.FacePairs.Add(face_pair);
+                    innerEdgeId++;
                 }
                 if (this.Mesh.TopologyEdges.GetConnectedFaces(e).Count() == 1)
                 {
                     IndexPair boundary_edge = new IndexPair();
                     boundary_edge.I = this.Mesh.TopologyEdges.GetTopologyVertices(e).I;
                     boundary_edge.J = this.Mesh.TopologyEdges.GetTopologyVertices(e).J;
-                    this.boundary_edges.Add(boundary_edge);
+                    this.BoundaryEdges.Add(boundary_edge);
                     boundary_edges_id.Add(e);
                 }
-                if (this.edgeInfo[e] == 'T')
+                if (this.EdgeInfo[e] == 'T')
                 {
                     IndexPair triangulated_edge = new IndexPair();
                     triangulated_edge.I = this.Mesh.TopologyEdges.GetTopologyVertices(e).I;
                     triangulated_edge.J = this.Mesh.TopologyEdges.GetTopologyVertices(e).J;
-                    this.triangulated_edges.Add(triangulated_edge);
+                    this.TriangulatedEdges.Add(triangulated_edge);
 
                     IndexPair triangulated_face_pair = GetFacePair(triangulated_edge, e);
-                    this.triangulated_face_pairs.Add(triangulated_face_pair);
+                    this.TriangulatedFacePairs.Add(triangulated_face_pair);
                 }
-                if (this.edgeInfo[e] == 'M')
+                if (this.EdgeInfo[e] == 'M')
                 {
                     IndexPair mountain_edge = new IndexPair();
                     mountain_edge.I = this.Mesh.TopologyEdges.GetTopologyVertices(e).I;
                     mountain_edge.J = this.Mesh.TopologyEdges.GetTopologyVertices(e).J;
-                    this.mountain_edges.Add(mountain_edge);
+                    this.MountainEdges.Add(mountain_edge);
 
                     IndexPair mountain_face_pair = GetFacePair(mountain_edge, e);
-                    this.mountain_face_pairs.Add(mountain_face_pair);
+                    this.MountainFacePairs.Add(mountain_face_pair);
                 }
-                if (this.edgeInfo[e] == 'V')
+                if (this.EdgeInfo[e] == 'V')
                 {
                     IndexPair valley_edge = new IndexPair();
                     valley_edge.I = this.Mesh.TopologyEdges.GetTopologyVertices(e).I;
                     valley_edge.J = this.Mesh.TopologyEdges.GetTopologyVertices(e).J;
-                    this.valley_edges.Add(valley_edge);
+                    this.ValleyEdges.Add(valley_edge);
 
                     IndexPair valley_face_pair = GetFacePair(valley_edge, e);
-                    this.valley_face_pairs.Add(valley_face_pair);
+                    this.ValleyFacePairs.Add(valley_face_pair);
                 }
             }
-            this.inner_boundary_edges.AddRange(inner_edges_id);
-            this.inner_boundary_edges.AddRange(boundary_edges_id);
-            this.foldang = GetFoldAngles();
+            this.InnerBoundaryEdges.AddRange(inner_edges_id);
+            this.InnerBoundaryEdges.AddRange(boundary_edges_id);
         }
         public void SetFacePairBasicInfo()
         {
@@ -576,13 +505,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.inner_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.InnerEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.inner_edges[e_ind];
+                IndexPair edge_ind = this.InnerEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.face_pairs[e_ind];
+                IndexPair face_ind = this.FacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -619,8 +548,8 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.face_height_pairs = face_heignt_pairs;
-            this.length_of_diagonal_edges = edge_length_between_face_pairs;
+            this.FaceHeightPairs = face_heignt_pairs;
+            this.LengthOfDiagonalEdges = edge_length_between_face_pairs;
         }
         public void SetTriangulatedFacePairBasicInfo()
         {
@@ -633,13 +562,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.triangulated_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.TriangulatedEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.triangulated_edges[e_ind];
+                IndexPair edge_ind = this.TriangulatedEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.triangulated_face_pairs[e_ind];
+                IndexPair face_ind = this.TriangulatedFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -676,8 +605,8 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.triangulated_face_height_pairs = face_heignt_pairs;
-            this.length_of_triangulated_diagonal_edges = edge_length_between_face_pairs;
+            this.TriangulatedFaceHeightPairs = face_heignt_pairs;
+            this.LengthOfTriangulatedDiagonalEdges = edge_length_between_face_pairs;
         }
         public void SetMountainFacePairBasicInfo()
         {
@@ -690,13 +619,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.mountain_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.MountainEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.mountain_edges[e_ind];
+                IndexPair edge_ind = this.MountainEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.mountain_face_pairs[e_ind];
+                IndexPair face_ind = this.MountainFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -733,8 +662,8 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.mountain_face_height_pairs = face_heignt_pairs;
-            this.length_of_mountain_diagonal_edges = edge_length_between_face_pairs;
+            this.MountainFaceHeightPairs = face_heignt_pairs;
+            this.LengthOfMountainDiagonalEdges = edge_length_between_face_pairs;
         }
         public void SetValleyFacePairBasicInfo()
         {
@@ -747,13 +676,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.valley_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.ValleyEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.valley_edges[e_ind];
+                IndexPair edge_ind = this.ValleyEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.valley_face_pairs[e_ind];
+                IndexPair face_ind = this.ValleyFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -790,25 +719,25 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.valley_face_height_pairs = face_heignt_pairs;
-            this.length_of_valley_diagonal_edges = edge_length_between_face_pairs;
+            this.ValleyFaceHeightPairs = face_heignt_pairs;
+            this.LengthOfValleyDiagonalEdges = edge_length_between_face_pairs;
         }
         public void SetInnerVertexIds()
         {
             var isNaked = new List<bool>(Mesh.GetNakedEdgePointStatus());
-            innerVertexIds = new List<int>();
+            InnerVertexIds = new List<int>();
             for (int i = 0; i < isNaked.Count; i++)
             {
                 if (!isNaked[i])
                 {
-                    innerVertexIds.Add(i);
+                    InnerVertexIds.Add(i);
                 }
             }
         }
         public int GetInnerVertexId(Point3d vert, double threshold)
         {
             int id = -1;
-            foreach(int i in innerVertexIds)
+            foreach(int i in InnerVertexIds)
             {
                 var pt = Mesh.Vertices[i];
                 if (vert.DistanceTo(new Point3d(pt)) < threshold)
@@ -825,9 +754,9 @@ namespace Crane.Core
             var v = new List<Line>();
             for (int i = 0; i < foldang.Count; i++)
             {
-                var edge = inner_edges[i];
+                var edge = InnerEdges[i];
                 var ang = foldang[i];
-                if (inner_edge_assignment[i] != 'T')
+                if (InnerEdgeAssignment[i] != 'T')
                 {
                     if (ang < 0)
                     {
@@ -845,7 +774,7 @@ namespace Crane.Core
         {
             List<Line> lines = new List<Line>();
             var varts = Mesh.Vertices.ToPoint3dArray();
-            foreach (var pair in mountain_edges)
+            foreach (var pair in MountainEdges)
             {
                 var ptI = varts[pair.I];
                 var ptJ = varts[pair.J];
@@ -858,7 +787,7 @@ namespace Crane.Core
         {
             List<Line> lines = new List<Line>();
             var varts = Mesh.Vertices.ToPoint3dArray();
-            foreach (var pair in valley_edges)
+            foreach (var pair in ValleyEdges)
             {
                 var ptI = varts[pair.I];
                 var ptJ = varts[pair.J];
@@ -868,11 +797,24 @@ namespace Crane.Core
             return lines;
         }
 
+        public List<Line> GetInnerEdgeLines()
+        {
+            List<Line> lines = new List<Line>();
+            var varts = Mesh.Vertices.ToPoint3dArray();
+            foreach (var pair in InnerEdges)
+            {
+                var ptI = varts[pair.I];
+                var ptJ = varts[pair.J];
+                lines.Add(new Line(ptI, ptJ));
+            }
+
+            return lines;
+        }
         public List<Line> GetTraiangulatedEdgeLines()
         {
             List<Line> lines = new List<Line>();
             var varts = Mesh.Vertices.ToPoint3dArray();
-            foreach (var pair in triangulated_edges)
+            foreach (var pair in TriangulatedEdges)
             {
                 var ptI = varts[pair.I];
                 var ptJ = varts[pair.J];
@@ -990,17 +932,19 @@ namespace Crane.Core
                 ConnectedTopologyEdgesList.Add(connectedTopologyEdges);
             }
         }
-        public int GetInnerEdgeIndex(Line line, double threshold)
+        public int GetInnerEdgeIndex(Line line)
         {
-            int id = -1;
-            for(int i = 0; i < inner_edges.Count; i++)
+            int from = VerticesCloud.ClosestPoint(line.From);
+            int to = VerticesCloud.ClosestPoint(line.To);
+            int id = Mesh.TopologyEdges.GetEdgeIndex(from, to);
+            if (EdgeIds2InnerEdgeIds.ContainsKey(id))
             {
-                var pair = inner_edges[i];
-                var pt1 = Mesh.Vertices[pair.I];
-                var pt2 = Mesh.Vertices[pair.J];
-                if (Utils.PointsMatchLineEnds(line, pt1, pt2, threshold)) id = i;
+                return EdgeIds2InnerEdgeIds[id];
             }
-            return id;
+            else
+            {
+                return -1;
+            }
         }
         public int GetEdgeIndex(Line line, double threshold)
         {
@@ -1012,6 +956,15 @@ namespace Crane.Core
                 var pt2 = Mesh.Vertices[pair.J];
                 if (Utils.PointsMatchLineEnds(line, pt1, pt2, threshold)) id = i;
             }
+            return id;
+        }
+
+        public int GetEdgeIndex(Line line)
+        {
+            int id = -1;
+            int from = VerticesCloud.ClosestPoint(line.From);
+            int to = VerticesCloud.ClosestPoint(line.To);
+            id = Mesh.TopologyEdges.GetEdgeIndex(from, to);
             return id;
         }
         public void UpdateMesh(Vector<double> ptsVector)
@@ -1041,7 +994,6 @@ namespace Crane.Core
                     this.Mesh.Vertices.Add(this.MeshVerticesVector[3 * i], this.MeshVerticesVector[3 * i + 1], this.MeshVerticesVector[3 * i + 2]);
                 }
             }
-            this.Mesh.Compact();
             this.Mesh.FaceNormals.ComputeFaceNormals();
             this.Mesh.Normals.ComputeNormals();
         }
@@ -1052,8 +1004,6 @@ namespace Crane.Core
             {
                 this.Mesh.Vertices.Add(verts[i]);
             }
-
-            Mesh.Compact();
             Mesh.FaceNormals.ComputeFaceNormals();
             Mesh.Normals.ComputeNormals();
         }
@@ -1079,13 +1029,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.inner_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.InnerEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.inner_edges[e_ind];
+                IndexPair edge_ind = this.InnerEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.face_pairs[e_ind];
+                IndexPair face_ind = this.FacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -1122,8 +1072,8 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.face_height_pairs = face_heignt_pairs;
-            this.length_of_diagonal_edges = edge_length_between_face_pairs;
+            this.FaceHeightPairs = face_heignt_pairs;
+            this.LengthOfDiagonalEdges = edge_length_between_face_pairs;
         }
         private void UpdateTriangulatedFacePairBasicInfo()
         {
@@ -1136,13 +1086,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.triangulated_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.TriangulatedEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.triangulated_edges[e_ind];
+                IndexPair edge_ind = this.TriangulatedEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.triangulated_face_pairs[e_ind];
+                IndexPair face_ind = this.TriangulatedFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -1179,8 +1129,8 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.triangulated_face_height_pairs = face_heignt_pairs;
-            this.length_of_triangulated_diagonal_edges = edge_length_between_face_pairs;
+            this.TriangulatedFaceHeightPairs = face_heignt_pairs;
+            this.LengthOfTriangulatedDiagonalEdges = edge_length_between_face_pairs;
         }
         private void UpdateMountainFacePairBasicInfo()
         {
@@ -1193,13 +1143,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.mountain_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.MountainEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.mountain_edges[e_ind];
+                IndexPair edge_ind = this.MountainEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.mountain_face_pairs[e_ind];
+                IndexPair face_ind = this.MountainFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -1236,8 +1186,8 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.mountain_face_height_pairs = face_heignt_pairs;
-            this.length_of_mountain_diagonal_edges = edge_length_between_face_pairs;
+            this.MountainFaceHeightPairs = face_heignt_pairs;
+            this.LengthOfMountainDiagonalEdges = edge_length_between_face_pairs;
         }
         private void UpdateValleyFacePairBasicInfo()
         {
@@ -1250,13 +1200,13 @@ namespace Crane.Core
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < this.valley_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.ValleyEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = this.valley_edges[e_ind];
+                IndexPair edge_ind = this.ValleyEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.valley_face_pairs[e_ind];
+                IndexPair face_ind = this.ValleyFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -1293,16 +1243,24 @@ namespace Crane.Core
                 face_heignt_pairs.Add(face_height_pair);
                 edge_length_between_face_pairs.Add(len_uv);
             }
-            this.valley_face_height_pairs = face_heignt_pairs;
-            this.length_of_valley_diagonal_edges = edge_length_between_face_pairs;
+            this.ValleyFaceHeightPairs = face_heignt_pairs;
+            this.LengthOfValleyDiagonalEdges = edge_length_between_face_pairs;
         }
 
+        public void UpdateVerticesCloud()
+        {
+            VerticesCloud = new PointCloud(Mesh.Vertices.ToPoint3dArray());
+        }
+        public void SetFoldingSpeed(double[] foldingSpeed)
+        {
+            FoldingSpeed = foldingSpeed.ToArray();
+        }
         private void SetNgon()
         {
             Dictionary<int, int> faceId2NgonId = new Dictionary<int, int>();
 
             int nowNgonCount = 0;
-            foreach (var tri in triangulated_face_pairs)
+            foreach (var tri in TriangulatedFacePairs)
             {
                 int i = tri.I;
                 int j = tri.J;

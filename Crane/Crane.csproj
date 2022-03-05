@@ -89,6 +89,7 @@
     <Compile Include="Components\Constraints\EqualEdgeLengthComponent.cs" />
     <Compile Include="Components\Constraints\FixEdgeLengthComponent.cs" />
     <Compile Include="Components\Constraints\FixFoldAngleComponent.cs" />
+    <Compile Include="Components\Constraints\FixFoldingAnglePlasticComponent.cs" />
     <Compile Include="Components\Constraints\FlatFoldableComponent.cs" />
     <Compile Include="Components\Constraints\GlueVertexToEdgeComponent.cs" />
     <Compile Include="Components\Constraints\GlueVerticesComponent.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Components\Constraints\RigidEdgeComponent.cs" />
     <Compile Include="Components\Constraints\SetMaxFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\ValleyOnlyFlatFoldableComponent.cs" />
+    <Compile Include="Components\FabTools\OffsetInkjet4D.cs" />
     <Compile Include="Components\FabTools\OffsetThickPanel.cs" />
     <Compile Include="Components\Inputs\CMeshFromFoldFormat.cs" />
     <Compile Include="Components\Inputs\CMeshFromLines.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="Components\Util\MapDev2Fold.cs" />
     <Compile Include="Components\Util\WriteFoldFormat.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
+    <Compile Include="Constraints\PlasticMoment.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
     <Compile Include="Core\FabMesh.cs" />

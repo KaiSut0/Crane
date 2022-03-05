@@ -28,10 +28,7 @@ namespace Crane.Components.Constraints
             pManager.AddLineParameter("FirstLine", "FirstLine", "The first lines for detecting the edge.", GH_ParamAccess.list);
             pManager.AddLineParameter("SecondLine", "SecondLine", "The second lines for detecting the edge.", GH_ParamAccess.list);
             pManager.AddNumberParameter("LengthRatio", "LengthRatio", "The length ratio between first and second edges.", GH_ParamAccess.list, 1.0);
-            pManager.AddNumberParameter("Tolerance", "Tolerance", "The tolerance for detecting the edge from given line.", GH_ParamAccess.item, 1e-3);
             pManager[3].Optional = true;
-            pManager[4].Optional = true;
-
         }
 
         /// <summary>
@@ -52,16 +49,14 @@ namespace Crane.Components.Constraints
             List<Line> firstEdges = new List<Line>();
             List<Line> secondEdges = new List<Line>();
             List<double> lengthRatios = new List<double>();
-            double tolerance = 1e-3;
 
             DA.GetData(0, ref cMesh);
             DA.GetDataList(1, firstEdges);
             DA.GetDataList(2, secondEdges);
             DA.GetDataList(3, lengthRatios);
-            DA.GetData(4, ref tolerance);
 
             var constraint = new EqualEdgeLength(cMesh, firstEdges.ToArray(), secondEdges.ToArray(),
-                lengthRatios.ToArray(), tolerance);
+                lengthRatios.ToArray());
 
             DA.SetData(0, constraint);
 

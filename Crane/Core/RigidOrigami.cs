@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Crane.Constraints;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -144,7 +145,7 @@ namespace Crane.Core
         }
         protected SparseMatrix ComputeFoldAngleJacobian()
         {
-            int rows = this.CMesh.inner_edges.Count;
+            int rows = this.CMesh.InnerEdges.Count;
             int columns = this.CMesh.DOF;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
@@ -152,13 +153,13 @@ namespace Crane.Core
 
             MeshVertexList vert = this.CMesh.Mesh.Vertices;
 
-            for (int e_ind = 0; e_ind < this.CMesh.inner_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < this.CMesh.InnerEdges.Count; e_ind++)
             {
                 /// Register indices
-                IndexPair edge_ind = this.CMesh.inner_edges[e_ind];
+                IndexPair edge_ind = this.CMesh.InnerEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = this.CMesh.face_pairs[e_ind];
+                IndexPair face_ind = this.CMesh.FacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -292,15 +293,15 @@ namespace Crane.Core
             Vector<double> dv;
             List<double> foldang = new List<double>();
             foldang = this.CMesh.GetFoldAngles();
-            double[] driving_force = new double[this.CMesh.inner_edge_assignment.Count];
+            double[] driving_force = new double[this.CMesh.InnerEdgeAssignment.Count];
 
-            for (int i = 0; i < this.CMesh.inner_edge_assignment.Count; i++)
+            for (int i = 0; i < this.CMesh.InnerEdgeAssignment.Count; i++)
             {
-                if (this.CMesh.inner_edge_assignment[i] == 'V')
+                if (this.CMesh.InnerEdgeAssignment[i] == 'V')
                 {
                     driving_force[i] = (double)(-foldspeed * Math.Cos(foldang[i] / 2));
                 }
-                else if (this.CMesh.inner_edge_assignment[i] == 'M')
+                else if (this.CMesh.InnerEdgeAssignment[i] == 'M')
                 {
                     driving_force[i] = (double)(foldspeed * Math.Cos(foldang[i] / 2));
                 }
@@ -318,15 +319,15 @@ namespace Crane.Core
             Vector<double> dv;
             List<double> foldang = new List<double>();
             foldang = this.CMesh.GetFoldAngles();
-            double[] driving_force = new double[this.CMesh.inner_edge_assignment.Count];
+            double[] driving_force = new double[this.CMesh.InnerEdgeAssignment.Count];
 
-            for (int i = 0; i < this.CMesh.inner_edge_assignment.Count; i++)
+            for (int i = 0; i < this.CMesh.InnerEdgeAssignment.Count; i++)
             {
-                if (this.CMesh.inner_edge_assignment[i] == 'V')
+                if (this.CMesh.InnerEdgeAssignment[i] == 'V')
                 {
                     driving_force[i] = (double)(foldspeed * Math.Cos(0.5*(Math.PI - Math.Abs(foldang[i]))));
                 }
-                else if (this.CMesh.inner_edge_assignment[i] == 'M')
+                else if (this.CMesh.InnerEdgeAssignment[i] == 'M')
                 {
                     driving_force[i] = (double)(-foldspeed * Math.Cos(0.5*(Math.PI - Math.Abs(foldang[i]))));
                 }
@@ -344,7 +345,7 @@ namespace Crane.Core
             SparseMatrix foldJacobian = ComputeFoldAngleJacobian();
             ComputeJacobian();
             SparseMatrix A = ComputeFoldMotionMatrix(foldJacobian, Jacobian, 10);
-            Vector<double> drivingForce = Vector<double>.Build.Dense(CMesh.inner_edge_assignment.Count);
+            Vector<double> drivingForce = Vector<double>.Build.Dense(CMesh.InnerEdgeAssignment.Count);
             if (UnFold)
             {
                 drivingForce = ComputeInitialFoldAngleVectorForUnFold(foldSpeed);
@@ -547,8 +548,8 @@ namespace Crane.Core
             Vector<double> constrainedMoveVector = Vector<double>.Build.Dense(3 * CMesh.Mesh.Vertices.Count);
             if(initialMoveVector.L2Norm() != 0)
             {
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, iterationMaxCGNR);
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, iterationMaxCGNR, ref cgnrComp);
+                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
+                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
             }
@@ -560,14 +561,21 @@ namespace Crane.Core
             double nrComp = 0;
             var nrSw = new System.Diagnostics.Stopwatch();
             nrSw.Start();
+            var foldAngles = Vector<double>.Build.Dense(CMesh.GetFoldAngles().ToArray());
+            var nowFoldAngles = Vector<double>.Build.Dense(foldAngles.Count);
             while(iteration < iterationMaxNewtonMethod && Residual > threshold)
             {
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
                 //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Jacobian.ColumnCount, Jacobian.RowCount), ref cgnrComp);
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, iterationMaxCGNR, ref cgnrComp);
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual/100, iterationMaxCGNR);
+                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
+                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
+
+                nowFoldAngles = Vector<double>.Build.Dense(CMesh.GetFoldAngles().ToArray());
+                CMesh.SetFoldingSpeed((nowFoldAngles - foldAngles).ToArray());
+                foldAngles = 1.0 * nowFoldAngles;
+
                 iteration++;
             }
             nrSw.Stop();

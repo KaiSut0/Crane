@@ -27,18 +27,18 @@ namespace Crane.Constraints
 
             MeshVertexList vert = m.Vertices;
 
-            if (cm.mountain_edges == null)
+            if (cm.MountainEdges == null)
             {
                 return null;
             }
 
-            for (int e_ind = 0; e_ind < cm.mountain_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < cm.MountainEdges.Count; e_ind++)
             {
                 /// Register indices
-                IndexPair edge_ind = cm.mountain_edges[e_ind];
+                IndexPair edge_ind = cm.MountainEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cm.mountain_face_pairs[e_ind];
+                IndexPair face_ind = cm.MountainFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -47,9 +47,9 @@ namespace Crane.Constraints
                 int p = 0;
                 int q = 0;
 
-                double h_P_initial = cm.mountain_face_height_pairs[e_ind].Item1;
-                double h_Q_initial = cm.mountain_face_height_pairs[e_ind].Item2;
-                double len_e = cm.length_of_mountain_diagonal_edges[e_ind];
+                double h_P_initial = cm.MountainFaceHeightPairs[e_ind].Item1;
+                double h_Q_initial = cm.MountainFaceHeightPairs[e_ind].Item2;
+                double len_e = cm.LengthOfMountainDiagonalEdges[e_ind];
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -161,13 +161,13 @@ namespace Crane.Constraints
 
             MeshVertexList vert = m.Vertices;
 
-            for (int e_ind = 0; e_ind < cm.mountain_edges.Count; e_ind++)
+            for (int e_ind = 0; e_ind < cm.MountainEdges.Count; e_ind++)
             {
                 // Register indices
-                IndexPair edge_ind = cm.mountain_edges[e_ind];
+                IndexPair edge_ind = cm.MountainEdges[e_ind];
                 int u = edge_ind.I;
                 int v = edge_ind.J;
-                IndexPair face_ind = cm.mountain_face_pairs[e_ind];
+                IndexPair face_ind = cm.MountainFacePairs[e_ind];
                 int P = face_ind.I;
                 int Q = face_ind.J;
 
@@ -176,9 +176,9 @@ namespace Crane.Constraints
                 int p = 0;
                 int q = 0;
 
-                double h_P_initial = cm.mountain_face_height_pairs[e_ind].Item1;
-                double h_Q_initial = cm.mountain_face_height_pairs[e_ind].Item2;
-                double len_e = cm.length_of_mountain_diagonal_edges[e_ind];
+                double h_P_initial = cm.MountainFaceHeightPairs[e_ind].Item1;
+                double h_Q_initial = cm.MountainFaceHeightPairs[e_ind].Item2;
+                double len_e = cm.LengthOfMountainDiagonalEdges[e_ind];
 
                 for (int i = 0; i < 3; i++)
                 {

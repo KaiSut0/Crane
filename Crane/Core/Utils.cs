@@ -328,13 +328,6 @@ namespace Crane.Core
             return pcld.ClosestPoint(pt);
         }
 
-        public static int[] EdgeIds2InnerEdgeIds(CMesh cMesh, int[] edgeIds)
-        {
-            throw new NotImplementedException();
-            int n = edgeIds.Length;
-            int[] innerEdgeIds = new int[n];
-            return innerEdgeIds;
-        }
         public static bool PointsMatchLineEnds(Line line, Point3d pt1, Point3d pt2, double threshold)
         {
             bool match = false;

@@ -11,9 +11,9 @@ namespace Crane.Constraints
 {
     public class FixEdgeLength : Constraint
     {
-        public FixEdgeLength(CMesh cMesh, Line[] edges, double[] edgeLengths, double tolerance)
+        public FixEdgeLength(CMesh cMesh, Line[] edges, double[] edgeLengths)
         {
-            this.edgeIds = edges.Select(e => cMesh.GetEdgeIndex(e, tolerance)).ToArray();
+            this.edgeIds = edges.Select(e => cMesh.GetEdgeIndex(e)).ToArray();
             this.edgeLengths = edgeLengths;
             this.numEdges = edgeIds.Length;
             averageEdgeLength = edgeLengths.Average();

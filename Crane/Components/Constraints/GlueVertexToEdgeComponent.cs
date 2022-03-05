@@ -27,9 +27,8 @@ namespace Crane.Components.Constraints
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
             pManager.AddPointParameter("Vertex", "Vertex", "Vertex glue to edge.", GH_ParamAccess.item);
             pManager.AddLineParameter("Edge", "Edge", "Edge glue to edge.", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Tolerance", "Tolerance", "Tolerance to detect the vertex and edge indices of the mesh.", GH_ParamAccess.item, 1e-3);
 
-            pManager[3].Optional = true;
+            //pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace Crane.Components.Constraints
             DA.GetData(2, ref edge);
             DA.GetData(3, ref threshold);
 
-            var constraint = new GlueVertexToEdge(cMesh, vertex, edge, threshold);
+            var constraint = new GlueVertexToEdge(cMesh, vertex, edge);
 
             DA.SetData(0, constraint);
         }

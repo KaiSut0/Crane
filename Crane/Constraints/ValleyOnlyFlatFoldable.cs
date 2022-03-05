@@ -70,7 +70,7 @@ namespace Crane.Constraints
                     {
                         signs.Add(1);
                     }
-                    else if (cMesh.edgeInfo[connected_edges[i]] != 'T' & cMesh.edgeInfo[connected_edges[i]] != 'U' & cMesh.edgeInfo[connected_edges[i]] != 'M')
+                    else if (cMesh.EdgeInfo[connected_edges[i]] != 'T' & cMesh.EdgeInfo[connected_edges[i]] != 'U' & cMesh.EdgeInfo[connected_edges[i]] != 'M')
                     {
                         signs.Add(-signs[i]);
                     }
@@ -190,12 +190,12 @@ namespace Crane.Constraints
                 List<double> signs = new List<double>();
                 for (int i = -1; i < n - 1; i++)
                 {
-                    char edgeInfo = cMesh.edgeInfo[connected_edges[(n + i) % n]];
+                    char edgeInfo = cMesh.EdgeInfo[connected_edges[(n + i) % n]];
                     if (i == -1)
                     {
                         signs.Add(1);
                     }
-                    else if (cMesh.edgeInfo[connected_edges[i]] != 'T' & cMesh.edgeInfo[connected_edges[i]] != 'U' & cMesh.edgeInfo[connected_edges[i]] != 'M')
+                    else if (cMesh.EdgeInfo[connected_edges[i]] != 'T' & cMesh.EdgeInfo[connected_edges[i]] != 'U' & cMesh.EdgeInfo[connected_edges[i]] != 'M')
                     {
                         signs.Add(-signs[i]);
                     }

@@ -13,10 +13,10 @@ namespace Crane.Constraints
 {
     public class EqualEdgeLength : Constraint
     {
-        public EqualEdgeLength(CMesh cMesh, Line[] firstEdges, Line[] secondEdges, double[] lengthRatios, double tolerance)
+        public EqualEdgeLength(CMesh cMesh, Line[] firstEdges, Line[] secondEdges, double[] lengthRatios)
         { 
-            firstEdgeIds = firstEdges.Select(e => cMesh.GetEdgeIndex(e, tolerance)).ToArray(); 
-            secondEdgeIds = secondEdges.Select(e => cMesh.GetEdgeIndex(e, tolerance)).ToArray();
+            firstEdgeIds = firstEdges.Select(e => cMesh.GetEdgeIndex(e)).ToArray(); 
+            secondEdgeIds = secondEdges.Select(e => cMesh.GetEdgeIndex(e)).ToArray();
             if (firstEdgeIds.Length != secondEdgeIds.Length)
                 throw new Exception("The number of first edges is different to the number of second edges.");
             numEdgePairs = firstEdgeIds.Length;
