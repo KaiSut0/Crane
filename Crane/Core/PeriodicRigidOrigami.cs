@@ -34,7 +34,7 @@ namespace Crane.Core
             {
                 errorList.AddRange(EdgeLength.Error(this.CMesh).ToList());
             }
-            if (IsQuadFlatMode)
+            if (IsPanelFlatMode)
             {
                 errorList.AddRange(FlatPanel.Error(this.CMesh).ToList());
             }
@@ -64,7 +64,7 @@ namespace Crane.Core
             {
                 Jacobian = (SparseMatrix)Jacobian.Stack(EdgeLength.Jacobian(this.CMesh));
             }
-            if (IsQuadFlatMode)
+            if (IsPanelFlatMode)
             {
                 Jacobian = (SparseMatrix)Jacobian.Stack(FlatPanel.Jacobian(this.CMesh));
             }

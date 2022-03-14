@@ -30,7 +30,7 @@ namespace Crane.Core
             this.Fold = false;
             this.UnFold = false;
             this.IsRigidMode = rigidOrigami.IsRigidMode;
-            this.IsQuadFlatMode = rigidOrigami.IsQuadFlatMode;
+            this.IsPanelFlatMode = rigidOrigami.IsPanelFlatMode;
             this.IsFoldBlockMode = rigidOrigami.IsFoldBlockMode;
             this.IsConstraintMode = rigidOrigami.IsConstraintMode;
             this.IsRecordMode = false;
@@ -47,7 +47,7 @@ namespace Crane.Core
             this.Fold = false;
             this.UnFold = false;
             this.IsRigidMode = false;
-            this.IsQuadFlatMode = false;
+            this.IsPanelFlatMode = false;
             this.IsFoldBlockMode = false;
             this.IsConstraintMode = false;
             this.IsRecordMode = false;
@@ -62,7 +62,7 @@ namespace Crane.Core
         public bool Fold { get; set; }
         public bool UnFold { get; set; }
         public bool IsRigidMode { get; set; }
-        public bool IsQuadFlatMode { get; set; }
+        public bool IsPanelFlatMode { get; set; }
         public bool IsFoldBlockMode { get; set; }
         public bool IsConstraintMode { get; set; }
         public bool IsRecordMode { get; set; }
@@ -92,7 +92,7 @@ namespace Crane.Core
             {
                 errorList.AddRange(EdgeLength.Error(this.CMesh).ToList());
             }
-            if (IsQuadFlatMode)
+            if (IsPanelFlatMode)
             {
                 errorList.AddRange(FlatPanel.Error(this.CMesh).ToList());
             }
@@ -122,7 +122,7 @@ namespace Crane.Core
             {
                 Jacobian =(SparseMatrix) Jacobian.Stack(EdgeLength.Jacobian(this.CMesh));
             }
-            if (IsQuadFlatMode)
+            if (IsPanelFlatMode)
             {
                 Jacobian =(SparseMatrix) Jacobian.Stack(FlatPanel.Jacobian(this.CMesh));
             }
@@ -588,6 +588,14 @@ namespace Crane.Core
                 this.RecordedMeshPoints.Add(this.CMesh.MeshVerticesVector);
             }
             return Residual;
+        }
+
+        public void SaveMode(bool isRigidMode, bool isPanelFlatMode, bool isFoldBlockMode, bool isConstraintMode)
+        {
+            IsRigidMode = isRigidMode;
+            IsPanelFlatMode = isPanelFlatMode;
+            IsFoldBlockMode = isFoldBlockMode;
+            IsConstraintMode = isConstraintMode;
         }
     }
 }

@@ -148,6 +148,7 @@ namespace Crane.Components.Solver
             }
             if (this.IsReset)
             {
+                rigidOrigamiSI.SaveMode(rigidOrigami.IsRigidMode, rigidOrigami.IsPanelFlatMode, rigidOrigami.IsFoldBlockMode, rigidOrigami.IsConstraintMode);
                 rigidOrigami = new RigidOrigami(rigidOrigamiSI);
             }
 
@@ -514,7 +515,7 @@ namespace Crane.Components.Solver
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
-            if (comp.rigidOrigami.IsQuadFlatMode)
+            if (comp.rigidOrigami.IsPanelFlatMode)
             {
                 GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds6, ButtonBounds6, GH_Palette.Black, "Flat Panel Mode: On", 2, 0);
                 button.Render(graphics, Selected, Owner.Locked, false);
@@ -636,14 +637,14 @@ namespace Crane.Components.Solver
                 RectangleF rec6 = ButtonBounds6;
                 if (rec6.Contains(e.CanvasLocation))
                 {
-                    if (comp.rigidOrigami.IsQuadFlatMode)
+                    if (comp.rigidOrigami.IsPanelFlatMode)
                     {
-                        comp.rigidOrigami.IsQuadFlatMode = false;
+                        comp.rigidOrigami.IsPanelFlatMode = false;
                         comp.ExpireSolution(true);
                     }
-                    else if (!comp.rigidOrigami.IsQuadFlatMode)
+                    else if (!comp.rigidOrigami.IsPanelFlatMode)
                     {
-                        comp.rigidOrigami.IsQuadFlatMode = true;
+                        comp.rigidOrigami.IsPanelFlatMode = true;
                         comp.ExpireSolution(true);
                     }
 
