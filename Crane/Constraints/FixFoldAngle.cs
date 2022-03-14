@@ -27,8 +27,8 @@ namespace Crane.Constraints
             Mesh mesh = cMesh.Mesh;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            mesh.FaceNormals.ComputeFaceNormals();
-
+            //mesh.FaceNormals.ComputeFaceNormals();
+            
             MeshVertexList vert = mesh.Vertices;
 
             var foldAngles = cMesh.GetFoldAngles();
@@ -168,7 +168,7 @@ namespace Crane.Constraints
             int columns = cMesh.DOF;
             Mesh mesh = cMesh.Mesh;
 
-            mesh.FaceNormals.ComputeFaceNormals();
+            //mesh.FaceNormals.ComputeFaceNormals();
 
 
             var foldAngles = cMesh.GetFoldAngles();

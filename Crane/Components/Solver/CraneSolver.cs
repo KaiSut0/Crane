@@ -11,13 +11,9 @@ using Grasshopper.GUI.Canvas;
 
 using Rhino;
 using Rhino.Geometry;
-using Rhino.Geometry.Collections;
 
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
-using Crane.Components.Inputs;
 using Crane.Core;
-using Rhino.DocObjects.Custom;
 
 
 // In order to load the result of this wizard, you will also need to
@@ -49,8 +45,8 @@ namespace Crane.Components.Solver
         public double residual = 0;
 
         public CraneSolver()
-          : base("Crane Solver", "Solver",
-              "Solver for a rigid folding simulation and a form finding.",
+          : base("Crane Interactive Solver", "Interactive Solver",
+              "Interactive solver for a rigid folding simulation and a form finding.",
               "Crane", "Solver")
         {
             rigidOrigami = new RigidOrigami();
@@ -80,7 +76,7 @@ namespace Crane.Components.Solver
             pManager.AddGenericParameter("CMesh", "CMesh", "Input the CMesh.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Constraints", "Constraints", "Input the constraints", GH_ParamAccess.list);
             pManager.AddNumberParameter("Fold Speed", "Fold Speed", "Input the parameter about folding speed between 0.0 - 1.0. Default is 0.3.", GH_ParamAccess.item, 0.3);
-            pManager.AddIntegerParameter("NR Iteration", "NR Iteration", "Each iteration of Newton method.", GH_ParamAccess.item, 10);
+            pManager.AddIntegerParameter("NR Iteration", "NR Iteration", "Each iteration of Newton method.", GH_ParamAccess.item, 3);
             pManager.AddIntegerParameter("CGNR Iteration", "CGNR Iteration", "Each iteration of CGNR method for solving linear equation.", GH_ParamAccess.item, 100);
             pManager.AddNumberParameter("Threshold", "Threshold", "Threshold", GH_ParamAccess.item, 1e-13);
             
@@ -122,16 +118,16 @@ namespace Crane.Components.Solver
             CMesh cMesh = new CMesh();
             List<Constraint> constraints = new List<Constraint>();
             double foldSpeed = 1.0;
-            int rigidity = 10;
-            int iterationMaxCGNR = 100;
-            double threshold = 1e-14;
+            int nrIteration = 3;
+            int cgnrIteration = 100;
+            double threshold = 1e-13;
             List<int> grabIds = new List<int>();
 
             if(!DA.GetData(0, ref cMesh)) { return; }
             DA.GetDataList(1, constraints);
             DA.GetData(2, ref foldSpeed);
-            DA.GetData(3, ref rigidity);
-            DA.GetData(4, ref iterationMaxCGNR);
+            DA.GetData(3, ref nrIteration);
+            DA.GetData(4, ref cgnrIteration);
             DA.GetData(5, ref threshold);
 
 
@@ -176,7 +172,7 @@ namespace Crane.Components.Solver
                 Vector<double> moveVector = Vector<double>.Build.Sparse(rigidOrigami.CMesh.DOF);
                 if (isfold)
                 {
-                    moveVector += rigidOrigami.ComputeFoldMotion(foldSpeed, iterationMaxCGNR);
+                    moveVector += rigidOrigami.ComputeFoldMotion(foldSpeed, cgnrIteration);
                 }
                 if (isgrab)
                 {
@@ -198,11 +194,11 @@ namespace Crane.Components.Solver
                 }
                 if (rigidOrigami.IsRigidMode && iscompute)
                 {
-                    residual = rigidOrigami.NRSolve(-moveVector, threshold, rigidity, iterationMaxCGNR);
+                    residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
                 }
                 else if(rigidOrigami.Constraints.Count != 0 && rigidOrigami.IsConstraintMode || iscompute)
                 {
-                    residual = rigidOrigami.NRSolve(-moveVector, threshold, rigidity, iterationMaxCGNR);
+                    residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
                 }
                 else
                 {
@@ -262,9 +258,10 @@ namespace Crane.Components.Solver
             double radius = rigidOrigami.CMesh.WholeScale / 10;
             List<Vector3d> grabForces = new List<Vector3d>();
             var doc = RhinoDoc.ActiveDoc;
-            var p1 = Cursor.Position;
-            var p2 = doc.Views.ActiveView.ScreenToClient(p1);
-            var l = doc.Views.ActiveView.ActiveViewport.ClientToWorld(p2);
+            var pt = Rhino.UI.MouseCursor.Location;
+            var screenPt = new System.Drawing.Point((int)pt.X, (int)pt.Y);
+            var clientPt = doc.Views.ActiveView.ScreenToClient(screenPt);
+            var l = doc.Views.ActiveView.ActiveViewport.ClientToWorld(clientPt);
             var dir = doc.Views.ActiveView.ActiveViewport.CameraDirection;
             Plane pl = new Plane(new Point3d(0, 0, 0), dir);
             double t;

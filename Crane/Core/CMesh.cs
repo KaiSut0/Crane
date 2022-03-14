@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text.Json;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -744,6 +745,37 @@ namespace Crane.Core
                     id = i;
             }
             return id;
+        }
+
+        public int GetVertexId(Point3d vert)
+        {
+            int id = VerticesCloud.ClosestPoint(vert);
+            return id;
+        }
+
+        public int GetFaceIdFrom3Pts(Point3d pt1, Point3d pt2, Point3d pt3)
+        {
+            int id1 = GetVertexId(pt1);
+            int id2 = GetVertexId(pt2);
+            int id3 = GetVertexId(pt3);
+            int[] fpt1 = Mesh.TopologyVertices.ConnectedFaces(id1);
+            int[] fpt2 = Mesh.TopologyVertices.ConnectedFaces(id2);
+            int[] fpt3 = Mesh.TopologyVertices.ConnectedFaces(id3);
+            var fpt12 = fpt1.Intersect(fpt2);
+            var fpt123 = fpt12.Intersect(fpt3);
+            if (fpt123.Count() == 1) return fpt123.First();
+            else throw new Exception("Face id Could not be found.");
+        }
+
+        public int GetFaceIdFrom3PtIds(int id1, int id2, int id3)
+        {
+            int[] fpt1 = Mesh.TopologyVertices.ConnectedFaces(id1);
+            int[] fpt2 = Mesh.TopologyVertices.ConnectedFaces(id2);
+            int[] fpt3 = Mesh.TopologyVertices.ConnectedFaces(id3);
+            var fpt12 = fpt1.Intersect(fpt2);
+            var fpt123 = fpt12.Intersect(fpt3);
+            if (fpt123.Count() == 1) return fpt123.First();
+            else throw new Exception("Face id Could not be found.");
         }
 
         public Tuple<List<Line>, List<Line>> GetAutomaticallyAssignedMVLines()

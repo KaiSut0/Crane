@@ -90,6 +90,7 @@
     <Compile Include="Components\Constraints\FixEdgeLengthComponent.cs" />
     <Compile Include="Components\Constraints\FixFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\FixFoldingAnglePlasticComponent.cs" />
+    <Compile Include="Components\Constraints\FixSectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\FlatFoldableComponent.cs" />
     <Compile Include="Components\Constraints\GlueVertexToEdgeComponent.cs" />
     <Compile Include="Components\Constraints\GlueVerticesComponent.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\YoshimuraPatternOnSurfaceComponent.cs" />
     <Compile Include="Components\Solver\CraneSolver.cs" />
+    <Compile Include="Components\Solver\CraneStaticSolver.cs" />
     <Compile Include="Components\Solver\SolutionSpaceDOF.cs" />
     <Compile Include="Components\Util\AutoAssignMVLines.cs" />
     <Compile Include="Components\Util\DevelopCMesh.cs" />

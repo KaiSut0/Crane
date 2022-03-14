@@ -453,5 +453,10 @@ namespace Crane.Core
             }
 
         }
+
+        public static double ComputeAngleFrom3Pts(Point3d left, Point3d center, Point3d right)
+        {
+            return Vector3d.VectorAngle(left - center, right - center);
+        }
     }
 }
