@@ -89,7 +89,7 @@
     <Compile Include="Components\Constraints\EqualEdgeLengthComponent.cs" />
     <Compile Include="Components\Constraints\FixEdgeLengthComponent.cs" />
     <Compile Include="Components\Constraints\FixFoldAngleComponent.cs" />
-    <Compile Include="Components\Constraints\FixFoldingAnglePlasticComponent.cs" />
+    <Compile Include="Components\Constraints\FixFoldAnglePlasticComponent.cs" />
     <Compile Include="Components\Constraints\FixSectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\FlatFoldableComponent.cs" />
     <Compile Include="Components\Constraints\GlueVertexToEdgeComponent.cs" />

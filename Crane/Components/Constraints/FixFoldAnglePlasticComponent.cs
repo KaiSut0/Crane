@@ -7,12 +7,12 @@ using Crane.Core;
 
 namespace Crane.Components.Constraints
 {
-    public class FixFoldingAnglePlasticComponent : GH_Component
+    public class FixFoldAnglePlasticComponent : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the FixFoldingAnglePlasticComponent class.
         /// </summary>
-        public FixFoldingAnglePlasticComponent()
+        public FixFoldAnglePlasticComponent()
           : base("Fix Fold Angle Plastic", "Fix Fold Angle Plastic",
               "Set the constraint to fix the selected fold angle to the goal angle with plastic moment.",
               "Crane", "Constraints")
