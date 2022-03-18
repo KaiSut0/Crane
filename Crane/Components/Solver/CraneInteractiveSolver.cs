@@ -23,7 +23,7 @@ using Crane.Core;
 
 namespace Crane.Components.Solver
 {
-    public class CraneSolver : GH_Component
+    public class CraneInteractiveSolver : GH_Component
     {
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -44,7 +44,7 @@ namespace Crane.Components.Solver
         public Timer timer;
         public double residual = 0;
 
-        public CraneSolver()
+        public CraneInteractiveSolver()
           : base("Crane Interactive Solver", "Interactive Solver",
               "Interactive solver for a rigid folding simulation and a form finding.",
               "Crane", "Solver")
@@ -317,7 +317,7 @@ namespace Crane.Components.Solver
             {
                 // You can add image files to your project resources and access them like this:
                 //return Resources.IconForThisComponent;
-                return Properties.Resource.sol;
+                return Properties.Resource.icons_interactive_solver;
             }
         }
 
@@ -421,7 +421,7 @@ namespace Crane.Components.Solver
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
             base.Render(canvas, graphics, channel);
-            CraneSolver comp = this.Owner as CraneSolver;
+            CraneInteractiveSolver comp = this.Owner as CraneInteractiveSolver;
             if (channel == GH_CanvasChannel.Objects)
             {
                 GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds, ButtonBounds, GH_Palette.Black, "Push Button to Fold", 2, 0);
@@ -556,7 +556,7 @@ namespace Crane.Components.Solver
             // ButtonBoundsを押したときのイベント
             if (e.Button == MouseButtons.Left)
             {
-                CraneSolver comp = this.Owner as CraneSolver;
+                CraneInteractiveSolver comp = this.Owner as CraneInteractiveSolver;
                 RectangleF rec = ButtonBounds;
                 if (rec.Contains(e.CanvasLocation))
                 {
@@ -725,7 +725,7 @@ namespace Crane.Components.Solver
 
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            CraneSolver comp = this.Owner as CraneSolver;
+            CraneInteractiveSolver comp = this.Owner as CraneInteractiveSolver;
             RectangleF rec = ButtonBounds;
             if (rec.Contains(e.CanvasLocation))
             {

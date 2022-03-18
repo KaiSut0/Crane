@@ -94,6 +94,7 @@
     <Compile Include="Components\Constraints\FlatFoldableComponent.cs" />
     <Compile Include="Components\Constraints\GlueVertexToEdgeComponent.cs" />
     <Compile Include="Components\Constraints\GlueVerticesComponent.cs" />
+    <Compile Include="Components\Constraints\HoleDevelopableComponent.cs" />
     <Compile Include="Components\Constraints\MirrorSymmetryComponent.cs" />
     <Compile Include="Components\Constraints\MountainOnlyFlatFoldableComponent.cs" />
     <Compile Include="Components\Constraints\OnCurveComponent.cs" />
@@ -135,7 +136,7 @@
     <Compile Include="Components\Patterns\TwistOrigamizeComponent.cs" />
     <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\YoshimuraPatternOnSurfaceComponent.cs" />
-    <Compile Include="Components\Solver\CraneSolver.cs" />
+    <Compile Include="Components\Solver\CraneInteractiveSolver.cs" />
     <Compile Include="Components\Solver\CraneStaticSolver.cs" />
     <Compile Include="Components\Solver\SolutionSpaceDOF.cs" />
     <Compile Include="Components\Util\AutoAssignMVLines.cs" />
@@ -146,9 +147,12 @@
     <Compile Include="Components\Util\GH_CMeshParam.cs" />
     <Compile Include="Components\Util\MapDev2Fold.cs" />
     <Compile Include="Components\Util\WriteFoldFormat.cs" />
+    <Compile Include="Constraints\HoleAngleDevelopable.cs" />
+    <Compile Include="Constraints\HoleVectorDevelopable.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
     <Compile Include="Constraints\PlasticMoment.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
+    <Compile Include="Constraints\SetMinSectorAngle.cs" />
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
     <Compile Include="Core\FabMesh.cs" />
     <Compile Include="Core\FoldFormat.cs" />
@@ -248,6 +252,12 @@
     <None Include="Icons\aaaaaaa.png" />
     <None Include="Icons\aaa.png" />
     <Content Include="Icons\add_tabs.png" />
+    <None Include="Icons\ai\icons_compute_solution_space_dof.png" />
+    <None Include="Icons\ai\icons_interactive_solver.png" />
+    <None Include="Icons\ai\icons_static_solver.png" />
+    <None Include="Icons\ai\icons_miura.png" />
+    <None Include="Icons\ai\icons_waterbomb.png" />
+    <None Include="Icons\ai\icons_yoshimura.png" />
     <Content Include="Icons\anchor.png" />
     <Content Include="Icons\anchor_to_ground.png" />
     <None Include="Icons\yoshimura.png" />

@@ -39,6 +39,8 @@ namespace Crane.Core
         public List<IndexPair> DevelopmentVertexIndexPairs { get; private set; }
         public List<List<int>> ConnectedTopologyVerticesList { get; private set; }
         public List<List<int>> ConnectedTopologyEdgesList { get; private set; }
+        public List<List<int>> HoleLoopVertexIdsList { get; private set; }
+        public List<int> BoundaryLoopVertexIds { get; private set; }
         public double[] FoldingSpeed { get; private set; }
         public List<Char> EdgeInfo { get; set; }
         public MeshFaceList OriginalFaces { get; set; }
@@ -64,6 +66,7 @@ namespace Crane.Core
         public List<double> LengthOfValleyDiagonalEdges { get; set; }
         public List<double> InitialEdgesLength { get; set; }
         public Dictionary<int, int> EdgeIds2InnerEdgeIds { get; private set; }
+
 
 #endregion
 
@@ -126,6 +129,9 @@ namespace Crane.Core
 
             this.ConnectedTopologyVerticesList = cMesh.ConnectedTopologyVerticesList;
             this.ConnectedTopologyEdgesList = cMesh.ConnectedTopologyEdgesList;
+
+            this.HoleLoopVertexIdsList = cMesh.HoleLoopVertexIdsList;
+            this.BoundaryLoopVertexIds = cMesh.BoundaryLoopVertexIds;
             //this.InitialEdgesLength = new List<double>(cMesh.InitialEdgesLength.ToArray());
 
         }
@@ -164,8 +170,6 @@ namespace Crane.Core
             this.Mesh = mesh.DuplicateMesh();
             this.InitialMesh = mesh.DuplicateMesh();
             this.DOF = mesh.Vertices.Count * 3;
-            this.NumberOfVertices = mesh.Vertices.Count;
-            this.NumberOfEdges = mesh.TopologyEdges.Count;
             this.Mesh.FaceNormals.ComputeFaceNormals();
             this.OriginalFaces = mesh.Faces;
             var tri = this.InsertTriangulate();
@@ -173,6 +177,8 @@ namespace Crane.Core
 
             //this.Mesh.TopologyVertices.SortEdges();
             SetConnectedTopologyVertices();
+            this.NumberOfVertices = mesh.Vertices.Count;
+            this.NumberOfEdges = mesh.TopologyEdges.Count;
             var edges = this.Mesh.TopologyEdges;
 
             SetInnerVertexIds();
@@ -249,6 +255,7 @@ namespace Crane.Core
             this.SetMeshVerticesVector();
             this.SetConfigulationVector();
             this.SetPeriodicParameters();
+            SetNakedLoopInfo();
             ComputeInitialProperties();
             SetNgon();
             SetFoldingSpeed(new double[this.InnerEdges.Count]);
@@ -420,7 +427,7 @@ namespace Crane.Core
             }
             return trianglated_edge_info;
         }
-        public void SetMeshFundamentalInfo()
+        private void SetMeshFundamentalInfo()
         {
             InnerEdges = new List<IndexPair>();
             BoundaryEdges = new List<IndexPair>();
@@ -735,6 +742,73 @@ namespace Crane.Core
                 }
             }
         }
+
+        private void SetNakedLoopInfo()
+        {
+            var nakedPolylines = Mesh.GetNakedEdges();
+            var nakedSegmentCounts = nakedPolylines.Select(p => p.SegmentCount).ToArray();
+            int boundarySegmentCount = nakedSegmentCounts.Max();
+            int boundaryId = 0;
+            for (int i = 0; i < nakedSegmentCounts.Count(); i++)
+            {
+                if (nakedSegmentCounts[i] == boundarySegmentCount)
+                {
+                    boundaryId = i;
+                    break;
+                }
+            }
+
+            List<Polyline> holePolylines = new List<Polyline>();
+            Polyline boundaryPolyline = nakedPolylines[boundaryId];
+            for (int i = 0; i < nakedPolylines.Length; i++)
+            {
+                if (i != boundaryId)
+                {
+                    holePolylines.Add(nakedPolylines[i]);
+                }
+            }
+
+            HoleLoopVertexIdsList = new List<List<int>>();
+            BoundaryLoopVertexIds = new List<int>();
+
+            foreach (var holePolyline in holePolylines)
+            {
+                var holeLoopVertexIds = new List<int>();
+                foreach (var pt in holePolyline)
+                {
+                    holeLoopVertexIds.Add(VerticesCloud.ClosestPoint(pt));
+                }
+
+                int v0 = holeLoopVertexIds[0];
+                int v1 = holeLoopVertexIds[1];
+                var f0 = Mesh.TopologyVertices.ConnectedFaces(v0);
+                var f1 = Mesh.TopologyVertices.ConnectedFaces(v1);
+                var fId = f0.Intersect(f1).First();
+
+                if (!Utils.AlignFaceOrientation(Mesh.Faces[fId], v0, v1))
+                {
+                    holeLoopVertexIds.Reverse();
+                }
+
+                HoleLoopVertexIdsList.Add(holeLoopVertexIds);
+            }
+
+            foreach (var pt in boundaryPolyline)
+            {
+                BoundaryLoopVertexIds.Add(VerticesCloud.ClosestPoint(pt));
+            }
+
+            int bv0 = BoundaryLoopVertexIds[0];
+            int bv1 = BoundaryLoopVertexIds[1];
+            var bf0 = Mesh.TopologyVertices.ConnectedFaces(bv0);
+            var bf1 = Mesh.TopologyVertices.ConnectedFaces(bv1);
+            var bfId = bf0.Intersect(bf1).First();
+
+            if (!Utils.AlignFaceOrientation(Mesh.Faces[bfId], bv0, bv1))
+            {
+                BoundaryLoopVertexIds.Reverse();
+            }
+        }
         public int GetInnerVertexId(Point3d vert, double threshold)
         {
             int id = -1;
@@ -776,6 +850,56 @@ namespace Crane.Core
             var fpt123 = fpt12.Intersect(fpt3);
             if (fpt123.Count() == 1) return fpt123.First();
             else throw new Exception("Face id Could not be found.");
+        }
+
+        public IndexPair GetOtherVertexIdPair(int faceId, int vertId)
+        {
+            var tri = Mesh.Faces[faceId];
+            var ids = new List<int>();
+            int order = -1;
+            for(int i = 0; i < 3; i++)
+            {
+                if (tri[i] == vertId)
+                {
+                    order = i;
+                }
+            }
+
+            if (order == 0)
+            {
+                return new IndexPair(tri[2], tri[1]);
+            }
+            else if (order == 1)
+            {
+                return new IndexPair(tri[0], tri[2]);
+            }
+            else if (order == 2)
+            {
+                return new IndexPair(tri[1], tri[0]);
+            }
+            else
+            {
+                throw new Exception("Given the face id and the vertex id are invalid.");
+            }
+        }
+
+        public Vector3d[] ComputeDerivativeOfSectorAngle(int fId, int v1Id, int v2Id, int v3Id)
+        {
+            var v1 = Mesh.Vertices.Point3dAt(v1Id);
+            var v2 = Mesh.Vertices.Point3dAt(v2Id);
+            var v3 = Mesh.Vertices.Point3dAt(v3Id);
+            var sec = Utils.ComputeAngleFrom3Pts(v1, v2, v3);
+            var n = Mesh.FaceNormals[fId];
+            var v12 = v1 - v2;
+            var v32 = v3 - v2;
+            var v12SDist = v12.SquareLength;
+            var v32SDist = v32.SquareLength;
+            var nv12 = Vector3d.CrossProduct(n, v12) / v12SDist;
+            var nv32 = Vector3d.CrossProduct(n, v32) / v32SDist;
+            var DSecDv1 = nv12;
+            var DSecDv2 = -nv12 + nv32;
+            var DSecDv3 = -nv32;
+            return new Vector3d[] { DSecDv1, DSecDv2, DSecDv3 };
         }
 
         public Tuple<List<Line>, List<Line>> GetAutomaticallyAssignedMVLines()
@@ -1418,6 +1542,7 @@ namespace Crane.Core
             UpdateEdgeLengthSquared();
             SetWholeScale();
         }
+
 
         public string ToFoldFormat()
         {

@@ -458,5 +458,60 @@ namespace Crane.Core
         {
             return Vector3d.VectorAngle(left - center, right - center);
         }
+
+        public static bool AlignFaceOrientation(MeshFace face, int vertId1, int vertId2)
+        {
+            int fv1 = 0;
+            int fv2 = 0;
+            if (face.IsTriangle)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    if (face[i] == vertId1)
+                    {
+                        fv1 = i;
+                    }
+
+                    if (face[i] == vertId2)
+                    {
+                        fv2 = i;
+                    }
+                }
+
+                if (fv2 == fv1 + 1 || fv2 == fv1 - 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (face[i] == vertId1)
+                    {
+                        fv1 = i;
+                    }
+
+                    if (face[i] == vertId2)
+                    {
+                        fv2 = i;
+                    }
+                }
+
+                if (fv2 == fv1 + 1 || fv2 == fv1 - 3)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+        }
     }
 }
