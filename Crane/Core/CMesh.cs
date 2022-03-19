@@ -18,6 +18,7 @@ namespace Crane.Core
         public Mesh InitialMesh { get; private set; }
         public PointCloud VerticesCloud { get; private set; }
         public double VertexSearchTolerance { get; private set; }
+        public double AverageEdgeLength { get; private set; }
         public Vector<double> MeshVerticesVector { get; private set; }
         public Vector<double> ConfigulationVector { get; set; }
         public List<double> EdgeLengthSquared { get; set; }
@@ -96,6 +97,7 @@ namespace Crane.Core
             this.NumberOfDevelopmentFaces = cMesh.NumberOfDevelopmentFaces;
             this.NumberOfFoldingVertices = cMesh.NumberOfFoldingVertices;
             this.NumberOfFoldingFaces = cMesh.NumberOfFoldingFaces;
+            this.AverageEdgeLength = cMesh.AverageEdgeLength;
 
             this.FoldingSpeed = cMesh.FoldingSpeed;
 
@@ -1173,6 +1175,8 @@ namespace Crane.Core
                 Point3d to = this.Mesh.Vertices[indexPair.J];
                 this.EdgeLengthSquared.Add(from.DistanceToSquared(to));
             }
+
+            AverageEdgeLength = EdgeLengthSquared.Select(e => Math.Sqrt(e)).Average();
         }
         public void UpdateFacePairBasicInfo()
         {

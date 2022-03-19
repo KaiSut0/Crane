@@ -126,8 +126,8 @@ namespace Crane.Constraints
                     var der2 = derivative2[key];
                     for (int j = 0; j < 3; j++)
                     {
-                        var val1 = der1[j];
-                        var val2 = der2[j];
+                        var val1 = der1[j] / cMesh.AverageEdgeLength;
+                        var val2 = der2[j] / cMesh.AverageEdgeLength;
                         elements.Add(Tuple.Create(2*i, 3*key+j, val1));
                         elements.Add(Tuple.Create(2*i + 1, 3*key+j, val2));
                     }
@@ -172,8 +172,8 @@ namespace Crane.Constraints
                         rot += angles[j];
                     }
 
-                    vx += edgeLengths[i] * Math.Cos(rot);
-                    vy += edgeLengths[i] * Math.Sin(rot);
+                    vx += edgeLengths[i] * Math.Cos(rot) / cMesh.AverageEdgeLength;
+                    vy += edgeLengths[i] * Math.Sin(rot) / cMesh.AverageEdgeLength;
                 }
                 errors.Add(vx);
                 errors.Add(vy);
