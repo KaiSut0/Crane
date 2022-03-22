@@ -857,7 +857,6 @@ namespace Crane.Core
         public IndexPair GetOtherVertexIdPair(int faceId, int vertId)
         {
             var tri = Mesh.Faces[faceId];
-            var ids = new List<int>();
             int order = -1;
             for(int i = 0; i < 3; i++)
             {

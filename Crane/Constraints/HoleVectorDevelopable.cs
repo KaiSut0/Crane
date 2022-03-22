@@ -108,10 +108,11 @@ namespace Crane.Constraints
                             }
                         }
                     }
-                    derivativeList1.Add(derivative1);
-                    derivativeList2.Add(derivative2);
 
                 }
+                derivativeList1.Add(derivative1);
+                derivativeList2.Add(derivative2);
+
 
             }
 
@@ -167,7 +168,7 @@ namespace Crane.Constraints
                 for (int i = 0; i < hole.Count - 1; i++)
                 {
                     double rot = 0;
-                    for (int j = 0; j < i+1; j++)
+                    for (int j = 1; j < i+1; j++)
                     {
                         rot += angles[j];
                     }
