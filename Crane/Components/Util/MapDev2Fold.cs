@@ -13,7 +13,7 @@ namespace Crane.Components.Util
         public MapDev2Fold()
           : base("Map Dev2Fold", "Map Dev2Fold",
               "Map development panels to folded state.",
-              "Crane", "Utils")
+              "Crane", "Util")
         {
         }
 

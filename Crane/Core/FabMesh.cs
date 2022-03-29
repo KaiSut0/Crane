@@ -72,7 +72,7 @@ namespace Crane.Core
         /// Bottom : false
         /// </param>
         /// <returns></returns>
-        public List<Polyline> OffsetFace(double thickness, bool topOrBootom)
+        public virtual List<Polyline> OffsetFace(double thickness, bool topOrBootom)
         {
             List<Polyline> offsetFaces = new List<Polyline>();
             for (int i = 0; i < FaceCount; i++)

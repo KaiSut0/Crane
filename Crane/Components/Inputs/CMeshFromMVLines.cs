@@ -67,7 +67,7 @@ namespace Crane.Components.Inputs
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.cmeshMV;
+                return Properties.Resource.icons_cmesh_mv;
             }
         }
 

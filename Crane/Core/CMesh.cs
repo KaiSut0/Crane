@@ -165,6 +165,8 @@ namespace Crane.Core
         public CMesh(List<Line> lines, List<Line> M, List<Line> V, List<Line> T, int maxFaceValence, double tolerance)
         {
             Mesh mesh = Mesh.CreateFromLines(lines.Select(line => line.ToNurbsCurve()).ToArray(), maxFaceValence, tolerance);
+            mesh.Normals.ComputeNormals();
+            mesh.FaceNormals.ComputeFaceNormals();
             SetCMeshFromMVT(mesh, M, V, T);
         }
         private void SetCMeshFromMVT(Mesh mesh, List<Line> M, List<Line> V, List<Line> T)
@@ -257,7 +259,7 @@ namespace Crane.Core
             this.SetMeshVerticesVector();
             this.SetConfigulationVector();
             this.SetPeriodicParameters();
-            SetNakedLoopInfo();
+            if(mesh.GetNakedEdges().Length!=0) SetNakedLoopInfo();
             ComputeInitialProperties();
             SetNgon();
             SetFoldingSpeed(new double[this.InnerEdges.Count]);

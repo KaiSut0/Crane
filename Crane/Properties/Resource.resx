@@ -118,9 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="aaa" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\aaa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="aaaaaaa" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\aaaaaaa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -141,15 +138,6 @@
   </data>
   <data name="chicken" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\chicken.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cmesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\cmesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cmesh2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\cmesh2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cmeshMV" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\cmeshMV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cmesh_from_lines" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\cmesh_from_lines.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -172,9 +160,6 @@
   <data name="egg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\egg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="equal_length" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\equal_length.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="equal_sector_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\equal_sector_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -187,29 +172,167 @@
   <data name="glue_vertices" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\glue_vertices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons_approx_2d_symmetry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_approx_2d_symmetry.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_chair" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_chair.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_chickenwire" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_chickenwire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_chicken_srf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_chicken_srf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_cmesh_foldformat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_cmesh_foldformat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_cmesh_lines" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_cmesh_lines.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_cmesh_mesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_cmesh_mesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_cmesh_mv" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_cmesh_mv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_cmesh_mvt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_cmesh_mvt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icons_compute_solution_space_dof" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ai\icons_compute_solution_space_dof.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_dammy_solver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_dammy_solver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_developable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_developable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_double_thick_panel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_double_thick_panel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_equal_edge_length" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_equal_edge_length.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_equal_fold_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_equal_fold_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_equal_sector_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_equal_sector_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_fix_edge_length" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_fix_edge_length.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_fix_fold_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_fix_fold_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_fix_fold_angle_plastic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_fix_fold_angle_plastic.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_fix_sector_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_fix_sector_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_flat_foldable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_flat_foldable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_glue_vertex_to_edge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_glue_vertex_to_edge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_glue_vertex_to_face" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_glue_vertex_to_face.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_glue_vertices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_glue_vertices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_hole_developable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_hole_developable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_inkjet_4d" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_inkjet_4d.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons_interactive_solver" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ai\icons_interactive_solver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons_mirror_symmetry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_mirror_symmetry.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icons_miura" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ai\icons_miura.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_miura_srf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_miura_srf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_mountain_only_flat_foldable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_mountain_only_flat_foldable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_on_curve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_on_curve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_on_mesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_on_mesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_on_plane" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_on_plane.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_on_point" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_on_point.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_on_surface" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_on_surface.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_papermesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_papermesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_play_records" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_play_records.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_rotation_symmetry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_rotation_symmetry.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_selective_developable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_selective_developable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_self_fold" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_self-fold.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_set_max_fold_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_set_max_fold_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_set_min_edge_length" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_set_min_edge_length.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_set_min_sector_angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_set_min_sector_angle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons_static_solver" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ai\icons_static_solver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons_transform_symmetry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_transform_symmetry.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_translation_symmetry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_translation_symmetry.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_valley_only_flat_foldable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_valley_only_flat_foldable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icons_waterbomb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ai\icons_waterbomb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_water_bomb_srf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_water_bomb_srf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons_write_fold_format" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_write_fold_format.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons_yoshimura" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ai\icons_yoshimura.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons_yoshimura_srf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ai\icons_yoshimura_srf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="miura" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\miura.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MVT" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\MVT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="on_curve" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\on_curve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

@@ -29,6 +29,9 @@ namespace Crane.Components.Inputs
             pManager.AddLineParameter("Triangulated Lines", "T", "Triangulated Lines", GH_ParamAccess.list);
             pManager.AddIntegerParameter("Face Valence", "Face Valence", "Face valence.", GH_ParamAccess.item, 7);
             pManager.AddNumberParameter("Tolerance", "Tolerance", "Tolerance", GH_ParamAccess.item, 0.001);
+            pManager[1].Optional = true;
+            pManager[2].Optional = true;
+            pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace Crane.Components.Inputs
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.cmesh_from_lines;
+                return Properties.Resource.icons_cmesh_lines;
             }
         }
 

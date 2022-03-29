@@ -45,7 +45,7 @@ namespace Crane.Components.Solver
         public double residual = 0;
 
         public CraneInteractiveSolver()
-          : base("Crane Interactive Solver", "Interactive Solver",
+          : base("Crane Interactive Solver", "Solver",
               "Interactive solver for a rigid folding simulation and a form finding.",
               "Crane", "Solver")
         {
