@@ -1549,9 +1549,9 @@ namespace Crane.Core
         }
 
 
-        public string ToFoldFormat()
+        public string ToFoldFormat(bool mVFullFold)
         {
-            var foldFormat = new FoldFormat(this);
+            var foldFormat = new FoldFormat(this, mVFullFold);
             string ff = JsonSerializer.Serialize(foldFormat, new JsonSerializerOptions{WriteIndented = true});
 
             return ff;

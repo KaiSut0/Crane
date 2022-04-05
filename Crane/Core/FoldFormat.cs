@@ -39,7 +39,7 @@ namespace Crane.Core
         public int[][] FacesVertices { get; set; }
 
         public FoldFormat() { }
-        public FoldFormat(CMesh cMesh)
+        public FoldFormat(CMesh cMesh, bool mVFullFold)
         {
             FileClasses = new string[] { "singleModel" };
             FileCreator = "Crane";
@@ -92,6 +92,21 @@ namespace Crane.Core
                 else
                 {
                     EdgesFoldAngle[i] = null;
+                }
+            }
+
+            if (mVFullFold)
+            {
+                for (int i = 0; i < cMesh.EdgeInfo.Count; i++)
+                {
+                    if (cMesh.EdgeInfo[i] == 'M')
+                    {
+                        EdgesFoldAngle[i] = -180;
+                    }
+                    else if (cMesh.EdgeInfo[i] == 'V')
+                    {
+                        EdgesFoldAngle[i] = 180;
+                    }
                 }
             }
 

@@ -27,7 +27,11 @@ namespace Crane.Components.Util
         {
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh to write.", GH_ParamAccess.item);
             pManager.AddTextParameter("Path", "Path", "Path", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("Write", "Write", "Write or not.", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("FullFold", "FullFold", "Write 180 degree full fold for MV lines.",
+                GH_ParamAccess.item, false);
+            pManager.AddBooleanParameter("Write", "Write", "Write or not.", GH_ParamAccess.item, false);
+            pManager[2].Optional = true;
+            pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -45,15 +49,17 @@ namespace Crane.Components.Util
         {
             CMesh cMesh = new CMesh();
             string path = "";
+            bool fullFold = false;
             bool write = false;
 
             DA.GetData(0, ref cMesh);
             DA.GetData(1, ref path);
-            DA.GetData(2, ref write);
+            DA.GetData(2, ref fullFold);
+            DA.GetData(3, ref write);
 
             if (write)
             {
-                var foldFormat = cMesh.ToFoldFormat();
+                var foldFormat = cMesh.ToFoldFormat(fullFold);
                 File.WriteAllText(path, foldFormat);
             }
         }
