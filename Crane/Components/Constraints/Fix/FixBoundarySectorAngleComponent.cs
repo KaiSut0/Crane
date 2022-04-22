@@ -1,28 +1,33 @@
-﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Crane.Constraints;
+using Grasshopper.Kernel;
+using Rhino.Geometry;
 
-namespace Crane.Components.Constraints
+namespace Crane.Components.Constraints.Fix
 {
-    public class GlueVertexToFaceComponent : GH_Component
+    public class FixBoundarySectorAngleComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the GlueVertexToFaceComponent class.
+        /// Initializes a new instance of the FixBoundarySectorAngleComponent class.
         /// </summary>
-        public GlueVertexToFaceComponent()
-          : base("Glue Vertex To Face", "Glue Vertex To Face",
-              "Glue vertex to face constraint.",
+        public FixBoundarySectorAngleComponent()
+          : base("Fix Boundary Sector Angle", "Fix Boundary Sector Angle",
+              "Set fix boundary sector angle constraint.",
               "Crane", "Constraints")
         {
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddIntegerParameter("Vertex Ids", "Vertex Ids", "", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Goal Angles", "Goal Angles", "", GH_ParamAccess.list);
+
         }
 
         /// <summary>
@@ -30,6 +35,8 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("Constraint", "Constraint", "Fix boundary sector angle constraint",
+                GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -38,6 +45,11 @@ namespace Crane.Components.Constraints
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            List<int> vertexIds = new List<int>();
+            List<double> goalAngles = new List<double>();
+            DA.GetDataList(0, vertexIds);
+            DA.GetDataList(1, goalAngles);
+            DA.SetData(0, new FixBoundarySectorAngle(vertexIds.ToArray(), goalAngles.ToArray()));
         }
 
         /// <summary>
@@ -49,7 +61,7 @@ namespace Crane.Components.Constraints
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_glue_vertex_to_face;
+                return null;
             }
         }
 
@@ -58,7 +70,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("11a16bc7-9724-4070-94a2-3681ef9db6c7"); }
+            get { return new Guid("4159163A-C35E-4546-9614-7EA8164449C0"); }
         }
     }
 }

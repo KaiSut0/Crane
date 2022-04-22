@@ -62,10 +62,10 @@ namespace Crane.Components.Util
             var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
             List<IndexPair> indexPairs = new List<IndexPair>();
             List<int> indices = new List<int>();
-            Utils.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out indices);
+            Core.Util.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out indices);
             List<int> firstIndices = new List<int>();
             List<int> secondIndices = new List<int>();
-            Utils.SplitIndexPairs(indexPairs, out firstIndices, out secondIndices);
+            Core.Util.SplitIndexPairs(indexPairs, out firstIndices, out secondIndices);
 
             DA.SetDataList(0, firstIndices);
             DA.SetDataList(1, secondIndices);

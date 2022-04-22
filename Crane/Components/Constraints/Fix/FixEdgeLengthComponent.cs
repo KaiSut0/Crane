@@ -15,7 +15,7 @@ namespace Crane.Components.Constraints
         public FixEdgeLengthComponent()
           : base("Fix Edge Length", "Fix Edge Length",
               "Fix edge length component.",
-              "Crane", "Const-Fix")
+              "Crane", "Constraints")
         {
         }
 
@@ -82,5 +82,7 @@ namespace Crane.Components.Constraints
         {
             get { return new Guid("a3bc72a6-6f4c-4fe5-be59-b8670cf24864"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
     }
 }

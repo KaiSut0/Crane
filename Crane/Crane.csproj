@@ -83,8 +83,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Constraints\Equal\EqualBoundarySectorAngleComponent.cs" />
+    <Compile Include="Components\Constraints\Equal\EqualEdgeLengthSumComponent.cs" />
     <Compile Include="Components\Constraints\Equal\EqualFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\Equal\EqualSectorAngleComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleSumComponent.cs" />
     <Compile Include="Components\Constraints\Glue\GlueVertexToFaceComponent.cs" />
     <Compile Include="Components\Constraints\Origami\DevelopableComponent.cs" />
     <Compile Include="Components\Constraints\Equal\EqualEdgeLengthComponent.cs" />
@@ -114,6 +118,7 @@
     <Compile Include="Components\Inputs\CMeshFromMesh.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
+    <Compile Include="Components\Patterns\TuckOrigamize.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
     <Compile Include="Components\Inputs\PaperMesh.cs" />
     <Compile Include="Components\Util\Approx2dSymmetryComponent.cs" />
@@ -144,6 +149,13 @@
     <Compile Include="Components\Util\GH_CMeshParam.cs" />
     <Compile Include="Components\Util\MapDev2Fold.cs" />
     <Compile Include="Components\Outputs\WriteFoldFormat.cs" />
+    <Compile Include="Components\Util\UnWeldMeshAlongPolylines.cs" />
+    <Compile Include="Constraints\EqualBoundarySectorAngle.cs" />
+    <Compile Include="Constraints\EqualEdgeLengthSum.cs" />
+    <Compile Include="Constraints\EqualFoldAngle.cs" />
+    <Compile Include="Constraints\EqualSectorAngle.cs" />
+    <Compile Include="Constraints\FixBoundarySectorAngle.cs" />
+    <Compile Include="Constraints\FixBoundarySectorAngleSum.cs" />
     <Compile Include="Constraints\HoleAngleDevelopable.cs" />
     <Compile Include="Constraints\HoleVectorDevelopable.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
@@ -154,6 +166,7 @@
     <Compile Include="Core\FabMesh.cs" />
     <Compile Include="Core\FoldFormat.cs" />
     <Compile Include="Core\RhinoCommonExtensions.cs" />
+    <Compile Include="Core\SparseMatrixBuilder.cs" />
     <Compile Include="Misc\Approx2dSymmetry.cs" />
     <Compile Include="Misc\CalculateCommutativeScaleRotations.cs" />
     <Compile Include="Misc\CalculateCommutativeTransform.cs" />
@@ -194,11 +207,12 @@
     <Compile Include="Patterns\ExtrudedWaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
     <Compile Include="Patterns\TruncatedStarOrigamize.cs" />
+    <Compile Include="Patterns\TuckOrigamize.cs" />
     <Compile Include="Patterns\TwistOrigamize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RigidOrigami.cs" />
     <Compile Include="Core\UnWeldMesh.cs" />
-    <Compile Include="Core\Utils.cs" />
+    <Compile Include="Core\Util.cs" />
     <Compile Include="Constraints\RigidEdge.cs" />
     <Compile Include="Constraints\RotationalSymmetry.cs" />
     <Compile Include="Constraints\SelectiveDevelopable.cs" />

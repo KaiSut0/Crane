@@ -15,10 +15,11 @@ namespace Crane.Components.Constraints
         public SelectiveDevelopableComponent()
           : base("Selective Developable", "Selective Developable",
               "Selective developable component.",
-              "Crane", "Const-Origami")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.quinary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

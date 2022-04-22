@@ -15,7 +15,7 @@ namespace Crane.Components.Constraints
         public EqualEdgeLengthComponent()
           : base("Equal Edge Length", "Equal Edge Length",
               "Equal edge length constraint.",
-              "Crane", "Const-Equal")
+              "Crane", "Constraints")
         {
         }
 
@@ -83,5 +83,7 @@ namespace Crane.Components.Constraints
         {
             get { return new Guid("a44b8e0b-62a1-4c96-aacd-3ecb9747ee9d"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.primary;
     }
 }

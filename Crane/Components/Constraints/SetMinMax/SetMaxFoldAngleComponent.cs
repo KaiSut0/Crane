@@ -14,10 +14,11 @@ namespace Crane.Components.Constraints
         public SetMaxFoldAngleComponent()
           : base("Set Max Fold Angle", "Set Max Fold Angle",
               "Set maximum fold angle. This enforce the fold angle to be smaller than the set angle.",
-              "Crane", "Const-SetMinMax")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.senary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints.Equal
         public EqualSectorAngleComponent()
           : base("Equal Sector Angle", "Equal Sector Angle",
               "Equal sector angle constraint",
-              "Crane", "Const-Equal")
+              "Crane", "Constraints")
         {
         }
 
@@ -59,5 +59,7 @@ namespace Crane.Components.Constraints.Equal
         {
             get { return new Guid("e0065ae9-0cce-4e08-aef0-bb6f60aac264"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.primary;
     }
 }

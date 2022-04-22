@@ -15,9 +15,9 @@ using Rhino;
 
 namespace Crane.Core
 {
-    public class Utils
+    public class Util
     {
-        public Utils()
+        public Util()
         {
         }
 
@@ -512,6 +512,62 @@ namespace Crane.Core
                 }
 
             }
+        }
+
+        public static int GetFaceIndexFromEdgeIndexPair(Mesh mesh, int[] faces, IndexPair edgeIndexPair)
+        {
+            int[] topFaceI = mesh.TopologyEdges.GetConnectedFaces(edgeIndexPair.I);
+            int[] topFaceJ = mesh.TopologyEdges.GetConnectedFaces(edgeIndexPair.J);
+            return topFaceI.Intersect(topFaceJ).First();
+        }
+
+        public static int[] GetSortedFaceIndices(Mesh mesh, int vertexIndex)
+        {
+            mesh.TopologyVertices.SortEdges();
+            var edges = mesh.TopologyVertices.ConnectedEdges(vertexIndex);
+            var tfaces = mesh.TopologyVertices.ConnectedFaces(vertexIndex);
+            var shiftEdges = new List<int>();
+            var sortedFaces = new List<int>();
+            int loopNum = edges.Length;
+            if (!IsInnerVertex(mesh, vertexIndex)) loopNum -= 1;
+            for (int i = 0; i < loopNum; i++)
+            {
+                shiftEdges.Add(edges[(i + 1) % edges.Length]);
+                sortedFaces.Add(GetFaceIndexFromEdgeIndexPair(mesh, tfaces, new IndexPair(edges[i], shiftEdges[i])));
+            }
+            return sortedFaces.ToArray();
+        }
+
+        public static void FillMeshPolygonHole(int[] polygonVertexIndices, ref Mesh mesh)
+        {
+            int n = polygonVertexIndices.Length;
+            int numFace = mesh.Faces.Count;
+            var faceIndexList = new List<int>();
+            for (int i = 1; i < n - 1; i++)
+            {
+                mesh.Faces.AddFace(polygonVertexIndices[0], polygonVertexIndices[i], polygonVertexIndices[i + 1]);
+                faceIndexList.Add((i - 1) + numFace);
+            }
+            var ngon = MeshNgon.Create(polygonVertexIndices, faceIndexList);
+            mesh.Ngons.AddNgon(ngon);
+        }
+
+        public static bool IsInnerVertex(Mesh mesh, int vertexIndex)
+        {
+            bool isInnerVertex = true;
+            int[] connectedEdgeIndices = mesh.TopologyVertices.ConnectedEdges(vertexIndex);
+            foreach (var ei in connectedEdgeIndices)
+            {
+                if (mesh.TopologyEdges.GetConnectedFaces(ei).Length == 1) isInnerVertex = false;
+            }
+            return isInnerVertex;
+        }
+
+        public static bool IsInnerEdge(Mesh mesh, int edgeIndex)
+        {
+            bool isInnerEdge = true;
+            if (mesh.TopologyEdges.GetConnectedFaces(edgeIndex).Length == 1) isInnerEdge = false;
+            return isInnerEdge;
         }
     }
 }

@@ -14,10 +14,11 @@ namespace Crane.Components.Constraints
         public FlatFoldableComponent()
           : base("Flat Foldable", "Flat Foldable",
               "Set flat-foldable constraint",
-              "Crane", "Const-Origami")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.quinary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

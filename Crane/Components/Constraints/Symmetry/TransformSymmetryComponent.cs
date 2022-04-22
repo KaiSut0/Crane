@@ -15,10 +15,11 @@ namespace Crane.Components.Constraints
         public TransformSymmetryComponent()
           : base("Transform Symmetry", "Trasform Symmetry",
               "Set transform symmetric constraint.",
-              "Crane", "Const-Symmetry")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.septenary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
@@ -56,7 +57,7 @@ namespace Crane.Components.Constraints
             DA.GetDataList(3, secondIndices);
 
             TransformSymmetry constraint =
-                new TransformSymmetry(cMesh, transform, Utils.MergeIndexPairs(firstIndices, secondIndices));
+                new TransformSymmetry(cMesh, transform, Core.Util.MergeIndexPairs(firstIndices, secondIndices));
 
             DA.SetData(0, constraint);
 

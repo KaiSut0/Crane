@@ -131,12 +131,12 @@ namespace Crane.Core
             mesh.Vertices.UseDoublePrecisionVertices = true;
             for (int i = 0; i < VerticesCoords.Length; i++)
             {
-                mesh.Vertices.Add(Utils.ToPoint3d(VerticesCoords[i]));
+                mesh.Vertices.Add(Util.ToPoint3d(VerticesCoords[i]));
             }
 
             for (int i = 0; i < FacesVertices.Length; i++)
             {
-                mesh.Faces.AddFace(Utils.ToMeshFace(FacesVertices[i]));
+                mesh.Faces.AddFace(Util.ToMeshFace(FacesVertices[i]));
             }
 
             var mountain = new List<Line>();

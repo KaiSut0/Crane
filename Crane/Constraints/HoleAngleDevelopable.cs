@@ -15,7 +15,6 @@ namespace Crane.Constraints
         public HoleAngleDevelopable(){}
         public override Matrix<double> Jacobian(CMesh cMesh)
         {
-            var pts = cMesh.Mesh.Vertices;
             List<Dictionary<int, Vector3d>> derivativeList = new List<Dictionary<int, Vector3d>>();
             int rows = cMesh.HoleLoopVertexIdsList.Count;
             int columns = cMesh.DOF;
@@ -89,7 +88,7 @@ namespace Crane.Constraints
                             int v1Id = otherVIds.I;
                             int v2Id = vId;
                             int v3Id = otherVIds.J;
-                            error += Utils.ComputeAngleFrom3Pts(pts[v1Id], pts[v2Id], pts[v3Id]);
+                            error += Util.ComputeAngleFrom3Pts(pts[v1Id], pts[v2Id], pts[v3Id]);
                         }
                     }
 

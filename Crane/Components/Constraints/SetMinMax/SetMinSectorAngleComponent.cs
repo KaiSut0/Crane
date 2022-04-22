@@ -13,10 +13,11 @@ namespace Crane.Components.Constraints
         public SetMaxSectorAngleComponent()
           : base("Set Min Sector Angle", "Set Min Sector Angle",
               "Set minimal sector angle. This enforce the sector angle to be larger than the set angle.",
-              "Crane", "Const-SetMinMax")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.senary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

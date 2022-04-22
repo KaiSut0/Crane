@@ -15,10 +15,11 @@ namespace Crane.Components.Constraints
         public GlueVerticesComponent()
           : base("Glue Vertices", "Glue Vertices",
               "Set glue the vertices constraint.",
-              "Crane", "Const-Glue")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

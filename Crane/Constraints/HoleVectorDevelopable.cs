@@ -11,6 +11,7 @@ namespace Crane.Constraints
 {
     public class HoleVectorDevelopable : Constraint
     {
+
         public override Matrix<double> Jacobian(CMesh cMesh)
         {
             var pts = cMesh.Mesh.Vertices;
@@ -41,7 +42,7 @@ namespace Crane.Constraints
                         int v1Id = otherVIds.I;
                         int v2Id = vId;
                         int v3Id = otherVIds.J;
-                        angle += Utils.ComputeAngleFrom3Pts(pts[v1Id], pts[v2Id], pts[v3Id]);
+                        angle += Util.ComputeAngleFrom3Pts(pts[v1Id], pts[v2Id], pts[v3Id]);
                         var DSecDV = cMesh.ComputeDerivativeOfSectorAngle(fId, v1Id, v2Id, v3Id);
                         var vIds = new int[] { v1Id, v2Id, v3Id };
                         for (int j = 0; j < 3; j++)
@@ -158,7 +159,7 @@ namespace Crane.Constraints
                         int v1Id = otherVIds.I;
                         int v2Id = vId;
                         int v3Id = otherVIds.J;
-                        angle += Utils.ComputeAngleFrom3Pts(pts[v1Id], pts[v2Id], pts[v3Id]);
+                        angle += Util.ComputeAngleFrom3Pts(pts[v1Id], pts[v2Id], pts[v3Id]);
                     }
                     angles[i] = angle;
                 }

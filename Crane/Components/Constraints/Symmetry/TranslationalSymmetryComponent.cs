@@ -16,10 +16,11 @@ namespace Crane.Components.Constraints
         public TranslationalSymmetryComponent()
           : base("Translation Symmetry", "Translation Symmetry",
               "Set translational symmetric constraint.",
-              "Crane", "Const-Symmetry")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.septenary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
@@ -72,7 +73,7 @@ namespace Crane.Components.Constraints
             if (devSymOn)
             {
                 List<IndexPair> devIndexPair =
-                    Utils.OffsetIndexPairs(constraint.indexPairs, cMesh.NumberOfVertices / 2);
+                    Core.Util.OffsetIndexPairs(constraint.indexPairs, cMesh.NumberOfVertices / 2);
                 var devConstraint = new TranslationalSymmetry(cMesh, devTranslation, devIndexPair);
                 constraints.Add(devConstraint);
             }

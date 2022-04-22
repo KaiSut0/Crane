@@ -568,7 +568,7 @@ namespace Crane.Core
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
                 //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Jacobian.ColumnCount, Jacobian.RowCount), ref cgnrComp);
                 //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
+                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
 

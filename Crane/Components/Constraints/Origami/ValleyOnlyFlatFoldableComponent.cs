@@ -14,10 +14,11 @@ namespace Crane.Components.Constraints
         public ValleyOnlyFlatFoldableComponent()
           : base("Valley Only Flat-Foldable", "Valley Only Flat-Foldable",
               "Valley only flat-foldable constraint.",
-              "Crane", "Const-Origami")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.quinary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

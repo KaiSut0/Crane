@@ -165,11 +165,6 @@ namespace Crane.Constraints
         public override Vector<double> Error(CMesh cMesh)
         {
             int rows = innerEdgeIds.Length;
-            int columns = cMesh.DOF;
-            Mesh mesh = cMesh.Mesh;
-
-            //mesh.FaceNormals.ComputeFaceNormals();
-
 
             var foldAngles = cMesh.GetFoldAngles();
 

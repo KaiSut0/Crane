@@ -19,7 +19,7 @@ namespace Crane.Constraints
             List<int> fixedIndices;
             var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
             Transform transform = Transform.Mirror(mirrorPlane);
-            Utils.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out fixedIndices);
+            Util.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out fixedIndices);
             SetIndexPairs(indexPairs);
             SetTransform(transform);
             if (fixedIndices.Count != 0)

@@ -13,8 +13,8 @@ namespace Crane.Constraints
         public GlueVertices(CMesh cMesh, Point3d ptI, Point3d ptJ, double tolerance) 
         {
             edgeAverageLength = Math.Sqrt(cMesh.EdgeLengthSquared.Average());
-            int I = Utils.GetPointID(cMesh.Mesh, ptI);
-            int J = Utils.GetPointID(cMesh.Mesh, ptJ);
+            int I = Util.GetPointID(cMesh.Mesh, ptI);
+            int J = Util.GetPointID(cMesh.Mesh, ptJ);
             indexPair = new IndexPair(I, J);
         }
         public GlueVertices(CMesh cMesh, int I, int J)

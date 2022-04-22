@@ -15,10 +15,11 @@ namespace Crane.Components.Constraints
         public OnPointComponent()
           : base("On Point", "On Point",
               "Set the constraint to restrict the selected points onto the goal point.",
-              "Crane", "Const-OnGeom")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
@@ -64,7 +65,7 @@ namespace Crane.Components.Constraints
             {
                 foreach (var pt in pts)
                 {
-                    ptIDs.Add(Core.Utils.GetPointID(cMesh.Mesh, pt));
+                    ptIDs.Add(Core.Util.GetPointID(cMesh.Mesh, pt));
                 }
             }
 

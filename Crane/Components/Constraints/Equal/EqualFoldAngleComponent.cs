@@ -13,7 +13,7 @@ namespace Crane.Components.Constraints
         public EqualFoldAngleComponent()
           : base("Equal Fold Angle", "Equal Fold Angle",
               "Equal fold angle constraint.",
-              "Crane", "Const-Equal")
+              "Crane", "Constraints")
         {
         }
 
@@ -59,5 +59,7 @@ namespace Crane.Components.Constraints
         {
             get { return new Guid("4ab8e7f1-c05b-4702-91dd-04e1308b590e"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.primary;
     }
 }

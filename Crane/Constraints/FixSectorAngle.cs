@@ -51,7 +51,7 @@ namespace Crane.Constraints
                 var center = mesh.Vertices[centerPtIds[i]];
                 var left = mesh.Vertices[leftPtIds[i]];
                 var right = mesh.Vertices[rightPtIds[i]];
-                double sectorAngle = Utils.ComputeAngleFrom3Pts(left, center, right);
+                double sectorAngle = Util.ComputeAngleFrom3Pts(left, center, right);
                 var n = normals[faceIds[i]];
                 double k = Math.Sqrt(stiffness[i]);
 
@@ -108,7 +108,7 @@ namespace Crane.Constraints
                 var center = mesh.Vertices[centerPtIds[i]];
                 var left = mesh.Vertices[leftPtIds[i]];
                 var right = mesh.Vertices[rightPtIds[i]];
-                double sectorAngle = Utils.ComputeAngleFrom3Pts(left, center, right);
+                double sectorAngle = Util.ComputeAngleFrom3Pts(left, center, right);
                 double setAngle = setAngles[i];
                 double k = Math.Sqrt(stiffness[i]);
 

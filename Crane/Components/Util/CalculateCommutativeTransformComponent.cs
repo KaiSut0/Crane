@@ -105,8 +105,8 @@ namespace Crane.Components.Misc
             double rotAngle1, rotAngle2;
             Vector3d rotVec1, rotVec2, scale1, scale2, trans1, trans2;
             Plane scalePlane1, scalePlane2;
-            Utils.LogMap(calComTrans.A1, out rotAngle1, out rotVec1, out scalePlane1, out scale1, out trans1);
-            Utils.LogMap(calComTrans.A2, out rotAngle2, out rotVec2, out scalePlane2, out scale2, out trans2);
+            Core.Util.LogMap(calComTrans.A1, out rotAngle1, out rotVec1, out scalePlane1, out scale1, out trans1);
+            Core.Util.LogMap(calComTrans.A2, out rotAngle2, out rotVec2, out scalePlane2, out scale2, out trans2);
 
             DA.SetData(5, rotAngle1);
             DA.SetData(6, rotAngle2);

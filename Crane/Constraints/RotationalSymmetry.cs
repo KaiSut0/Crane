@@ -14,7 +14,7 @@ namespace Crane.Constraints
             List<int> fixedIndices;
             var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
             Transform rotation = Transform.Rotation(rotationAngle, rotationAxis.Direction, rotationAxis.From);
-            Utils.CreateTransformIndexPairs(pts, rotation, tolerance, out indexPairs, out fixedIndices);
+            Util.CreateTransformIndexPairs(pts, rotation, tolerance, out indexPairs, out fixedIndices);
             SetIndexPairs(indexPairs);
             SetTransform(rotation);
             if (fixedIndices.Count != 0)

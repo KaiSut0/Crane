@@ -1,25 +1,25 @@
-﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Crane.Constraints;
 using Crane.Core;
+using Grasshopper.Kernel;
+using Rhino.Geometry;
 
-namespace Crane.Components.Constraints
+namespace Crane.Components.Constraints.Equal
 {
-    public class GlueVertexToEdgeComponent : GH_Component
+    public class EqualEdgeLengthSumComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the GlueVertexToEdgeComponent class.
+        /// Initializes a new instance of the EqualEdgeLengthSumComponent class.
         /// </summary>
-        public GlueVertexToEdgeComponent()
-          : base("Glue Vertex To Edge", "Glue Vertex To Edge",
-              "Set glue the vertex to the edge constraint.",
+        public EqualEdgeLengthSumComponent()
+          : base("Equal Edge Length Sum", "Equal Edge Length Sum",
+              "Set equal edge length sum constraint.",
               "Crane", "Constraints")
         {
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -27,10 +27,11 @@ namespace Crane.Components.Constraints
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
-            pManager.AddPointParameter("Vertex", "Vertex", "Vertex glue to edge.", GH_ParamAccess.item);
-            pManager.AddLineParameter("Edge", "Edge", "Edge glue to edge.", GH_ParamAccess.item);
+            pManager.AddLineParameter("First Edges", "First Edges", "First edges to sum of length.",
+                GH_ParamAccess.list);
+            pManager.AddLineParameter("Second Edges", "Second Edges", "Second edges to sum of length.",
+                GH_ParamAccess.list);
 
-            //pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -38,7 +39,8 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Constraint", "Constraint", "Glue vertex to edge constraint.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Constraint", "Constraint", "Equal edge length sum constraint.",
+                GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -48,15 +50,12 @@ namespace Crane.Components.Constraints
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             CMesh cMesh = new CMesh();
-            var vertex = new Point3d();
-            var edge = new Line();
+            List<Line> firstLines = new List<Line>();
+            List<Line> secondLines = new List<Line>();
             DA.GetData(0, ref cMesh);
-            DA.GetData(1, ref vertex);
-            DA.GetData(2, ref edge);
-
-            var constraint = new GlueVertexToEdge(cMesh, vertex, edge);
-
-            DA.SetData(0, constraint);
+            DA.GetDataList(1, firstLines);
+            DA.GetDataList(2, secondLines);
+            DA.SetData(0, new EqualEdgeLengthSum(cMesh, firstLines.ToArray(), secondLines.ToArray()));
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace Crane.Components.Constraints
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_glue_vertex_to_edge;
+                return null;
             }
         }
 
@@ -77,7 +76,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("c40d765f-9a7c-4c0f-9dbb-6d69ec656d53"); }
+            get { return new Guid("DB0DD1BC-9D77-4CCF-84BF-4D357803A5E5"); }
         }
     }
 }

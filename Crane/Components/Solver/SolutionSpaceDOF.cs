@@ -66,8 +66,8 @@ namespace Crane.Components.Solver
                 //var provider = MathNet.Numerics.Providers.LinearAlgebra.LinearAlgebraControl.Provider; 
                 
                 s = rigidOrigami.ComputeSvdOfJacobian();
-                
-                dof = 3*rigidOrigami.CMesh.NumberOfVertices - Utils.SvdRank(s);
+
+                dof = 3* rigidOrigami.CMesh.NumberOfVertices - Core.Util.SvdRank(s);
             }
 
             DA.SetData(0, dof);

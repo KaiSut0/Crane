@@ -46,12 +46,12 @@ namespace Crane.Constraints
             Point3d xFrom = cMesh.Mesh.Vertices[VIdPair.I];
             Point3d xTo = cMesh.Mesh.Vertices[VIdPair.J];
 
-            Transform Rtest = Utils.Addition(Transform.Identity, Utils.Addition(Utils.Multiply(Math.Sin(RotationAngle), K), Utils.Multiply(1.0 - Math.Cos(RotationAngle), K * K)));
+            Transform Rtest = Util.Addition(Transform.Identity, Util.Addition(Util.Multiply(Math.Sin(RotationAngle), K), Util.Multiply(1.0 - Math.Cos(RotationAngle), K * K)));
 
             Transform dCdxFrom = R;
             //Transform dCdxTo = Utils.Multiply(-1, Transform.Identity);
 
-            Point3d dCdtheta = Utils.Addition(Utils.Multiply(Math.Cos(RotationAngle), K), Utils.Multiply(Math.Sin(RotationAngle), K*K)) * xFrom;
+            Point3d dCdtheta = Util.Addition(Util.Multiply(Math.Cos(RotationAngle), K), Util.Multiply(Math.Sin(RotationAngle), K*K)) * xFrom;
             Vector3d dCda = cMesh.CylinderAxis;
 
             int rows = 3;

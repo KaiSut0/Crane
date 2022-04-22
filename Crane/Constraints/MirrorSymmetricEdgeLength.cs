@@ -16,7 +16,7 @@ namespace Crane.Constraints
     {
         public MirrorSymmetricEdgeLength(CMesh cMesh, Plane plane, double tolerance)
         {
-            _indexPairs = Utils.CreateMirrorEdgeIndexPairs(cMesh, plane, tolerance).ToArray();
+            _indexPairs = Util.CreateMirrorEdgeIndexPairs(cMesh, plane, tolerance).ToArray();
             _plane = plane;
             edgeAverageLength = cMesh.EdgeLengthSquared.Average();
             n = _indexPairs.Length;

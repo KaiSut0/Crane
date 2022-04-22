@@ -13,10 +13,11 @@ namespace Crane.Components.Constraints
         public SetMinEdgeLengthComponent()
           : base("Set Min Edge Length", "Set Min Edge Length",
               "Set minimum edge length. This enforce the edge length to be larger than the set length.",
-              "Crane", "Const-SetMinMax")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.senary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

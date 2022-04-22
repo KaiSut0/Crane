@@ -107,22 +107,22 @@ namespace Crane.Core
 
             this.InnerVertexIds = new List<int>(cMesh.InnerVertexIds.ToArray());
 
-            this.InnerEdges = Utils.CloneIndexPairs(cMesh.InnerEdges).ToList();
-            this.BoundaryEdges = Utils.CloneIndexPairs(cMesh.BoundaryEdges).ToList();
+            this.InnerEdges = Util.CloneIndexPairs(cMesh.InnerEdges).ToList();
+            this.BoundaryEdges = Util.CloneIndexPairs(cMesh.BoundaryEdges).ToList();
             this.InnerBoundaryEdges = new List<int>(cMesh.InnerBoundaryEdges.ToArray());
-            this.TriangulatedEdges = Utils.CloneIndexPairs(cMesh.TriangulatedEdges).ToList();
-            this.MountainEdges = Utils.CloneIndexPairs(cMesh.MountainEdges).ToList();
-            this.ValleyEdges = Utils.CloneIndexPairs(cMesh.ValleyEdges).ToList();
+            this.TriangulatedEdges = Util.CloneIndexPairs(cMesh.TriangulatedEdges).ToList();
+            this.MountainEdges = Util.CloneIndexPairs(cMesh.MountainEdges).ToList();
+            this.ValleyEdges = Util.CloneIndexPairs(cMesh.ValleyEdges).ToList();
 
-            this.FacePairs = Utils.CloneIndexPairs(cMesh.FacePairs).ToList();
-            this.TriangulatedFacePairs = Utils.CloneIndexPairs(cMesh.TriangulatedFacePairs).ToList();
-            this.MountainFacePairs = Utils.CloneIndexPairs(cMesh.MountainFacePairs).ToList();
-            this.ValleyFacePairs = Utils.CloneIndexPairs(cMesh.ValleyFacePairs).ToList();
+            this.FacePairs = Util.CloneIndexPairs(cMesh.FacePairs).ToList();
+            this.TriangulatedFacePairs = Util.CloneIndexPairs(cMesh.TriangulatedFacePairs).ToList();
+            this.MountainFacePairs = Util.CloneIndexPairs(cMesh.MountainFacePairs).ToList();
+            this.ValleyFacePairs = Util.CloneIndexPairs(cMesh.ValleyFacePairs).ToList();
 
-            this.FaceHeightPairs = Utils.CloneTuples(cMesh.FaceHeightPairs).ToList();
-            this.TriangulatedFaceHeightPairs = Utils.CloneTuples(cMesh.TriangulatedFaceHeightPairs).ToList();
-            this.MountainFaceHeightPairs = Utils.CloneTuples(cMesh.MountainFaceHeightPairs).ToList();
-            this.ValleyFaceHeightPairs = Utils.CloneTuples(cMesh.ValleyFaceHeightPairs).ToList();
+            this.FaceHeightPairs = Util.CloneTuples(cMesh.FaceHeightPairs).ToList();
+            this.TriangulatedFaceHeightPairs = Util.CloneTuples(cMesh.TriangulatedFaceHeightPairs).ToList();
+            this.MountainFaceHeightPairs = Util.CloneTuples(cMesh.MountainFaceHeightPairs).ToList();
+            this.ValleyFaceHeightPairs = Util.CloneTuples(cMesh.ValleyFaceHeightPairs).ToList();
             
             this.LengthOfDiagonalEdges = new List<double>(cMesh.LengthOfDiagonalEdges.ToArray());
             this.LengthOfTriangulatedDiagonalEdges = new List<double>(cMesh.LengthOfTriangulatedDiagonalEdges.ToArray());
@@ -269,7 +269,7 @@ namespace Crane.Core
         {
             CMesh cMesh = new CMesh(mesh, M, V, T);
             var dev = new DevelopMesh(cMesh.Mesh, developmentOrigin, developmentRotation);
-            Mesh joinedMesh = Utils.JoinMesh(dev.Mesh, dev.DevelopedMesh);
+            Mesh joinedMesh = Util.JoinMesh(dev.Mesh, dev.DevelopedMesh);
             SetCMeshFromMVT(joinedMesh, M, V, cMesh.GetTraiangulatedEdgeLines());
             NumberOfDevelopmentFaces = Mesh.Faces.Count/2;
             NumberOfDevelopmentVertices = Mesh.Vertices.Count/2;
@@ -789,7 +789,7 @@ namespace Crane.Core
                 var f1 = Mesh.TopologyVertices.ConnectedFaces(v1);
                 var fId = f0.Intersect(f1).First();
 
-                if (!Utils.AlignFaceOrientation(Mesh.Faces[fId], v0, v1))
+                if (!Util.AlignFaceOrientation(Mesh.Faces[fId], v0, v1))
                 {
                     holeLoopVertexIds.Reverse();
                 }
@@ -808,7 +808,7 @@ namespace Crane.Core
             var bf1 = Mesh.TopologyVertices.ConnectedFaces(bv1);
             var bfId = bf0.Intersect(bf1).First();
 
-            if (!Utils.AlignFaceOrientation(Mesh.Faces[bfId], bv0, bv1))
+            if (!Util.AlignFaceOrientation(Mesh.Faces[bfId], bv0, bv1))
             {
                 BoundaryLoopVertexIds.Reverse();
             }
@@ -891,7 +891,7 @@ namespace Crane.Core
             var v1 = Mesh.Vertices.Point3dAt(v1Id);
             var v2 = Mesh.Vertices.Point3dAt(v2Id);
             var v3 = Mesh.Vertices.Point3dAt(v3Id);
-            var sec = Utils.ComputeAngleFrom3Pts(v1, v2, v3);
+            var sec = Util.ComputeAngleFrom3Pts(v1, v2, v3);
             var n = Mesh.FaceNormals[fId];
             var v12 = v1 - v2;
             var v32 = v3 - v2;
@@ -905,6 +905,17 @@ namespace Crane.Core
             return new Vector3d[] { DSecDv1, DSecDv2, DSecDv3 };
         }
 
+        public Vector3d[] ComputeDerivativeOfEdgeLength(int eId)
+        {
+            var vPair = Mesh.TopologyEdges.GetTopologyVertices(eId);
+            var v1Id = vPair.I;
+            var v2Id = vPair.J;
+            var v1 = Mesh.Vertices.Point3dAt(v1Id);
+            var v2 = Mesh.Vertices.Point3dAt(v2Id);
+            var e = v2 - v1;
+            var elen = e.Length;
+            return new Vector3d[] { -e / elen, e / elen };
+        }
         public Tuple<List<Line>, List<Line>> GetAutomaticallyAssignedMVLines()
         {
             var verts = Mesh.Vertices.ToPoint3dArray();
@@ -1084,7 +1095,7 @@ namespace Crane.Core
                 var connectedTopologyEdges = new List<int>();
                 foreach(int j in connectedTopologyVertices)
                 {
-                    int edgeId = Utils.GetTopologyEdgeIndex(Mesh, new IndexPair(i, j));
+                    int edgeId = Util.GetTopologyEdgeIndex(Mesh, new IndexPair(i, j));
                     connectedTopologyEdges.Add(edgeId);
                 }
 
@@ -1113,7 +1124,7 @@ namespace Crane.Core
                 var pair = Mesh.TopologyEdges.GetTopologyVertices(i);
                 var pt1 = Mesh.Vertices[pair.I];
                 var pt2 = Mesh.Vertices[pair.J];
-                if (Utils.PointsMatchLineEnds(line, pt1, pt2, threshold)) id = i;
+                if (Util.PointsMatchLineEnds(line, pt1, pt2, threshold)) id = i;
             }
             return id;
         }

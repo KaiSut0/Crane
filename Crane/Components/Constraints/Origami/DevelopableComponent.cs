@@ -14,10 +14,11 @@ namespace Crane.Components.Constraints
         public DevelopableComponent()
           : base("Developable", "Developable",
               "Set developable constraint.",
-              "Crane", "Const-Origami")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.quinary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

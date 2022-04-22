@@ -14,7 +14,7 @@ namespace Crane.Constraints
             List<int> fixedIndices;
             var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
             Transform transform = Transform.Translation(transVector);
-            Utils.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out fixedIndices);
+            Util.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out fixedIndices);
             SetIndexPairs(indexPairs);
             SetTransform(transform);
         }
@@ -25,7 +25,7 @@ namespace Crane.Constraints
             List<int> fixedIndices;
             var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
             Transform transform = Transform.Translation(transVector);
-            Utils.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out fixedIndices);
+            Util.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out fixedIndices);
             SetIndexPairs(indexPairs);
             Transform goalTransform = Transform.Translation(goalTransVector);
             SetTransform(goalTransform);

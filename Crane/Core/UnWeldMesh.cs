@@ -72,8 +72,8 @@ namespace Crane.Core
         private void UnWeldEdge(IndexPair pairFrom, IndexPair pairTo, ref Mesh mesh)
         {
             int unWeldVertId = pairFrom.J;
-            var edgeIdFrom = Utils.GetTopologyEdgeIndex(mesh, pairFrom);
-            var edgeIdTo = Utils.GetTopologyEdgeIndex(mesh, pairTo);
+            var edgeIdFrom = Util.GetTopologyEdgeIndex(mesh, pairFrom);
+            var edgeIdTo = Util.GetTopologyEdgeIndex(mesh, pairTo);
             int[] faceIdsFrom = mesh.TopologyEdges.GetConnectedFaces(edgeIdFrom);
             int[] faceIdsTo = mesh.TopologyEdges.GetConnectedFaces(edgeIdTo);
             int faceIdFromRight = -1;

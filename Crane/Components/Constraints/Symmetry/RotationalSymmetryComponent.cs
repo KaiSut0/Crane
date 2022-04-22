@@ -16,10 +16,11 @@ namespace Crane.Components.Constraints
         public RotationalSymmetryComponent()
           : base("Rotational Symmetry", "Rotation Symmetry",
               "Set vertex rotational symmetric constraint.",
-              "Crane", "Const-Symmetry")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.septenary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
@@ -81,7 +82,7 @@ namespace Crane.Components.Constraints
             if (isIndexMode)
             {
                 Transform rotation = Transform.Rotation(angle, line.Direction, line.From);
-                var indexPairs = Utils.MergeIndexPairs(firstIndices, secondIndices);
+                var indexPairs = Core.Util.MergeIndexPairs(firstIndices, secondIndices);
                 constraint = new TransformSymmetry(cMesh, rotation, indexPairs, line, fixIndices);
             }
             else

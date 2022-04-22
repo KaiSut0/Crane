@@ -16,10 +16,11 @@ namespace Crane.Components.Constraints
         public MirrorSymmetryComponent()
           : base("Mirror Symmetry", "Mirror Symmetry",
               "Set mirror symmetric constraint.",
-              "Crane", "Const-Symmetry")
+              "Crane", "Constraints")
         {
         }
 
+        public override GH_Exposure Exposure => GH_Exposure.septenary; 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

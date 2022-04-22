@@ -16,7 +16,7 @@ namespace Crane.Core
             Mesh = mesh.DuplicateMesh();
             Mesh.FaceNormals.ComputeFaceNormals();
             Develop(developmentOrigin, developmentRotation);
-            MeshWithDevelop = Utils.JoinMesh(Mesh, DevelopedMesh);
+            MeshWithDevelop = Util.JoinMesh(Mesh, DevelopedMesh);
         }
         public Mesh Mesh { get; private set; }
         public Mesh DevelopedMesh { get; private set; }
@@ -37,8 +37,8 @@ namespace Crane.Core
                 int vidJ = ePair.J;
                 int vidIdev = vidI + numVertices;
                 int vidJdev = vidJ + numVertices;
-                int edgeId = Utils.GetTopologyEdgeIndex(MeshWithDevelop, new IndexPair(vidI, vidJ));
-                int edgeIdDev = Utils.GetTopologyEdgeIndex(MeshWithDevelop, new IndexPair(vidIdev, vidJdev));
+                int edgeId = Util.GetTopologyEdgeIndex(MeshWithDevelop, new IndexPair(vidI, vidJ));
+                int edgeIdDev = Util.GetTopologyEdgeIndex(MeshWithDevelop, new IndexPair(vidIdev, vidJdev));
                 edgeIndexPairs[i] = new IndexPair(edgeId, edgeIdDev);
             }
 

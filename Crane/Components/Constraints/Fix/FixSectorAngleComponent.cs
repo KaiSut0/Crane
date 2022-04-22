@@ -15,7 +15,7 @@ namespace Crane.Components.Constraints
         public FixSectorAngleComponent()
           : base("Fix Sector Angle", "Fix Sector Angle",
               "Set the constraint to fix the selected sector angle to the goal angle.",
-              "Crane", "Const-Fix")
+              "Crane", "Constraints")
         {
         }
 
@@ -105,5 +105,7 @@ namespace Crane.Components.Constraints
         {
             get { return new Guid("de3b8b89-f523-4e3a-b289-ef2356729315"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
     }
 }

@@ -15,7 +15,7 @@ namespace Crane.Components.Constraints
         public FixFoldAngleComponent()
           : base("Fix Fold Angle", "Fix Fold Angle",
               "Set the constraint to fix the selected fold angle to the goal angle.",
-              "Crane", "Const-Fix")
+              "Crane", "Constraints")
         {
         }
 
@@ -89,5 +89,7 @@ namespace Crane.Components.Constraints
         {
             get { return new Guid("2f2aa817-490c-407a-b2a9-c7b7724e884d"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
     }
 }
