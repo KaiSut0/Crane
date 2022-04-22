@@ -36,7 +36,7 @@ namespace Crane.Constraints
         private readonly double[] lengthRatios;
         private readonly double averageEdgeLength;
 
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             var elements = new List<Tuple<int, int, double>>();
             var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
@@ -69,10 +69,10 @@ namespace Crane.Constraints
                 }
             }
 
-            return Matrix<double>.Build.SparseOfIndexed(numEdgePairs, 3 * verts.Length, elements);
+            return new SparseMatrixBuilder(numEdgePairs, 3 * verts.Length, elements);
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             var err = new double[numEdgePairs];
 
@@ -88,7 +88,7 @@ namespace Crane.Constraints
                           (2 * averageEdgeLength * averageEdgeLength));
             }
 
-            return Vector<double>.Build.DenseOfArray(err);
+            return err;
 
         }
     }

@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;
@@ -16,7 +13,7 @@ namespace Crane.Constraints
     public class MountainIntersectPenalty : Constraint
     {
         public MountainIntersectPenalty() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -149,9 +146,10 @@ namespace Crane.Constraints
             {
                 return null;
             }
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -208,7 +206,7 @@ namespace Crane.Constraints
             {
                 return null;
             }
-            return Vector<double>.Build.DenseOfArray(ans.ToArray());
+            return ans.ToArray();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Crane.Constraints
     public class FlatFoldable : Constraint
     {
         public FlatFoldable() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
 
@@ -132,9 +132,9 @@ namespace Crane.Constraints
             }
 
 
-            return Matrix<double>.Build.SparseOfIndexed(rows, cols, elements);
+            return new SparseMatrixBuilder(rows, cols, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
 
@@ -232,7 +232,7 @@ namespace Crane.Constraints
                 err.Add(sum);
             }
 
-            return Vector<double>.Build.DenseOfArray(err.ToArray());
+            return err.ToArray();
         }
     }
 }

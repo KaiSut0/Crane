@@ -16,11 +16,11 @@ namespace Crane.Constraints
         }
         public int AnchorIndex;
         public double Strength;
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             throw new NotImplementedException();
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             double[] error_ = new double[1];
             CMesh cm = cMesh;

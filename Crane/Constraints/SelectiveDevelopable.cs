@@ -27,7 +27,7 @@ namespace Crane.Constraints
         private readonly int[] innerVertexIds;
         private readonly int numInnerVerts;
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
 
@@ -63,10 +63,10 @@ namespace Crane.Constraints
                 err[i] = angleSum;
             }
 
-            return Vector<double>.Build.DenseOfArray(err);
+            return err;
         }
 
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
 
@@ -120,7 +120,9 @@ namespace Crane.Constraints
                     elements.Add(new Tuple<int, int, double>(i, 3 * innerVertexId + k, vCenter[k]));
             }
 
-            return Matrix<double>.Build.SparseOfIndexed(numInnerVerts, 3 * cMesh.Mesh.Vertices.Count, elements);
+            int rows = numInnerVerts;
+            int columns = cMesh.DOF;
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
     }
 }

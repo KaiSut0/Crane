@@ -16,7 +16,7 @@ namespace Crane.Constraints
     public class FlatPanel : Constraint
     {
         public FlatPanel(){}
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = cMesh.TriangulatedEdges.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
@@ -137,10 +137,10 @@ namespace Crane.Constraints
                     }
                 }
             }
-            Matrix<double> jacobian = SparseMatrix.Build.SparseOfIndexed(rows, columns, elements);
-            return jacobian;
+
+            return new SparseMatrixBuilder(rows, columns, elements);
          }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -190,8 +190,8 @@ namespace Crane.Constraints
                 double S_e = (double)(volume / (h_P_initial * h_Q_initial * len_e));
                 error_[e_ind] = S_e;
             }
-            Vector<double> error = DenseVector.Build.DenseOfArray(error_);
-            return error;
+
+            return error_;
         }
     }
 }

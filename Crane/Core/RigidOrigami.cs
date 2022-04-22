@@ -10,6 +10,7 @@ using MathNet.Numerics.LinearAlgebra.Storage;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;
+using Matrix = Rhino.Geometry.Matrix;
 
 namespace Crane.Core
 {
@@ -116,32 +117,33 @@ namespace Crane.Core
         }
         protected void ComputeJacobian()
         {
-            int n = this.CMesh.Mesh.Vertices.Count * 3;
-            Jacobian =(SparseMatrix) SparseMatrix.Build.Sparse(1, n);
+            SparseMatrixBuilder builder = new SparseMatrixBuilder(1, CMesh.DOF);
             if (IsRigidMode)
             {
-                Jacobian =(SparseMatrix) Jacobian.Stack(EdgeLength.Jacobian(this.CMesh));
+                builder.Append(EdgeLength.Jacobian(CMesh));
             }
             if (IsPanelFlatMode)
             {
-                Jacobian =(SparseMatrix) Jacobian.Stack(FlatPanel.Jacobian(this.CMesh));
+                builder.Append(FlatPanel.Jacobian(CMesh));
             }
+
             if (IsFoldBlockMode)
             {
                 var mJacobian = MountainIntersectPenalty.Jacobian(CMesh);
                 var vjacobian = ValleyIntersectPenalty.Jacobian(CMesh);
-                if(mJacobian!=null)
-                    Jacobian =(SparseMatrix) Jacobian.Stack(MountainIntersectPenalty.Jacobian(this.CMesh));
-                if(vjacobian!=null)
-                    Jacobian =(SparseMatrix) Jacobian.Stack(ValleyIntersectPenalty.Jacobian(this.CMesh));
+                if(mJacobian!=null) builder.Append(mJacobian);
+                if(vjacobian!=null) builder.Append(vjacobian);
             }
+
             if (IsConstraintMode)
             {
                 foreach (Constraint constraint in Constraints)
                 {
-                    Jacobian =(SparseMatrix) Jacobian.Stack(constraint.Jacobian(this.CMesh));
+                    builder.Append(constraint.Jacobian(CMesh));
                 }
             }
+
+            Jacobian = (SparseMatrix)Matrix<double>.Build.SparseOfIndexed(builder.Rows, builder.Columns, builder.Elements);
         }
         protected SparseMatrix ComputeFoldAngleJacobian()
         {

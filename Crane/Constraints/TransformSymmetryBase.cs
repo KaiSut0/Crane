@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
 using Rhino;
@@ -43,7 +44,7 @@ namespace Crane.Constraints
         }
 
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             List<double> error = new List<double>();
             for (int i = 0; i < indexPairs.Count; i++)
@@ -68,9 +69,10 @@ namespace Crane.Constraints
             {
                 error.AddRange(fixedPointConstraint.Error(cMesh).ToArray());
             }
-            return Vector<double>.Build.DenseOfArray(error.ToArray());
+
+            return error.ToArray();
         }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = 6 * indexPairs.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
@@ -130,9 +132,10 @@ namespace Crane.Constraints
                 //    elements.Add(new Tuple<int, int, double>(i, 3 * id2 + j, drdx2[j]));
                 //}
             }
-            var mat = Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
-            if (hasFixedPints) mat = mat.Stack(fixedPointConstraint.Jacobian(cMesh));
-            return mat;
+
+            var builder = new SparseMatrixBuilder(rows, columns, elements);
+            if (hasFixedPints) builder.Append(fixedPointConstraint.Jacobian(cMesh));
+            return builder;
         }
 
 

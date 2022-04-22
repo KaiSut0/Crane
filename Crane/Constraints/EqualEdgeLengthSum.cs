@@ -19,7 +19,7 @@ namespace Crane.Constraints
         private readonly int[] firstEdgeIds;
         private readonly int[] secondEdgeIds;
 
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = 1;
             int columns = cMesh.DOF;
@@ -82,12 +82,13 @@ namespace Crane.Constraints
                     elements.Add(Tuple.Create(0, 3*key+j, val));
                 }
             }
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+
+            return new SparseMatrixBuilder(rows, columns, elements);
 
 
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             double error = 0;
             double firstEdgeLength = 0;
@@ -95,7 +96,7 @@ namespace Crane.Constraints
             foreach (int eid in firstEdgeIds) firstEdgeLength += cMesh.Mesh.TopologyEdges.EdgeLine(eid).Length;
             foreach (int eid in secondEdgeIds) secondEdgeLength += cMesh.Mesh.TopologyEdges.EdgeLine(eid).Length;
             error = (firstEdgeLength - secondEdgeLength) / cMesh.AverageEdgeLength;
-            return Vector<double>.Build.DenseOfArray(new double[] { error });
+            return new double[] { error };
         }
     }
 }

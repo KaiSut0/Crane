@@ -18,7 +18,7 @@ namespace Crane.Constraints
         }
         private int[] vertexIds;
         private double[] goalSectorAngleSums;
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         { 
             List<Dictionary<int, Vector3d>> derivativeList = new List<Dictionary<int, Vector3d>>();
             int numPairs = vertexIds.Length;
@@ -48,10 +48,11 @@ namespace Crane.Constraints
                     }
                 }
             }
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             List<double> errors = new List<double>();
             int numPairs = vertexIds.Length;
@@ -64,7 +65,8 @@ namespace Crane.Constraints
                 double goalSectorAngleSum = goalSectorAngleSums[i];
                 errors.Add(pAngleSum - goalSectorAngleSum);
             }
-            return Vector<double>.Build.DenseOfArray(errors.ToArray());
+
+            return errors.ToArray();
         }
         private double SectorAngleSum(CMesh cMesh, int vId, int[] faces)
         {

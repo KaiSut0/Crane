@@ -11,7 +11,7 @@ namespace Crane.Constraints
     public class RigidEdge : Constraint
     {
         public RigidEdge() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = cMesh.Mesh.TopologyEdges.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
@@ -40,10 +40,9 @@ namespace Crane.Constraints
                 }
             }
 
-            Matrix<double> jacobian = SparseMatrix.Build.SparseOfIndexed(rows, columns, elements);
-            return jacobian;
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             int n = cMesh.Mesh.TopologyEdges.Count;
             double[] error_ = new double[n];
@@ -54,8 +53,7 @@ namespace Crane.Constraints
                 Point3d b = cMesh.Mesh.Vertices[ind.J];
                 error_[i] = ((double)a.DistanceToSquared(b) / cMesh.EdgeLengthSquared[i] - 1) / 2;
             }
-            Vector<double> error = DenseVector.Build.DenseOfArray(error_);
-            return error;
+            return error_;
         }
     }
 }
