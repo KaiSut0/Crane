@@ -17,6 +17,8 @@ namespace Crane.Core
         public Mesh Mesh { get; private set; }
         public Mesh InitialMesh { get; private set; }
         public PointCloud VerticesCloud { get; private set; }
+        public Point3d[] Vertices { get; private set; }
+        public Vector3d[] FaceNormals { get; private set; }
         public double VertexSearchTolerance { get; private set; }
         public double AverageEdgeLength { get; private set; }
         public Vector<double> MeshVerticesVector { get; private set; }
@@ -1162,10 +1164,11 @@ namespace Crane.Core
                 for (int i = 0; i < NumberOfVertices; i++)
                 {
                     this.Mesh.Vertices.Add(this.MeshVerticesVector[3 * i], this.MeshVerticesVector[3 * i + 1], this.MeshVerticesVector[3 * i + 2]);
+                    Vertices[i] = new Point3d(MeshVerticesVector[3 * i], MeshVerticesVector[3 * i + 1], MeshVerticesVector[3 * i + 2]);
                 }
             }
             this.Mesh.FaceNormals.ComputeFaceNormals();
-            this.Mesh.Normals.ComputeNormals();
+            //this.Mesh.Normals.ComputeNormals();
         }
         public void UpdateMesh(Point3d[] verts)
         {
@@ -1173,7 +1176,8 @@ namespace Crane.Core
             for (int i = 0; i < NumberOfVertices; i++)
             {
                 this.Mesh.Vertices.Add(verts[i]);
-            }
+            }   
+            Vertices = verts;
             Mesh.FaceNormals.ComputeFaceNormals();
             Mesh.Normals.ComputeNormals();
         }
@@ -1183,8 +1187,8 @@ namespace Crane.Core
             for(int i = 0; i < this.Mesh.TopologyEdges.Count; i++)
             {
                 IndexPair indexPair = this.Mesh.TopologyEdges.GetTopologyVertices(i);
-                Point3d from = this.Mesh.Vertices[indexPair.I];
-                Point3d to = this.Mesh.Vertices[indexPair.J];
+                Point3d from = Vertices[indexPair.I];
+                Point3d to = Vertices[indexPair.J];
                 this.EdgeLengthSquared.Add(from.DistanceToSquared(to));
             }
 

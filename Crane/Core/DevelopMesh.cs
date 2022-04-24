@@ -57,6 +57,31 @@ namespace Crane.Core
             return vertexIndexPairs;
         }
 
+        public List<Line> ComputeFaceTree()
+        {
+            var bfs = new UndirectedBreadthFirstSearchAlgorithm<int, SEdge<int>>(faceTree);
+
+            List<Line> faceTreeLines = new List<Line>();
+            List<int> faceIDs = new List<int>();
+
+            bfs.DiscoverVertex += fi =>
+            {
+                var fei = Mesh.TopologyEdges.GetEdgesForFace(fi);
+                var adfs = faceTree.AdjacentVertices(fi);
+                foreach (var fj in adfs)
+                {
+                    Point3d faceCenterI = DevelopedMesh.Faces.GetFaceCenter(fi);
+                    if (!faceIDs.Contains(fj))
+                    {
+                        Point3d faceCenterJ = DevelopedMesh.Faces.GetFaceCenter(fj);
+                        faceTreeLines.Add(new Line(faceCenterI, faceCenterJ));
+                    }
+                }
+            };
+            bfs.Compute(0);
+            return faceTreeLines;
+        }
+
         private void Develop(Point2d developmentOrigin, double developmentRotation = 0)
         {
             SetFaceGraph();

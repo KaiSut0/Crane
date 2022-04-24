@@ -9,11 +9,11 @@ namespace Crane.Constraints
     public class AnchorToGround : Constraint
     {
         public AnchorToGround() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             throw new NotImplementedException();
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             throw new NotImplementedException();
         }

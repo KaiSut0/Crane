@@ -36,7 +36,7 @@ namespace Crane.Constraints
         private readonly double[] setAngles;
         private readonly double[] stiffness;
 
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = centerPtIds.Length;
             int columns = cMesh.DOF;
@@ -92,10 +92,11 @@ namespace Crane.Constraints
                 }
 
             }
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             int rows = centerPtIds.Length;
             int columns = cMesh.DOF;
@@ -117,7 +118,7 @@ namespace Crane.Constraints
             }
 
 
-            return Vector<double>.Build.DenseOfArray(err);
+            return err;
         }
     }
 }

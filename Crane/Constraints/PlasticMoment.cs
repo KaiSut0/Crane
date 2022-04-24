@@ -24,7 +24,7 @@ namespace Crane.Constraints
         private readonly double[] _setAngles;
         private readonly double[] _hingeStiffness;
         private readonly double[] _plasticMoments;
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = _innerEdgeIds.Length;
             int columns = cMesh.DOF;
@@ -162,9 +162,9 @@ namespace Crane.Constraints
                 }
             }
 
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             int rows = _innerEdgeIds.Length;
             var foldAngles = cMesh.GetFoldAngles();
@@ -211,7 +211,7 @@ namespace Crane.Constraints
                 //err[i] = 0.5 * Math.Pow(foldAngle - setAngle, 2);
             }
 
-            return Vector<double>.Build.DenseOfArray(err);
+            return err;
 
         }
     }

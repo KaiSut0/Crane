@@ -13,7 +13,7 @@ namespace Crane.Constraints
     public class HoleAngleDevelopable : Constraint
     {
         public HoleAngleDevelopable(){}
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             List<Dictionary<int, Vector3d>> derivativeList = new List<Dictionary<int, Vector3d>>();
             int rows = cMesh.HoleLoopVertexIdsList.Count;
@@ -65,10 +65,10 @@ namespace Crane.Constraints
                 }
             }
 
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             var pts = cMesh.Mesh.Vertices;
             List<double> errors = new List<double>();
@@ -96,7 +96,7 @@ namespace Crane.Constraints
                 }
             }
 
-            return Vector<double>.Build.DenseOfArray(errors.ToArray());
+            return errors.ToArray();
         }
     }
 }

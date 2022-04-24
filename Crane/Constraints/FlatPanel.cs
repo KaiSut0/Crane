@@ -16,7 +16,8 @@ namespace Crane.Constraints
     public class FlatPanel : Constraint
     {
         public FlatPanel(){}
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        private static object lockObj = new object();
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = cMesh.TriangulatedEdges.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
@@ -32,7 +33,7 @@ namespace Crane.Constraints
                 return null;
             }
 
-            for (int e_ind = 0; e_ind < cm.TriangulatedEdges.Count; e_ind++)
+            Parallel.For(0, cm.TriangulatedEdges.Count, e_ind =>
             {
                 /// Register indices
                 IndexPair edge_ind = cm.TriangulatedEdges[e_ind];
@@ -72,7 +73,8 @@ namespace Crane.Constraints
                 {
                     if (v_ind == p)
                     {
-                        Vector3d delS_delX_p = Vector3d.CrossProduct(vec_uq, vec_uv) / (h_P_initial * h_Q_initial * len_e);
+                        Vector3d delS_delX_p =
+                            Vector3d.CrossProduct(vec_uq, vec_uv) / (h_P_initial * h_Q_initial * len_e);
                         List<double> vars_v = new List<double>();
                         vars_v.Add(delS_delX_p.X);
                         vars_v.Add(delS_delX_p.Y);
@@ -84,12 +86,17 @@ namespace Crane.Constraints
                             int cind = 3 * v_ind + x;
                             int rind = e_ind;
                             Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
+                            lock (lockObj)
+                            {
+                                elements.Add(element);
+                            }
                         }
                     }
+
                     if (v_ind == q)
                     {
-                        Vector3d delS_delX_q = Vector3d.CrossProduct(vec_uv, vec_up) / (h_P_initial * h_Q_initial * len_e);
+                        Vector3d delS_delX_q =
+                            Vector3d.CrossProduct(vec_uv, vec_up) / (h_P_initial * h_Q_initial * len_e);
                         List<double> vars_q = new List<double>();
                         vars_q.Add(delS_delX_q.X);
                         vars_q.Add(delS_delX_q.Y);
@@ -100,12 +107,17 @@ namespace Crane.Constraints
                             int cind = 3 * v_ind + x;
                             int rind = e_ind;
                             Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
+                            lock (lockObj)
+                            {
+                                elements.Add(element);
+                            }
                         }
                     }
+
                     if (v_ind == u)
                     {
-                        Vector3d delS_delX_u = Vector3d.CrossProduct(vec_vq, vec_vp) / (h_P_initial * h_Q_initial * len_e);
+                        Vector3d delS_delX_u =
+                            Vector3d.CrossProduct(vec_vq, vec_vp) / (h_P_initial * h_Q_initial * len_e);
                         List<double> vars_u = new List<double>();
                         vars_u.Add(delS_delX_u.X);
                         vars_u.Add(delS_delX_u.Y);
@@ -116,12 +128,17 @@ namespace Crane.Constraints
                             int cind = 3 * v_ind + x;
                             int rind = e_ind;
                             Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
+                            lock (lockObj)
+                            {
+                                elements.Add(element);
+                            }
                         }
                     }
+
                     if (v_ind == v)
                     {
-                        Vector3d delS_delX_v = Vector3d.CrossProduct(vec_up, vec_uq) / (h_P_initial * h_Q_initial * len_e);
+                        Vector3d delS_delX_v =
+                            Vector3d.CrossProduct(vec_up, vec_uq) / (h_P_initial * h_Q_initial * len_e);
                         List<double> vars_v = new List<double>();
                         vars_v.Add(delS_delX_v.X);
                         vars_v.Add(delS_delX_v.Y);
@@ -132,15 +149,18 @@ namespace Crane.Constraints
                             int cind = 3 * v_ind + x;
                             int rind = e_ind;
                             Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
+                            lock (lockObj)
+                            {
+                                elements.Add(element);
+                            }
                         }
                     }
                 }
-            }
-            Matrix<double> jacobian = SparseMatrix.Build.SparseOfIndexed(rows, columns, elements);
-            return jacobian;
+            });
+
+            return new SparseMatrixBuilder(rows, columns, elements);
          }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -190,8 +210,8 @@ namespace Crane.Constraints
                 double S_e = (double)(volume / (h_P_initial * h_Q_initial * len_e));
                 error_[e_ind] = S_e;
             }
-            Vector<double> error = DenseVector.Build.DenseOfArray(error_);
-            return error;
+
+            return error_;
         }
     }
 }

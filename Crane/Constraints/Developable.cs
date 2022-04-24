@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
 using Rhino.Geometry;
@@ -10,7 +11,8 @@ namespace Crane.Constraints
     public class Developable : Constraint
     {
         public Developable() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        private static object lockObj = new object();
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
 
@@ -35,7 +37,7 @@ namespace Crane.Constraints
             int rows = internalVertices.Count;
 
             //各内部頂点について
-            for (int r = 0; r < internalVertices.Count; r++)
+            Parallel.For(0, internalVertices.Count, r =>
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
@@ -93,32 +95,27 @@ namespace Crane.Constraints
                     v1 -= v2;
                     v_center -= v1;
 
-                    elements.Add(new Tuple<int, int, double>(r, index*3, v1.X));
-                    elements.Add(new Tuple<int, int, double>(r, index*3+1, v1.Y));
-                    elements.Add(new Tuple<int, int, double>(r, index*3+2, v1.Z));
+                    lock (lockObj)
+                    {
+                        elements.Add(new Tuple<int, int, double>(r, index*3, v1.X));
+                        elements.Add(new Tuple<int, int, double>(r, index*3+1, v1.Y));
+                        elements.Add(new Tuple<int, int, double>(r, index*3+2, v1.Z));
+                    }
 
-
-
-                    //var.Add((double)v1.X);
-                    //var.Add((double)v1.Y);
-                    //var.Add((double)v1.Z);
-                    //c_index.Add(index * 3);
-                    //c_index.Add(index * 3 + 1);
-                    //c_index.Add(index * 3 + 2);
-                    //r_index.Add(r);
-                    //r_index.Add(r);
-                    //r_index.Add(r);
                 }
 
-                elements.Add(new Tuple<int, int, double>(r, index_center * 3, v_center.X));
-                elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 1, v_center.Y));
-                elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 2, v_center.Z));
+                lock (lockObj)
+                {
+                    elements.Add(new Tuple<int, int, double>(r, index_center * 3, v_center.X));
+                    elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 1, v_center.Y));
+                    elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 2, v_center.Z));
+                }
 
-            }
+            });
 
-            return Matrix<double>.Build.SparseOfIndexed(rows, cols, elements);
+            return new SparseMatrixBuilder(rows, cols, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             
             Mesh m = cMesh.Mesh;
@@ -187,9 +184,7 @@ namespace Crane.Constraints
                 err.Add((double)sum);
             }
 
-            
-
-            return Vector<double>.Build.DenseOfArray(err.ToArray());
+            return err.ToArray();
 
         }
     }

@@ -16,7 +16,7 @@ namespace Crane.Constraints
     public class ValleyIntersectPenalty : Constraint
     {
         public ValleyIntersectPenalty() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -147,9 +147,9 @@ namespace Crane.Constraints
 
             if (rows == 0)
                 return null;
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -206,7 +206,7 @@ namespace Crane.Constraints
 
             if (ans.Count == 0)
                 return null;
-            return Vector<double>.Build.DenseOfArray(ans.ToArray());
+            return ans.ToArray();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Crane.Constraints
         public double RotationAngle;
         public double TranslateCoefficient;
         #endregion
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             if (IsS1orS2 == 0)
             {
@@ -98,10 +98,9 @@ namespace Crane.Constraints
             elements.Add(dCda1);
             elements.Add(dCda2);
 
-            Matrix<double> jacobian = SparseMatrix.Build.SparseOfIndexed(rows, columns, elements);
-            return jacobian;
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             if (IsS1orS2 == 0)
             {
@@ -122,8 +121,7 @@ namespace Crane.Constraints
             error_[0] = C[0];
             error_[1] = C[1];
             error_[2] = C[2];
-            Vector<double> error = DenseVector.Build.DenseOfArray(error_);
-            return error;
+            return error_;
         }
     }
 }
