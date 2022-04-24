@@ -33,6 +33,7 @@ namespace Crane.Components.Util
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddMeshParameter("DevelopMesh", "DM", "Developed mesh.", GH_ParamAccess.item);
+            pManager.AddLineParameter("Face Tree", "Face Tree", "Face tree lines.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace Crane.Components.Util
             var dev = new Core.DevelopMesh(mesh, new Point2d(devOrigin.X, devOrigin.Y));
             devMesh = dev.DevelopedMesh;
             DA.SetData(0, devMesh);
+            DA.SetDataList(1, dev.ComputeFaceTree());
         }
 
         /// <summary>

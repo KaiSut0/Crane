@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Crane.Core;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra;
 using Rhino;
 using Rhino.Geometry;
 
@@ -11,15 +10,16 @@ namespace Crane.Constraints
     public class RigidEdge : Constraint
     {
         public RigidEdge() { }
+        private static object lockObj = new object();
         public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             int rows = cMesh.Mesh.TopologyEdges.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            for (int i = 0; i < cMesh.Mesh.TopologyEdges.Count; i++)
+            Parallel.For(0, cMesh.Mesh.TopologyEdges.Count, i =>
             {
-                Rhino.IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
+                IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
                 Point3d a = cMesh.Mesh.Vertices[ind.I];
                 Point3d b = cMesh.Mesh.Vertices[ind.J];
 
@@ -35,11 +35,14 @@ namespace Crane.Constraints
                     int cind2 = 3 * ind.J + j;
                     Tuple<int, int, double> element2 = Tuple.Create(rind2, cind2, var2);
 
-                    elements.Add(element1);
-                    elements.Add(element2);
+                    lock (lockObj)
+                    {
+                        elements.Add(element1);
+                        elements.Add(element2);
+                    }
                 }
-            }
 
+            });
             return new SparseMatrixBuilder(rows, columns, elements);
         }
         public override double[] Error(CMesh cMesh)

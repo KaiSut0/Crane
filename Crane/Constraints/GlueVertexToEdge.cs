@@ -18,7 +18,7 @@ namespace Crane.Constraints
         }
         public GlueVertexToEdge(CMesh cMesh, Point3d vertex, Line edge)
         {
-            vertexIds = Util.GetPointID(cMesh.Mesh, vertex);
+            vertexIds = cMesh.VerticesCloud.ClosestPoint(vertex);
             edgeIds = cMesh.GetEdgeIndex(edge);
         }
         private int vertexIds;
