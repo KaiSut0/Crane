@@ -890,11 +890,11 @@ namespace Crane.Core
 
         public Vector3d[] ComputeDerivativeOfSectorAngle(int fId, int v1Id, int v2Id, int v3Id)
         {
-            var v1 = Mesh.Vertices.Point3dAt(v1Id);
-            var v2 = Mesh.Vertices.Point3dAt(v2Id);
-            var v3 = Mesh.Vertices.Point3dAt(v3Id);
+            var v1 = Vertices[v1Id];
+            var v2 = Vertices[v2Id];
+            var v3 = Vertices[v3Id];
             var sec = Util.ComputeAngleFrom3Pts(v1, v2, v3);
-            var n = Mesh.FaceNormals[fId];
+            var n = ComputeFaceNormal(fId);
             var v12 = v1 - v2;
             var v32 = v3 - v2;
             var v12SDist = v12.SquareLength;
@@ -905,6 +905,19 @@ namespace Crane.Core
             var DSecDv2 = -nv12 + nv32;
             var DSecDv3 = -nv32;
             return new Vector3d[] { DSecDv1, DSecDv2, DSecDv3 };
+        }
+
+        public Vector3d ComputeFaceNormal(int fId)
+        {
+            var f = Mesh.Faces[fId];
+            var v1 = Vertices[f.A];
+            var v2 = Vertices[f.B];
+            var v3 = Vertices[f.C];
+            var v12 = v2 - v1;
+            var v13 = v3 - v1;
+            var n = Vector3d.CrossProduct(v12, v13);
+            n.Unitize();
+            return n;
         }
 
         public Vector3d[] ComputeDerivativeOfEdgeLength(int eId)
@@ -1152,6 +1165,7 @@ namespace Crane.Core
                 for (int i = 0; i < NumberOfVertices; i++)
                 {
                     this.Mesh.Vertices.Add(this.ConfigulationVector[3 * i], this.ConfigulationVector[3 * i + 1], this.ConfigulationVector[3 * i + 2]);
+                    Vertices[i] = new Point3d(MeshVerticesVector[3 * i], MeshVerticesVector[3 * i + 1], MeshVerticesVector[3 * i + 2]);
                 }
                 for (int i = 0; i < 2; i++)
                 {
@@ -1167,8 +1181,8 @@ namespace Crane.Core
                     Vertices[i] = new Point3d(MeshVerticesVector[3 * i], MeshVerticesVector[3 * i + 1], MeshVerticesVector[3 * i + 2]);
                 }
             }
-            this.Mesh.FaceNormals.ComputeFaceNormals();
-            //this.Mesh.Normals.ComputeNormals();
+            this.Mesh.FaceNormals.ComputeFaceNormals(); 
+            this.Mesh.Normals.ComputeNormals();
         }
         public void UpdateMesh(Point3d[] verts)
         {
@@ -1426,6 +1440,7 @@ namespace Crane.Core
         public void UpdateVerticesCloud()
         {
             VerticesCloud = new PointCloud(Mesh.Vertices.ToPoint3dArray());
+            Vertices = Mesh.Vertices.ToPoint3dArray();
         }
         public void SetFoldingSpeed(double[] foldingSpeed)
         {

@@ -26,7 +26,7 @@ namespace Crane.Constraints
         public override double[] Error(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
-            var verts = m.Vertices.ToPoint3dArray();
+            var verts = cMesh.Vertices;
             var endVerts = m.TopologyEdges.GetTopologyVertices(edgeIds);
             Point3d xp = verts[endVerts.I];
             Point3d xq = verts[endVerts.J];
@@ -44,7 +44,7 @@ namespace Crane.Constraints
             int rows = 1;
             int columns = cMesh.DOF;
             Mesh m = cMesh.Mesh;
-            var verts = m.Vertices.ToPoint3dArray();
+            var verts = cMesh.Vertices;
             var endVerts = m.TopologyEdges.GetTopologyVertices(edgeIds);
             Point3d xp = verts[endVerts.I];
             Point3d xq = verts[endVerts.J];

@@ -555,8 +555,7 @@ namespace Crane.Core
         public double NRSolve(Vector<double> initialMoveVector, double threshold, int iterationMaxNewtonMethod, int iterationMaxCGNR)
         {
             ComputeJacobian();
-            ComputeError();
-            Residual = Error * Error;
+            Residual = ComputeResidual();
             var cgnrComp = new List<double>();
             Vector<double> constrainedMoveVector = Vector<double>.Build.Dense(3 * CMesh.Mesh.Vertices.Count);
             if(initialMoveVector.L2Norm() != 0)
@@ -583,7 +582,7 @@ namespace Crane.Core
                 //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
                 constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
                 LinearSearch(constrainedMoveVector);
-                Residual = Error * Error;
+                Residual = Error * Error / (Error.Count * Error.Count);
 
                 nowFoldAngles = Vector<double>.Build.Dense(CMesh.GetFoldAngles().ToArray());
                 CMesh.SetFoldingSpeed((nowFoldAngles - foldAngles).ToArray());

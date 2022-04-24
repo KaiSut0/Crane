@@ -41,7 +41,7 @@ namespace Crane.Constraints
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
-                Vector3d center = new Vector3d(topo[index_center]);
+                var center = new Vector3d(cMesh.Vertices[index_center]);
 
                 //接続点のインデックス、位置ベクトル
                 List<int> index_neighbors = new List<int>();
@@ -57,7 +57,7 @@ namespace Crane.Constraints
                 //位置ベクトル取得
                 foreach (int index_neighbor in index_neighbors)
                 {
-                    neighbors.Add(new Vector3d(topo[index_neighbor]));
+                    neighbors.Add(new Vector3d(cMesh.Vertices[index_neighbor]));
                 }
 
                 //方向ベクトル取得
@@ -122,7 +122,6 @@ namespace Crane.Constraints
 
             List<double> err = new List<double>();
 
-            m.Normals.ComputeNormals();
             var topo = m.TopologyVertices;
             topo.SortEdges();
 
@@ -141,7 +140,7 @@ namespace Crane.Constraints
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
-                Vector3d center = new Vector3d(topo[index_center]);
+                Vector3d center = new Vector3d(cMesh.Vertices[index_center]);
 
                 //接続点のインデックス、位置ベクトル
                 List<int> index_neighbors = new List<int>();
@@ -157,7 +156,7 @@ namespace Crane.Constraints
                 //位置ベクトル取得
                 foreach (int index_neighbor in index_neighbors)
                 {
-                    neighbors.Add(new Vector3d(topo[index_neighbor]));
+                    neighbors.Add(new Vector3d(cMesh.Vertices[index_neighbor]));
                 }
 
                 //方向ベクトル取得
@@ -181,7 +180,7 @@ namespace Crane.Constraints
 
                 sum -= 2 * Math.PI;
 
-                err.Add((double)sum);
+                err.Add(sum);
             }
 
             return err.ToArray();
