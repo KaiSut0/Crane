@@ -162,8 +162,6 @@ namespace Crane.Core
             int columns = this.CMesh.DOF;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            this.CMesh.Mesh.FaceNormals.ComputeFaceNormals();
-
             MeshVertexList vert = this.CMesh.Mesh.Vertices;
 
             for (int e_ind = 0; e_ind < this.CMesh.InnerEdges.Count; e_ind++)
@@ -192,8 +190,8 @@ namespace Crane.Core
                     }
                 }
                 /// Compute normals
-                Vector3d normal_P = this.CMesh.Mesh.FaceNormals[P];
-                Vector3d normal_Q = this.CMesh.Mesh.FaceNormals[Q];
+                Vector3d normal_P = this.CMesh.FaceNormals[P];
+                Vector3d normal_Q = this.CMesh.FaceNormals[Q];
                 /// Compute h_P & cot_Pu
                 Vector3d vec_up = vert[p] - vert[u];
                 Vector3d vec_uv = vert[v] - vert[u];
@@ -456,7 +454,6 @@ namespace Crane.Core
         protected Vector<double> CGNRSolveForRectangleMatrixNative(Matrix<double> jacobian, Vector<double> b, Vector<double> x,
             double threshold, int iterationMax)
         {
-            //throw new NotImplementedException();
             SparseCompressedRowMatrixStorage<double> storage =
                 (SparseCompressedRowMatrixStorage<double>)jacobian.Storage;
             int n = storage.RowCount;

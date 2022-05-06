@@ -20,8 +20,8 @@ namespace Crane.Constraints
             Parallel.For(0, cMesh.Mesh.TopologyEdges.Count, i =>
             {
                 IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
-                Point3d a = cMesh.Mesh.Vertices[ind.I];
-                Point3d b = cMesh.Mesh.Vertices[ind.J];
+                Point3d a = cMesh.Vertices[ind.I];
+                Point3d b = cMesh.Vertices[ind.J];
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -52,8 +52,8 @@ namespace Crane.Constraints
             for (int i = 0; i < n; i++)
             {
                 IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
-                Point3d a = cMesh.Mesh.Vertices[ind.I];
-                Point3d b = cMesh.Mesh.Vertices[ind.J];
+                Point3d a = cMesh.Vertices[ind.I];
+                Point3d b = cMesh.Vertices[ind.J];
                 error_[i] = ((double)a.DistanceToSquared(b) / cMesh.EdgeLengthSquared[i] - 1) / 2;
             }
             return error_;

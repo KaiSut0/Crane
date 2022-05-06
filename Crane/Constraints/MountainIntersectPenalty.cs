@@ -194,7 +194,7 @@ namespace Crane.Constraints
                 Vector3d vec_uq = vert[q] - vert[u];
 
                 double volume = vec_up * Vector3d.CrossProduct(vec_uq, vec_uv);
-                double S_e = (volume / (h_P_initial * h_Q_initial * len_e));
+                double S_e = (volume / (h_P_initial * h_Q_initial * len_e)) + 1e-3;
                 if (volume > 0)
                 {
                     ans.Add(S_e);
