@@ -161,6 +161,7 @@
     <Compile Include="Constraints\FixBoundarySectorAngle.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngleSum.cs" />
     <Compile Include="Constraints\GlueVertexToEdge2.cs" />
+    <Compile Include="Constraints\GlueVertices2.cs" />
     <Compile Include="Constraints\HoleAngleDevelopable.cs" />
     <Compile Include="Constraints\HoleVectorDevelopable.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />

@@ -70,7 +70,7 @@ namespace Crane.Constraints
         }
         private double SectorAngleSum(CMesh cMesh, int vId, int[] faces)
         {
-            var pts = cMesh.Mesh.Vertices;
+            var pts = cMesh.Vertices;
             double angleSum = 0;
             foreach (var fId in faces)
             {
