@@ -60,7 +60,7 @@ namespace Crane.Constraints
 
         public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
-            Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+            Point3d[] verts = cMesh.Vertices;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
             int rows = numEdgePairs + numDevMeshVertices;
             //int rows = numEdgePairs;

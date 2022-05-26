@@ -1,6 +1,8 @@
 ﻿using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -99,11 +101,12 @@ namespace Crane.Components.Solver
 
             rigidOrigami.SaveMode(isRigid, isPanelFlat, isFoldBlock, isConstraint);
 
+
             if (solve)
             {
                 var moveVector = Vector<double>.Build.Dense(rigidOrigami.CMesh.DOF);
                 residual = rigidOrigami.NRSolve(moveVector, threshold, nrIteration, cgnrIteration);
-                
+
             }
 
             DA.SetData(0, rigidOrigami.CMesh);
@@ -126,6 +129,7 @@ namespace Crane.Components.Solver
                 return Properties.Resource.icons_static_solver;
             }
         }
+
 
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.

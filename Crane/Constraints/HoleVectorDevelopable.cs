@@ -14,7 +14,7 @@ namespace Crane.Constraints
 
         public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
-            var pts = cMesh.Mesh.Vertices;
+            var pts = cMesh.Vertices;
             List<Dictionary<int, Vector3d>> derivativeList1 = new List<Dictionary<int, Vector3d>>();
             List<Dictionary<int, Vector3d>> derivativeList2 = new List<Dictionary<int, Vector3d>>();
             int rows = 2 * cMesh.HoleLoopVertexIdsList.Count;
@@ -141,7 +141,7 @@ namespace Crane.Constraints
 
         public override double[] Error(CMesh cMesh)
         {
-            var pts = cMesh.Mesh.Vertices;
+            var pts = cMesh.Vertices;
             List<double> errors = new List<double>();
             foreach (var hole in cMesh.HoleLoopVertexIdsList)
             {

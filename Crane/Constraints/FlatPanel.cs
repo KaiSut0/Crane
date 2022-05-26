@@ -26,7 +26,7 @@ namespace Crane.Constraints
             CMesh cm = cMesh;
             Mesh m = cMesh.Mesh;
 
-            MeshVertexList vert = m.Vertices;
+            var vert = cm.Vertices;
 
             if (cm.TriangulatedEdges == null)
             {
@@ -69,7 +69,7 @@ namespace Crane.Constraints
                 Vector3d vec_vp = vert[p] - vert[v];
                 Vector3d vec_vq = vert[q] - vert[v];
                 /// Compute Jacobian
-                for (int v_ind = 0; v_ind < vert.Count; v_ind++)
+                for (int v_ind = 0; v_ind < vert.Length; v_ind++)
                 {
                     if (v_ind == p)
                     {
@@ -167,9 +167,7 @@ namespace Crane.Constraints
 
             double[] error_ = new double[cm.TriangulatedEdges.Count];
 
-            m.FaceNormals.ComputeFaceNormals();
-
-            MeshVertexList vert = m.Vertices;
+            var vert = cMesh.Vertices;
 
             for (int e_ind = 0; e_ind < cm.TriangulatedEdges.Count; e_ind++)
             {
@@ -207,7 +205,7 @@ namespace Crane.Constraints
                 Vector3d vec_uq = vert[q] - vert[u];
 
                 double volume = vec_up * Vector3d.CrossProduct(vec_uq, vec_uv);
-                double S_e = (double)(volume / (h_P_initial * h_Q_initial * len_e));
+                double S_e = (volume / (h_P_initial * h_Q_initial * len_e));
                 error_[e_ind] = S_e;
             }
 

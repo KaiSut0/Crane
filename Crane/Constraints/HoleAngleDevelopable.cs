@@ -70,7 +70,7 @@ namespace Crane.Constraints
 
         public override double[] Error(CMesh cMesh)
         {
-            var pts = cMesh.Mesh.Vertices;
+            var pts = cMesh.Vertices;
             List<double> errors = new List<double>();
             if (cMesh.HoleLoopVertexIdsList.Count != 0)
             {

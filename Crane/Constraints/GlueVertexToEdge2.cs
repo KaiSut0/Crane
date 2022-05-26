@@ -9,14 +9,14 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Crane.Constraints
 {
-    public class GlueVertexToEdge : Constraint
+    public class GlueVertexToEdge2 : Constraint
     {
-        public GlueVertexToEdge(int vertexIds, int edgeIds)
+        public GlueVertexToEdge2(int vertexIds, int edgeIds)
         {
             this.vertexIds = vertexIds;
             this.edgeIds = edgeIds;
         }
-        public GlueVertexToEdge(CMesh cMesh, Point3d vertex, Line edge)
+        public GlueVertexToEdge2(CMesh cMesh, Point3d vertex, Line edge)
         {
             vertexIds = cMesh.VerticesCloud.ClosestPoint(vertex);
             edgeIds = cMesh.GetEdgeIndex(edge);
@@ -36,12 +36,12 @@ namespace Crane.Constraints
             var t1 = v1 / v1.Length;
             var t2 = v2 / v2.Length;
             var y = Vector3d.CrossProduct(t1, t2);
-            double err = 0.5 * y * y;
-            return new double[] { err };
+            //double err = 0.5 * y * y;
+            return new double[] { y.X, y.Y, y.Z };
         }
         public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
-            int rows = 1;
+            int rows = 3;
             int columns = cMesh.DOF;
             Mesh m = cMesh.Mesh;
             var verts = cMesh.Vertices;
@@ -55,12 +55,12 @@ namespace Crane.Constraints
             var t2 = v2 / v2.Length;
             var y = Vector3d.CrossProduct(t1, t2);
 
-            var drdxu = ( Vector3d.CrossProduct(t2, y) - (y * Vector3d.CrossProduct(t1, t2) * t1)) / v1.Length;
+            var drdxu = (Vector3d.CrossProduct(t2, y) - (y * Vector3d.CrossProduct(t1, t2) * t1)) / v1.Length;
             var drdxq = (-Vector3d.CrossProduct(t1, y) - (y * Vector3d.CrossProduct(t1, t2) * t2)) / v2.Length;
-            var drdxp = ( Vector3d.CrossProduct(y, t2) + (y * Vector3d.CrossProduct(t1, t2) * t1)) / v1.Length
+            var drdxp = (Vector3d.CrossProduct(y, t2) + (y * Vector3d.CrossProduct(t1, t2) * t1)) / v1.Length
                       + (-Vector3d.CrossProduct(y, t1) + (y * Vector3d.CrossProduct(t1, t2) * t2)) / v2.Length;
             var elements = new List<Tuple<int, int, double>>();
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 elements.Add(new Tuple<int, int, double>(0, 3 * vertexIds + i, drdxu[i]));
                 elements.Add(new Tuple<int, int, double>(0, 3 * endVerts.J + i, drdxq[i]));

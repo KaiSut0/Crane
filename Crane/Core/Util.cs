@@ -150,7 +150,7 @@ namespace Crane.Core
             return hasRot;
         }
 
-        private static bool HasTransformed(List<Point3d> pts, int searchId, List<int> searchIds, Transform trans,
+        private static bool HasTransformed(Point3d[] pts, int searchId, List<int> searchIds, Transform trans,
             double tolerance, out int id)
         {
             bool hasTrans = false;
@@ -218,14 +218,14 @@ namespace Crane.Core
 
         }
 
-        public static void CreateTransformIndexPairs(List<Point3d> pts, Transform trans, double tolearance,
+        public static void CreateTransformIndexPairs(Point3d[] pts, Transform trans, double tolearance,
             out List<IndexPair> transIndexPair, out List<int> fixedIndices)
         {
             transIndexPair = new List<IndexPair>();
             fixedIndices = new List<int>();
-            List<int> IDList = CreateIDList(pts.Count);
+            List<int> IDList = CreateIDList(pts.Length);
             int i = 0;
-            while (i < pts.Count && IDList.Count > 0)
+            while (i < pts.Length && IDList.Count > 0)
             {
                 int id = IDList[i];
                 bool hasTrans = HasTransformed(pts, id, IDList, trans, tolearance, out var pairID);

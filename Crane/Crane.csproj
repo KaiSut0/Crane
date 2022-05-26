@@ -57,6 +57,9 @@
       <HintPath>dll\CGNRNative64.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GrasshopperAsyncComponent">
+      <HintPath>dll\GrasshopperAsyncComponent.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -119,6 +122,7 @@
     <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
+    <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
     <Compile Include="Components\Inputs\PaperMesh.cs" />
     <Compile Include="Components\Util\Approx2dSymmetryComponent.cs" />
@@ -156,6 +160,8 @@
     <Compile Include="Constraints\EqualSectorAngle.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngle.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngleSum.cs" />
+    <Compile Include="Constraints\GlueVertexToEdge2.cs" />
+    <Compile Include="Constraints\GlueVertices2.cs" />
     <Compile Include="Constraints\HoleAngleDevelopable.cs" />
     <Compile Include="Constraints\HoleVectorDevelopable.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
