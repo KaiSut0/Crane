@@ -144,6 +144,7 @@ namespace Crane.Patterns
             mesh.Compact();
             mesh.Normals.ComputeNormals();
             mesh.FaceNormals.ComputeFaceNormals();
+            mesh.UnifyNormals();
             Mesh = mesh;
         }
 
