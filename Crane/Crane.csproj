@@ -121,6 +121,7 @@
     <Compile Include="Components\Inputs\CMeshFromMesh.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
+    <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
     <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
     <Compile Include="Constraints\PlasticMoment.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
+    <Compile Include="Constraints\SetMinEdgeLength.cs" />
     <Compile Include="Constraints\SetMinSectorAngle.cs" />
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
     <Compile Include="Core\FabMesh.cs" />
@@ -212,6 +214,10 @@
     <Compile Include="Patterns\DoublyPeriodicTessellation.cs" />
     <Compile Include="Patterns\ExtrudedWaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\TessellationOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\TessellationParam.cs" />
     <Compile Include="Patterns\TruncatedStarOrigamize.cs" />
     <Compile Include="Patterns\TuckOrigamize.cs" />
     <Compile Include="Patterns\TwistOrigamize.cs" />

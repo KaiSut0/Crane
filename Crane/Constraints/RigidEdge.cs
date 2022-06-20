@@ -25,12 +25,12 @@ namespace Crane.Constraints
 
                 for (int j = 0; j < 3; j++)
                 {
-                    double var1 = ((double)a[j] - (double)b[j]) / cMesh.EdgeLengthSquared[i];
+                    double var1 = (a[j] - b[j]) / cMesh.EdgeLengthSquared[i];
                     int rind1 = i;
                     int cind1 = 3 * ind.I + j;
                     Tuple<int, int, double> element1 = Tuple.Create(rind1, cind1, var1);
 
-                    double var2 = ((double)b[j] - (double)a[j]) / cMesh.EdgeLengthSquared[i];
+                    double var2 = (b[j] - a[j]) / cMesh.EdgeLengthSquared[i];
                     int rind2 = i;
                     int cind2 = 3 * ind.J + j;
                     Tuple<int, int, double> element2 = Tuple.Create(rind2, cind2, var2);
@@ -54,7 +54,7 @@ namespace Crane.Constraints
                 IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
                 Point3d a = cMesh.Vertices[ind.I];
                 Point3d b = cMesh.Vertices[ind.J];
-                error_[i] = ((double)a.DistanceToSquared(b) / cMesh.EdgeLengthSquared[i] - 1) / 2;
+                error_[i] = (a.DistanceToSquared(b) / cMesh.EdgeLengthSquared[i] - 1) / 2;
             }
             return error_;
         }

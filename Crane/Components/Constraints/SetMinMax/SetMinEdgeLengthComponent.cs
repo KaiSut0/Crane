@@ -2,6 +2,7 @@
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
+using Crane.Constraints;
 
 namespace Crane.Components.Constraints
 {
@@ -23,6 +24,8 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddNumberParameter("Min Edge Length", "Min Edge Length", "Set minimum edge length.",
+                GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -30,6 +33,8 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("Constraint", "Constraint", "Minimum edge length constraint.",
+                GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -38,6 +43,9 @@ namespace Crane.Components.Constraints
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            double minEdgeLength = 0;
+            DA.GetData(0, ref minEdgeLength);
+            DA.SetData(0, new SetMinEdgeLength(minEdgeLength));
         }
 
         /// <summary>
