@@ -119,6 +119,7 @@
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
     <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
+    <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
     <Compile Include="Components\Inputs\PaperMesh.cs" />
@@ -214,6 +215,8 @@
     <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\TessellationOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\TessellationParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\WaterbombOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\WaterbombParam.cs" />
     <Compile Include="Patterns\TruncatedStarOrigamize.cs" />
     <Compile Include="Patterns\TuckOrigamize.cs" />
     <Compile Include="Patterns\TwistOrigamize.cs" />
