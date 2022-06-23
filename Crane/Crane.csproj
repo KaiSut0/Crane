@@ -119,6 +119,7 @@
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
     <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
+    <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
     <Compile Include="Components\Inputs\PaperMesh.cs" />
