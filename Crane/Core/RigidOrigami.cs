@@ -557,14 +557,11 @@ namespace Crane.Core
             Vector<double> constrainedMoveVector = Vector<double>.Build.Dense(3 * CMesh.Mesh.Vertices.Count);
             if(initialMoveVector.L2Norm() != 0)
             {
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
+                //constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
+                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
             }
-            //Vector<double> constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual / 100, 20);
-            //this.CMesh.MeshVerticesVector += constrainedMoveVector;
-            //this.CMesh.UpdateMesh();
             int iteration = 0;
             cgnrComp = new List<double>();
             double nrComp = 0;
@@ -576,8 +573,8 @@ namespace Crane.Core
             {
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
                 //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Jacobian.ColumnCount, Jacobian.RowCount), ref cgnrComp);
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
+                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
+                //constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
 
