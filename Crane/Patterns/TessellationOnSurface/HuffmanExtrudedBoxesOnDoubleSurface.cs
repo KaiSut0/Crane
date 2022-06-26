@@ -16,7 +16,7 @@ namespace Crane.Patterns.TessellationOnSurface
 
         protected override void SetUnitPointParameterList()
         {
-            var p = (HuffmanExtrudedBoxesParams)param;
+            var p = (HuffmanExtrudedBoxesParam)param;
             UnitPointParameterList = new VertexList<Tuple<int, double, double>>();
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0, 0));

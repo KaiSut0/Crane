@@ -65,7 +65,7 @@ namespace Crane.Components.Patterns
             DA.GetData(4, ref slide1);
             DA.GetData(5, ref slide2);
             DA.SetData(0,
-                new HuffmanExtrudedBoxesOnDoubleSurface(s1, s2, u, v, new HuffmanExtrudedBoxesParams() { SlideParam1 = slide1, SlideParam2 = slide2 }).Tessellation);
+                new HuffmanExtrudedBoxesOnDoubleSurface(s1, s2, u, v, new HuffmanExtrudedBoxesParam() { SlideParam1 = slide1, SlideParam2 = slide2 }).Tessellation);
 
         }
 

@@ -214,6 +214,8 @@
     <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesParams.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanWaterbombsOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanWaterbombsParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\TessellationOnDoubleSurface.cs" />
