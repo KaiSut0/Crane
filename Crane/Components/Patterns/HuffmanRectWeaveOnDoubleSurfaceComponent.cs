@@ -27,11 +27,11 @@ namespace Crane.Components.Patterns
             pManager.AddSurfaceParameter("S2", "S2", "The second surface.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("U", "U", "The U division count.", GH_ParamAccess.item, 5);
             pManager.AddIntegerParameter("V", "V", "The V division count.", GH_ParamAccess.item, 5);
-            pManager.AddNumberParameter("SlideParam1", "SlideParam1", "First slide parameter for Huffman Rect Weave",
+            pManager.AddNumberParameter("SlideParam1", "SlideParam1", "The first slide parameter for Huffman Rect Weave",
                 GH_ParamAccess.item, 0.3);
-            pManager.AddNumberParameter("SlideParam2", "SlideParam2", "Second slide parameter for Huffman Rect Weave",
+            pManager.AddNumberParameter("SlideParam2", "SlideParam2", "The second slide parameter for Huffman Rect Weave",
                 GH_ParamAccess.item, 0.05);
-            pManager.AddNumberParameter("SlideParam3", "SlideParam3", "Third slide parameter for Huffman Rect Weave",
+            pManager.AddNumberParameter("SlideParam3", "SlideParam3", "The third slide parameter for Huffman Rect Weave",
                 GH_ParamAccess.item, 0.1);
             pManager[2].Optional = true;
             pManager[3].Optional = true;

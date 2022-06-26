@@ -23,13 +23,13 @@ namespace Crane.Patterns.TessellationOnSurface
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0.5, - p.SlideParam1));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(0,1,0));
+                new Tuple<int, double, double>(0, 1, 0));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, -p.SlideParam2, 0.25 - p.SlideParam1));
+                new Tuple<int, double, double>(1, - p.SlideParam2, 0.25 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, p.SlideParam2, 0.25 - p.SlideParam1));
+                new Tuple<int, double, double>(1, p.SlideParam2, 0.25 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, 0.5 + p.SlideParam2, 0.25 - p.SlideParam1));
+                new Tuple<int, double, double>(1, 0.5 + p.SlideParam2, 0.25 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0, 0.5 - p.SlideParam1));
             UnitPointParameterList.Add(
@@ -37,9 +37,9 @@ namespace Crane.Patterns.TessellationOnSurface
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 1, 0.5 - p.SlideParam1));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, 0.5 - p.SlideParam2, 0.75 - p.SlideParam1));
+                new Tuple<int, double, double>(1, 0.5 - p.SlideParam2, 0.75 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, 0.5 + p.SlideParam2, 0.75 - p.SlideParam1));
+                new Tuple<int, double, double>(1, 0.5 + p.SlideParam2, 0.75 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0, 1));
             UnitPointParameterList.Add(
@@ -66,7 +66,7 @@ namespace Crane.Patterns.TessellationOnSurface
             unitFaces.Add(new[] { 9, 10, 12 });
             unitFaces.Add(new[] { 7, 8, 10 });
             unitFaces.Add(new[] { 10, 13, 12 });
-            unitFaces.Add(new[] { 8, 10, 13 });
+            unitFaces.Add(new[] { 8, 13, 10 });
         }
     }
 }
