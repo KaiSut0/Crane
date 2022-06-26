@@ -156,8 +156,8 @@ namespace Crane.Patterns.TessellationOnSurface
             unitFaces.Add(new[] { 23, 27, 30, 36 });
             unitFaces.Add(new[] { 30, 37, 36 });
 
-            unitFaces.Add(new[] { 31, 37, 38 });
-            unitFaces.Add(new[] { 31, 32, 40, 37 });
+            unitFaces.Add(new[] { 31, 39, 38 });
+            unitFaces.Add(new[] { 31, 32, 40, 39 });
             unitFaces.Add(new[] { 32, 41, 40 });
             unitFaces.Add(new[] { 32, 33, 42, 41 });
             unitFaces.Add(new[] { 33, 34, 42 });
