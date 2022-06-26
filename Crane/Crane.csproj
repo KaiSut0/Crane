@@ -118,6 +118,7 @@
     <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
     <Compile Include="Components\Patterns\HuffmanExtrudedBoxesOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\HuffmanWaterbombsOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
     <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent2.cs" />

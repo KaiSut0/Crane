@@ -149,8 +149,6 @@ namespace Crane.Patterns.TessellationOnSurface
             unitFaces.Add(new[] { 27, 28, 34 });
             unitFaces.Add(new[] { 28, 35, 34 });
             unitFaces.Add(new[] { 28, 29, 35 });
-
-            throw new NotImplementedException();
         }
     }
 }
