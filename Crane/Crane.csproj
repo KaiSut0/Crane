@@ -218,6 +218,8 @@
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesParams.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanRectWeaveOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanRectWeaveParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanStarsTrianglesOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanStarsTrianglesParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanWaterbombsOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanWaterbombsParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingOnDoubleSurface.cs" />
