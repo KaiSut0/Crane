@@ -30,10 +30,12 @@ namespace Crane.Patterns.TessellationOnSurface
                 new Tuple<int, double, double>(0, 0.5 + p.SlideParam1 + p.SlideParam2, p.SlideParam2));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 1, 0));
+           
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(1, 0.5 - p.SlideParam2, 0.5 * p.SlideParam1 + p.SlideParam2));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(1, 0.5 + p.SlideParam1 + p.SlideParam2, 0.5 * p.SlideParam1 + p.SlideParam2));
+           
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0, p.SlideParam1 + 2 * p.SlideParam2));
             UnitPointParameterList.Add(
@@ -46,6 +48,7 @@ namespace Crane.Patterns.TessellationOnSurface
                 new Tuple<int, double, double>(0, 0.5 + p.SlideParam1 + p.SlideParam2, p.SlideParam1 + p.SlideParam2));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 1, p.SlideParam1 + 2 * p.SlideParam2));
+           
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, - p.SlideParam2, 0.5 + p.SlideParam2));
             UnitPointParameterList.Add(
@@ -58,24 +61,27 @@ namespace Crane.Patterns.TessellationOnSurface
                 new Tuple<int, double, double>(0, 0.5 + p.SlideParam1, 0.5));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 1 - p.SlideParam2, 0.5 + p.SlideParam2));
+           
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, - p.SlideParam2, 0.5 + 0.5 * p.SlideParam1));
+                new Tuple<int, double, double>(1, - p.SlideParam2, 0.5 + 0.5 * p.SlideParam1 + p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, p.SlideParam1 + p.SlideParam2, 0.5 + 0.5 * p.SlideParam1));
+                new Tuple<int, double, double>(1, p.SlideParam1 + p.SlideParam2, 0.5 + 0.5 * p.SlideParam1 + p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, 1 - p.SlideParam2, 0.5 + 0.5 * p.SlideParam1));
+                new Tuple<int, double, double>(1, 1 - p.SlideParam2, 0.5 + 0.5 * p.SlideParam1 + p.SlideParam2));
+           
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(0, -p.SlideParam2, 0.5 + p.SlideParam1));
+                new Tuple<int, double, double>(0, -p.SlideParam2, 0.5 + p.SlideParam1 + p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(0, p.SlideParam1 + p.SlideParam2, 0.5 + p.SlideParam1));
+                new Tuple<int, double, double>(0, p.SlideParam1 + p.SlideParam2, 0.5 + p.SlideParam1 + p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(0, 0.5, 0.5 + p.SlideParam1 + p.SlideParam2));
+                new Tuple<int, double, double>(0, 0.5, 0.5 + p.SlideParam1 + 2 * p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, 0.5 + 0.5 * p.SlideParam1, 0.5 + p.SlideParam1 + p.SlideParam2));
+                new Tuple<int, double, double>(1, 0.5 + 0.5 * p.SlideParam1, 0.5 + p.SlideParam1 + 2 * p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(0, 0.5 + p.SlideParam1, 0.5 + p.SlideParam1 + p.SlideParam2));
+                new Tuple<int, double, double>(0, 0.5 + p.SlideParam1, 0.5 + p.SlideParam1 + 2 * p.SlideParam2));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(0, 1 - p.SlideParam2, 0.5 + p.SlideParam1));
+                new Tuple<int, double, double>(0, 1 - p.SlideParam2, 0.5 + p.SlideParam1 + p.SlideParam2));
+           
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0, 1));
             UnitPointParameterList.Add(
