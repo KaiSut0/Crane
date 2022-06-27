@@ -29,7 +29,7 @@ namespace Crane.Patterns.TessellationOnSurface
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(1, p.SlideParam2, 0.25 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
-                new Tuple<int, double, double>(1, 0.5 + p.SlideParam2, 0.25 - 0.5 * p.SlideParam1));
+                new Tuple<int, double, double>(1, 1 - p.SlideParam2, 0.25 - 0.5 * p.SlideParam1));
             UnitPointParameterList.Add(
                 new Tuple<int, double, double>(0, 0, 0.5 - p.SlideParam1));
             UnitPointParameterList.Add(
