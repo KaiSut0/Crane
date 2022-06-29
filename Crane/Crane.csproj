@@ -122,6 +122,7 @@
     <Compile Include="Components\Patterns\HuffmanWaterbombsOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Patterns\HuffmanStarsTrianglesOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\HuffmanExtendedBoxesOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
     <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
@@ -215,6 +216,8 @@
     <Compile Include="Patterns\DoublyPeriodicTessellation.cs" />
     <Compile Include="Patterns\ExtrudedWaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanExtendedBoxesOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanExtendedBoxesParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesParams.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanRectWeaveOnDoubleSurface.cs" />
