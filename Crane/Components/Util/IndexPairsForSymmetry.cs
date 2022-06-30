@@ -59,7 +59,7 @@ namespace Crane.Components.Util
             DA.GetData(1, ref transform);
             DA.GetData(2, ref tolerance);
 
-            var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
+            var pts = cMesh.Vertices;
             List<IndexPair> indexPairs = new List<IndexPair>();
             List<int> indices = new List<int>();
             Core.Util.CreateTransformIndexPairs(pts, transform, tolerance, out indexPairs, out indices);

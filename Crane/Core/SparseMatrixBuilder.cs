@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Crane.Core
 {
     public class SparseMatrixBuilder
     {
-        public SparseMatrixBuilder(int columns)
+        public SparseMatrixBuilder(int rows, int columns)
         {
-            Rows = 0;
+            Rows = rows;
             Columns = columns;
             Elements = new List<Tuple<int, int, double>>();
+        }
+
+        public SparseMatrixBuilder(int rows, int columns, List<Tuple<int, int, double>> elements)
+        {
+            Rows = rows;
+            Columns = columns;
+            Elements = elements;
         }
         public int Rows { get; private set; }
         public int Columns { get; private set; }

@@ -57,6 +57,30 @@ namespace Crane.Core
             return vertexIndexPairs;
         }
 
+        public List<Line> ComputeFaceTree()
+        {
+            var bfs = new UndirectedBreadthFirstSearchAlgorithm<int, SEdge<int>>(faceTree);
+
+            List<Line> faceTreeLines = new List<Line>();
+            List<int> faceIDs = new List<int>();
+
+            bfs.DiscoverVertex += fi =>
+            {
+                var adfs = faceTree.AdjacentVertices(fi);
+                foreach (var fj in adfs)
+                {
+                    Point3d faceCenterI = DevelopedMesh.Faces.GetFaceCenter(fi);
+                    if (!faceIDs.Contains(fj))
+                    {
+                        Point3d faceCenterJ = DevelopedMesh.Faces.GetFaceCenter(fj);
+                        faceTreeLines.Add(new Line(faceCenterI, faceCenterJ));
+                    }
+                }
+            };
+            bfs.Compute(0);
+            return faceTreeLines;
+        }
+
         private void Develop(Point2d developmentOrigin, double developmentRotation = 0)
         {
             SetFaceGraph();
@@ -96,6 +120,7 @@ namespace Crane.Core
         {
             DevelopedMesh = Mesh.DuplicateMesh();
             DevelopedMesh.Vertices.Destroy();
+            DevelopedMesh.Vertices.UseDoublePrecisionVertices = true;
             DevelopedMesh.Vertices.AddVertices(pts);
             DevelopedMesh.Compact();
             DevelopedMesh.FaceNormals.ComputeFaceNormals();
@@ -129,10 +154,12 @@ namespace Crane.Core
             
             var verts = mesh.Vertices.ToPoint3dArray();
             MeshFace face = mesh.Faces[faceID];
-            int ptNum = 0;
+            int ptNum;
             if (face.IsQuad) ptNum = 4;
             else ptNum = 3;
-            var faceNormal = new Vector3d(mesh.FaceNormals[faceID]);
+            //var faceNormal = new Vector3d(mesh.FaceNormals[faceID]);
+            var faceNormal = Vector3d.CrossProduct((verts[face.B] - verts[face.A]), (verts[face.C] - verts[face.A]));
+            faceNormal.Unitize();
             var faceEdge = verts[face.B] - verts[face.A];
             faceEdge.Unitize();
             var faceBinormal = Vector3d.CrossProduct(faceNormal, faceEdge);
@@ -157,10 +184,13 @@ namespace Crane.Core
         {
             var verts = mesh.Vertices.ToPoint3dArray();
             MeshFace face = mesh.Faces[faceID];
-            int ptNum = 0;
+            int ptNum;
             if (face.IsQuad) ptNum = 4;
             else ptNum = 3;
-            var faceNormal = new Vector3d(mesh.FaceNormals[faceID]);
+            //var faceNormal = new Vector3d(mesh.FaceNormals[faceID]);
+            //var faceNormal = mesh.FaceNormals[faceID];
+            var faceNormal = Vector3d.CrossProduct((verts[face.B] - verts[face.A]), (verts[face.C] - verts[face.A]));
+            faceNormal.Unitize();
             var faceEdge = verts[idPair.J] - verts[idPair.I];
             faceEdge.Unitize();
             var devEdge = devPts[idPair.J] - devPts[idPair.I];

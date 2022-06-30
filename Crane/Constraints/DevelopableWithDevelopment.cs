@@ -29,7 +29,7 @@ namespace Crane.Constraints
         private readonly int numEdgePairs;
         private readonly int numDevMeshVertices;
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             double[] err = new double[numEdgePairs + numDevMeshVertices];
             //double[] err = new double[numEdgePairs];
@@ -55,12 +55,12 @@ namespace Crane.Constraints
                 err[numEdgePairs + i - numDevMeshVertices] = 0.5 * pt.Z * pt.Z;
             }
 
-            return Vector<double>.Build.DenseOfArray(err);
+            return err;
         }
 
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
-            Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+            Point3d[] verts = cMesh.Vertices;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
             int rows = numEdgePairs + numDevMeshVertices;
             //int rows = numEdgePairs;
@@ -113,7 +113,7 @@ namespace Crane.Constraints
                 elements.Add(new Tuple<int, int, double>(rID, cID, var));
             }
 
-            return Matrix<double>.Build.SparseOfIndexed(rows, cols, elements);
+            return new SparseMatrixBuilder(rows, cols, elements);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Crane.Core
 {
     public abstract class Constraint
     {
-        public abstract Matrix<double> Jacobian(CMesh cMesh);
-        public abstract Vector<double> Error(CMesh cMesh);
+        public abstract SparseMatrixBuilder Jacobian(CMesh cMesh);
+        public abstract double[] Error(CMesh cMesh);
     }
 }

@@ -56,36 +56,36 @@ namespace Crane.Core
             }
             Error = Vector<double>.Build.DenseOfArray(errorList.ToArray());
         }
-        protected new void ComputeJacobian()
+        protected void ComputeJacobian()
         {
             int n = this.CMesh.Mesh.Vertices.Count * 3;
-            Jacobian = (SparseMatrix)SparseMatrix.Build.Sparse(1, n);
+            SparseMatrixBuilder builder = new SparseMatrixBuilder(1, CMesh.DOF);
             if (IsRigidMode)
             {
-                Jacobian = (SparseMatrix)Jacobian.Stack(EdgeLength.Jacobian(this.CMesh));
+                builder.Append(EdgeLength.Jacobian(CMesh));
             }
             if (IsPanelFlatMode)
             {
-                Jacobian = (SparseMatrix)Jacobian.Stack(FlatPanel.Jacobian(this.CMesh));
+                builder.Append(FlatPanel.Jacobian(CMesh));
             }
+
             if (IsFoldBlockMode)
             {
-                Jacobian = (SparseMatrix)Jacobian.Stack(MountainIntersectPenalty.Jacobian(this.CMesh));
-                Jacobian = (SparseMatrix)Jacobian.Stack(ValleyIntersectPenalty.Jacobian(this.CMesh));
+                var mJacobian = MountainIntersectPenalty.Jacobian(CMesh);
+                var vjacobian = ValleyIntersectPenalty.Jacobian(CMesh);
+                if(mJacobian!=null) builder.Append(mJacobian);
+                if(vjacobian!=null) builder.Append(vjacobian);
             }
+
             if (IsConstraintMode)
             {
                 foreach (Constraint constraint in Constraints)
                 {
-                    Jacobian = (SparseMatrix)Jacobian.Stack(constraint.Jacobian(this.CMesh));
+                    builder.Append(constraint.Jacobian(CMesh));
                 }
             }
-            SparseMatrix rightJacobian = (SparseMatrix)SparseMatrix.Build.Sparse(Jacobian.RowCount, 4);
-            Jacobian = (SparseMatrix)Jacobian.Append(rightJacobian);
-            foreach(Constraint constraint in PeriodicConstraints)
-            {
-                Jacobian = (SparseMatrix)Jacobian.Stack(constraint.Jacobian(this.CMesh));
-            }
+
+            Jacobian = (SparseMatrix)Matrix<double>.Build.SparseOfIndexed(builder.Rows, builder.Columns, builder.Elements);
         }
         public new double NRSolve(Vector<double> initialMoveVector, double threshold, int iterationMax)
         {

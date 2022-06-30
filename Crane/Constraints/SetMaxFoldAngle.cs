@@ -23,7 +23,7 @@ namespace Crane.Constraints
         private double maxFoldAngle;
         private bool mountainOn;
         private bool valleyOn;
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             var foldAngles = cMesh.GetFoldAngles();
             var excededAngles = new List<double>();
@@ -174,10 +174,11 @@ namespace Crane.Constraints
                     }
                 }
             }
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             var foldAngles = cMesh.GetFoldAngles();
             var errors = new List<double>();
@@ -190,7 +191,7 @@ namespace Crane.Constraints
                 }
             }
 
-            return Vector<double>.Build.DenseOfArray(errors.ToArray());
+            return errors.ToArray();
         }
     }
 }

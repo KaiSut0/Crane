@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
 using Rhino.Geometry;
@@ -10,7 +11,8 @@ namespace Crane.Constraints
     public class Developable : Constraint
     {
         public Developable() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        private static object lockObj = new object();
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
 
@@ -35,11 +37,11 @@ namespace Crane.Constraints
             int rows = internalVertices.Count;
 
             //各内部頂点について
-            for (int r = 0; r < internalVertices.Count; r++)
+            Parallel.For(0, internalVertices.Count, r =>
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
-                Vector3d center = new Vector3d(topo[index_center]);
+                var center = new Vector3d(cMesh.Vertices[index_center]);
 
                 //接続点のインデックス、位置ベクトル
                 List<int> index_neighbors = new List<int>();
@@ -55,7 +57,7 @@ namespace Crane.Constraints
                 //位置ベクトル取得
                 foreach (int index_neighbor in index_neighbors)
                 {
-                    neighbors.Add(new Vector3d(topo[index_neighbor]));
+                    neighbors.Add(new Vector3d(cMesh.Vertices[index_neighbor]));
                 }
 
                 //方向ベクトル取得
@@ -93,39 +95,33 @@ namespace Crane.Constraints
                     v1 -= v2;
                     v_center -= v1;
 
-                    elements.Add(new Tuple<int, int, double>(r, index*3, v1.X));
-                    elements.Add(new Tuple<int, int, double>(r, index*3+1, v1.Y));
-                    elements.Add(new Tuple<int, int, double>(r, index*3+2, v1.Z));
+                    lock (lockObj)
+                    {
+                        elements.Add(new Tuple<int, int, double>(r, index*3, v1.X));
+                        elements.Add(new Tuple<int, int, double>(r, index*3+1, v1.Y));
+                        elements.Add(new Tuple<int, int, double>(r, index*3+2, v1.Z));
+                    }
 
-
-
-                    //var.Add((double)v1.X);
-                    //var.Add((double)v1.Y);
-                    //var.Add((double)v1.Z);
-                    //c_index.Add(index * 3);
-                    //c_index.Add(index * 3 + 1);
-                    //c_index.Add(index * 3 + 2);
-                    //r_index.Add(r);
-                    //r_index.Add(r);
-                    //r_index.Add(r);
                 }
 
-                elements.Add(new Tuple<int, int, double>(r, index_center * 3, v_center.X));
-                elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 1, v_center.Y));
-                elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 2, v_center.Z));
+                lock (lockObj)
+                {
+                    elements.Add(new Tuple<int, int, double>(r, index_center * 3, v_center.X));
+                    elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 1, v_center.Y));
+                    elements.Add(new Tuple<int, int, double>(r, index_center * 3 + 2, v_center.Z));
+                }
 
-            }
+            });
 
-            return Matrix<double>.Build.SparseOfIndexed(rows, cols, elements);
+            return new SparseMatrixBuilder(rows, cols, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             
             Mesh m = cMesh.Mesh;
 
             List<double> err = new List<double>();
 
-            m.Normals.ComputeNormals();
             var topo = m.TopologyVertices;
             topo.SortEdges();
 
@@ -144,7 +140,7 @@ namespace Crane.Constraints
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
-                Vector3d center = new Vector3d(topo[index_center]);
+                Vector3d center = new Vector3d(cMesh.Vertices[index_center]);
 
                 //接続点のインデックス、位置ベクトル
                 List<int> index_neighbors = new List<int>();
@@ -160,7 +156,7 @@ namespace Crane.Constraints
                 //位置ベクトル取得
                 foreach (int index_neighbor in index_neighbors)
                 {
-                    neighbors.Add(new Vector3d(topo[index_neighbor]));
+                    neighbors.Add(new Vector3d(cMesh.Vertices[index_neighbor]));
                 }
 
                 //方向ベクトル取得
@@ -184,12 +180,10 @@ namespace Crane.Constraints
 
                 sum -= 2 * Math.PI;
 
-                err.Add((double)sum);
+                err.Add(sum);
             }
 
-            
-
-            return Vector<double>.Build.DenseOfArray(err.ToArray());
+            return err.ToArray();
 
         }
     }

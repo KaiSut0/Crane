@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Crane.Constraints;
 using MathNet.Numerics.LinearAlgebra;
@@ -10,6 +11,7 @@ using MathNet.Numerics.LinearAlgebra.Storage;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;
+using Matrix = Rhino.Geometry.Matrix;
 
 namespace Crane.Core
 {
@@ -81,6 +83,7 @@ namespace Crane.Core
         protected FlatPanel FlatPanel = new FlatPanel();
         protected MountainIntersectPenalty MountainIntersectPenalty = new MountainIntersectPenalty();
         protected ValleyIntersectPenalty ValleyIntersectPenalty = new ValleyIntersectPenalty();
+        protected static object lockObj = new object();
         #endregion
 
         protected void ComputeError()
@@ -107,49 +110,57 @@ namespace Crane.Core
             }
             if (IsConstraintMode)
             {
-                foreach(Constraint constraint in Constraints)
+                Parallel.ForEach(Constraints, constraint =>
                 {
-                    errorList.AddRange(constraint.Error(this.CMesh).ToList());
-                }
+                    var error = constraint.Error(CMesh).ToList();
+                    lock (lockObj)
+                    {
+                        errorList.AddRange(error);
+                    }
+                });
             }
             Error = Vector<double>.Build.DenseOfArray(errorList.ToArray());
         }
         protected void ComputeJacobian()
         {
-            int n = this.CMesh.Mesh.Vertices.Count * 3;
-            Jacobian =(SparseMatrix) SparseMatrix.Build.Sparse(1, n);
+            SparseMatrixBuilder builder = new SparseMatrixBuilder(1, CMesh.DOF);
             if (IsRigidMode)
             {
-                Jacobian =(SparseMatrix) Jacobian.Stack(EdgeLength.Jacobian(this.CMesh));
+                builder.Append(EdgeLength.Jacobian(CMesh));
             }
             if (IsPanelFlatMode)
             {
-                Jacobian =(SparseMatrix) Jacobian.Stack(FlatPanel.Jacobian(this.CMesh));
+                builder.Append(FlatPanel.Jacobian(CMesh));
             }
+
             if (IsFoldBlockMode)
             {
                 var mJacobian = MountainIntersectPenalty.Jacobian(CMesh);
                 var vjacobian = ValleyIntersectPenalty.Jacobian(CMesh);
-                if(mJacobian!=null)
-                    Jacobian =(SparseMatrix) Jacobian.Stack(MountainIntersectPenalty.Jacobian(this.CMesh));
-                if(vjacobian!=null)
-                    Jacobian =(SparseMatrix) Jacobian.Stack(ValleyIntersectPenalty.Jacobian(this.CMesh));
+                if(mJacobian!=null) builder.Append(mJacobian);
+                if(vjacobian!=null) builder.Append(vjacobian);
             }
+
             if (IsConstraintMode)
             {
-                foreach (Constraint constraint in Constraints)
+                List<SparseMatrixBuilder> builders = new List<SparseMatrixBuilder>();
+                Parallel.ForEach(Constraints, constraint =>
                 {
-                    Jacobian =(SparseMatrix) Jacobian.Stack(constraint.Jacobian(this.CMesh));
-                }
+                    var b = constraint.Jacobian(CMesh);
+                    lock (lockObj)
+                    {
+                        builder.Append(b);
+                    }
+                });
             }
+
+            Jacobian = (SparseMatrix)builder.BuildSparseMatrix();
         }
         protected SparseMatrix ComputeFoldAngleJacobian()
         {
             int rows = this.CMesh.InnerEdges.Count;
             int columns = this.CMesh.DOF;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
-
-            this.CMesh.Mesh.FaceNormals.ComputeFaceNormals();
 
             MeshVertexList vert = this.CMesh.Mesh.Vertices;
 
@@ -179,8 +190,8 @@ namespace Crane.Core
                     }
                 }
                 /// Compute normals
-                Vector3d normal_P = this.CMesh.Mesh.FaceNormals[P];
-                Vector3d normal_Q = this.CMesh.Mesh.FaceNormals[Q];
+                Vector3d normal_P = this.CMesh.FaceNormals[P];
+                Vector3d normal_Q = this.CMesh.FaceNormals[Q];
                 /// Compute h_P & cot_Pu
                 Vector3d vec_up = vert[p] - vert[u];
                 Vector3d vec_uv = vert[v] - vert[u];
@@ -443,7 +454,6 @@ namespace Crane.Core
         protected Vector<double> CGNRSolveForRectangleMatrixNative(Matrix<double> jacobian, Vector<double> b, Vector<double> x,
             double threshold, int iterationMax)
         {
-            //throw new NotImplementedException();
             SparseCompressedRowMatrixStorage<double> storage =
                 (SparseCompressedRowMatrixStorage<double>)jacobian.Storage;
             int n = storage.RowCount;
@@ -542,20 +552,16 @@ namespace Crane.Core
         public double NRSolve(Vector<double> initialMoveVector, double threshold, int iterationMaxNewtonMethod, int iterationMaxCGNR)
         {
             ComputeJacobian();
-            ComputeError();
-            Residual = Error * Error / (Error.Count * Error.Count);
+            Residual = ComputeResidual();
             var cgnrComp = new List<double>();
             Vector<double> constrainedMoveVector = Vector<double>.Build.Dense(3 * CMesh.Mesh.Vertices.Count);
             if(initialMoveVector.L2Norm() != 0)
             {
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
+                //constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
+                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
             }
-            //Vector<double> constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual / 100, 20);
-            //this.CMesh.MeshVerticesVector += constrainedMoveVector;
-            //this.CMesh.UpdateMesh();
             int iteration = 0;
             cgnrComp = new List<double>();
             double nrComp = 0;
@@ -567,8 +573,8 @@ namespace Crane.Core
             {
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
                 //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Jacobian.ColumnCount, Jacobian.RowCount), ref cgnrComp);
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
-                constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
+                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
+                //constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
                 LinearSearch(constrainedMoveVector);
                 Residual = Error * Error / (Error.Count * Error.Count);
 

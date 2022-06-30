@@ -10,9 +10,9 @@ namespace Crane.Patterns
 {
     public class TuckOrigamize
     {
-        public TuckOrigamize(Mesh originalMesh, double scale, double rotAngle, double offset)
+        public TuckOrigamize(Mesh originalMesh, double scale, double rotAngle1, double rotAngle2, double offset)
         {
-            CreateMesh(originalMesh, scale, rotAngle, offset);
+            CreateMesh(originalMesh, scale, rotAngle1, rotAngle2, offset);
         }
         public Mesh Mesh { get; private set; }
         public Dictionary<int, int[]> VertexToTopFaceVertices { get; private set; }
@@ -20,9 +20,11 @@ namespace Crane.Patterns
         public Dictionary<int, int[]> EdgeToLeftFaceVertices { get; private set; }
         public Dictionary<int, int[]> EdgeToRightFaceVertices { get; private set; }
         public Dictionary<int, int[]> FaceToVertices { get; private set; }
+        public List<Line> MountainLines { get; private set; }
+        public List<Line> ValleyLines { get; private set; }
         public List<Point3d> GlueVertexList { get; private set; }
         public List<Line> GlueEdgeList { get; private set; }
-        private void CreateMesh(Mesh origMesh, double scale, double rotAngle, double offset)
+        private void CreateMesh(Mesh origMesh, double scale, double rotAngle1, double rotAngle2, double offset)
         {
             // Initialize TuckedMesh properties.
             Mesh mesh = new Mesh();
@@ -31,6 +33,8 @@ namespace Crane.Patterns
             EdgeToLeftFaceVertices = new Dictionary<int, int[]>();
             EdgeToRightFaceVertices = new Dictionary<int, int[]>();
             FaceToVertices = new Dictionary<int, int[]>();
+            MountainLines = new List<Line>();
+            ValleyLines = new List<Line>();
             GlueVertexList = new List<Point3d>();
             GlueEdgeList = new List<Line>();
 
@@ -56,12 +60,12 @@ namespace Crane.Patterns
                     var faceNormal = origMesh.FaceNormals[f];
                     var tpt = 1.0 * pt;
                     tpt.Transform(Transform.Scale(faceCenter, scale));
-                    tpt.Transform(Transform.Rotation(rotAngle, faceNormal, faceCenter));
+                    tpt.Transform(Transform.Rotation(rotAngle1, faceNormal, faceCenter));
                     mesh.Vertices.Add(tpt);
                     topFaceVertices.Add(vIndex);
                     vIndex++;
                     var bpt = 1.0 * tpt;
-                    bpt.Transform(Transform.Rotation(-2*Math.PI/faces.Length, vertexNormal, pt));
+                    bpt.Transform(Transform.Rotation(-2*Math.PI/faces.Length - rotAngle2, vertexNormal, pt));
                     bpt -= (float)offset * vertexNormal;
                     mesh.Vertices.Add(bpt);
                     bottomFaceVertices.Add(vIndex);
@@ -125,17 +129,22 @@ namespace Crane.Patterns
                 GlueVertexList.Add(mesh.Vertices.Point3dAt(tlJ));
                 GlueEdgeList.Add(new Line(mesh.Vertices.Point3dAt(trI), mesh.Vertices.Point3dAt(tlJ)));
                 GlueEdgeList.Add(new Line(mesh.Vertices.Point3dAt(trJ), mesh.Vertices.Point3dAt(tlI)));
+                MountainLines.Add(new Line(mesh.Vertices[bI], mesh.Vertices[tlI]));
+                MountainLines.Add(new Line(mesh.Vertices[bJ], mesh.Vertices[tlJ]));
+                ValleyLines.Add(new Line(mesh.Vertices[bI], mesh.Vertices[bJ]));
 
             }
 
             for (int i = 0; i < origMesh.Faces.Count; i++)
             {
-                Util.FillMeshPolygonHole(FaceToVertices[i], ref mesh);
+                var faces = FaceToVertices[i];
+                Util.FillMeshPolygonHole(faces, ref mesh);
             }
 
             mesh.Compact();
             mesh.Normals.ComputeNormals();
             mesh.FaceNormals.ComputeFaceNormals();
+            mesh.UnifyNormals();
             Mesh = mesh;
         }
 

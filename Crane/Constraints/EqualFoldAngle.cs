@@ -18,12 +18,12 @@ namespace Crane.Constraints
         }
         private readonly int[] primaryEdgeIds;
         private readonly int[] secondaryEdgeIds;
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             throw new NotImplementedException();
         }
 
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             int rows = primaryEdgeIds.Length;
             var err = new double[rows];
@@ -38,7 +38,7 @@ namespace Crane.Constraints
                 err[i] = fa1 - fa2;
             }
 
-            return Vector<double>.Build.DenseOfArray(err);
+            return err;
         }
     }
 }

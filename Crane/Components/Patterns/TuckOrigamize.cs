@@ -25,11 +25,13 @@ namespace Crane.Components.Patterns
         {
             pManager.AddMeshParameter("Mesh", "Mesh", "Original mesh.", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "Scale", "Face shrink scale.", GH_ParamAccess.item, 0.8);
-            pManager.AddNumberParameter("Angle", "Angle", "Face rotation angle.", GH_ParamAccess.item, Math.PI/10);
+            pManager.AddNumberParameter("Angle1", "Angle1", "Face rotation angle.", GH_ParamAccess.item, Math.PI/10);
+            pManager.AddNumberParameter("Angle2", "Angle2", "Tuck rotation angle.", GH_ParamAccess.item, 0);
             pManager.AddNumberParameter("Offset", "Offset", "Tuck offset.", GH_ParamAccess.item, 0.3);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
             pManager[3].Optional = true;
+            pManager[4].Optional = true;
         }
 
         /// <summary>
@@ -40,6 +42,8 @@ namespace Crane.Components.Patterns
             pManager.AddMeshParameter("Tuck", "Tuck", "Tucked mesh.", GH_ParamAccess.item);
             pManager.AddPointParameter("Glue Vertex", "Glue Vertex", "Glue vertex", GH_ParamAccess.list);
             pManager.AddLineParameter("Glue Edge", "Glue Edge", "Glue edges.", GH_ParamAccess.list);
+            pManager.AddLineParameter("Mountain", "Mountain", "Mountain edges.", GH_ParamAccess.list);
+            pManager.AddLineParameter("Valley", "Valley", "Valley edges.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -50,16 +54,20 @@ namespace Crane.Components.Patterns
         {
             Mesh mesh = new Mesh();
             double scale = 0.8;
-            double angle = Math.PI / 10;
+            double angle1 = Math.PI / 10;
+            double angle2 = 0;
             double offset = 0.3;
             DA.GetData(0, ref mesh);
             DA.GetData(1, ref scale);
-            DA.GetData(2, ref angle);
-            DA.GetData(3, ref offset);
-            var tuck = new Crane.Patterns.TuckOrigamize(mesh, scale, angle, offset);
+            DA.GetData(2, ref angle1);
+            DA.GetData(3, ref angle2);
+            DA.GetData(4, ref offset);
+            var tuck = new Crane.Patterns.TuckOrigamize(mesh, scale, angle1, angle2, offset);
             DA.SetData(0, tuck.Mesh);
             DA.SetDataList(1, tuck.GlueVertexList);
             DA.SetDataList(2, tuck.GlueEdgeList);
+            DA.SetDataList(3, tuck.MountainLines);
+            DA.SetDataList(4, tuck.ValleyLines);
         }
 
         /// <summary>

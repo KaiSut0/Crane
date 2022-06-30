@@ -57,30 +57,29 @@
       <HintPath>dll\CGNRNative64.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GH_IO">
+      <HintPath>..\..\..\..\..\..\Program Files\Rhino 7\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Grasshopper">
+      <HintPath>..\..\..\..\..\..\Program Files\Rhino 7\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GrasshopperAsyncComponent">
+      <HintPath>dll\GrasshopperAsyncComponent.dll</HintPath>
+    </Reference>
+    <Reference Include="RhinoCommon">
+      <HintPath>..\..\..\..\..\..\Program Files\Rhino 7\System\RhinoCommon.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
-    <Reference Include="System.Text.Json, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="RhinoCommon">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino 6\System\rhinocommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Grasshopper">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino 6\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GH_IO">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino 6\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Constraints\Equal\EqualBoundarySectorAngleComponent.cs" />
@@ -118,7 +117,15 @@
     <Compile Include="Components\Inputs\CMeshFromMesh.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVLines.cs" />
     <Compile Include="Components\Inputs\CMeshFromMVTLines.cs" />
+    <Compile Include="Components\Patterns\HuffmanExtrudedBoxesOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\HuffmanRectWeaveOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\HuffmanWaterbombsOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent2.cs" />
+    <Compile Include="Components\Patterns\HuffmanStarsTrianglesOnDoubleSurfaceComponent.cs" />
+    <Compile Include="Components\Patterns\HuffmanExtendedBoxesOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
+    <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent2.cs" />
+    <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
     <Compile Include="Components\Inputs\PaperMesh.cs" />
     <Compile Include="Components\Util\Approx2dSymmetryComponent.cs" />
@@ -156,11 +163,14 @@
     <Compile Include="Constraints\EqualSectorAngle.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngle.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngleSum.cs" />
+    <Compile Include="Constraints\GlueVertexToEdge2.cs" />
+    <Compile Include="Constraints\GlueVertices2.cs" />
     <Compile Include="Constraints\HoleAngleDevelopable.cs" />
     <Compile Include="Constraints\HoleVectorDevelopable.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
     <Compile Include="Constraints\PlasticMoment.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
+    <Compile Include="Constraints\SetMinEdgeLength.cs" />
     <Compile Include="Constraints\SetMinSectorAngle.cs" />
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
     <Compile Include="Core\FabMesh.cs" />
@@ -206,6 +216,22 @@
     <Compile Include="Patterns\DoublyPeriodicTessellation.cs" />
     <Compile Include="Patterns\ExtrudedWaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanExtendedBoxesOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanExtendedBoxesParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesParams.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanRectWeaveOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanRectWeaveParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanStarsTrianglesOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanStarsTrianglesParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanWaterbombsOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\HuffmanWaterbombsParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\MiuraFoldingParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\TessellationOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\TessellationParam.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\WaterbombOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\WaterbombParam.cs" />
     <Compile Include="Patterns\TruncatedStarOrigamize.cs" />
     <Compile Include="Patterns\TuckOrigamize.cs" />
     <Compile Include="Patterns\TwistOrigamize.cs" />
@@ -243,6 +269,9 @@
     </PackageReference>
     <PackageReference Include="OpenCvSharp-AnyCPU">
       <Version>2.4.10.20170306</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>6.0.5</Version>
     </PackageReference>
     <PackageReference Include="YC.QuickGraph">
       <Version>3.7.4</Version>

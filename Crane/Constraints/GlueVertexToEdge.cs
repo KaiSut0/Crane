@@ -18,15 +18,15 @@ namespace Crane.Constraints
         }
         public GlueVertexToEdge(CMesh cMesh, Point3d vertex, Line edge)
         {
-            vertexIds = Util.GetPointID(cMesh.Mesh, vertex);
+            vertexIds = cMesh.VerticesCloud.ClosestPoint(vertex);
             edgeIds = cMesh.GetEdgeIndex(edge);
         }
         private int vertexIds;
         private int edgeIds;
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             Mesh m = cMesh.Mesh;
-            var verts = m.Vertices.ToPoint3dArray();
+            var verts = cMesh.Vertices;
             var endVerts = m.TopologyEdges.GetTopologyVertices(edgeIds);
             Point3d xp = verts[endVerts.I];
             Point3d xq = verts[endVerts.J];
@@ -36,12 +36,15 @@ namespace Crane.Constraints
             var t1 = v1 / v1.Length;
             var t2 = v2 / v2.Length;
             var y = Vector3d.CrossProduct(t1, t2);
-            return Vector<double>.Build.DenseOfArray(new double[] { 0.5 * y * y });
+            double err = 0.5 * y * y;
+            return new double[] { err };
         }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
+            int rows = 1;
+            int columns = cMesh.DOF;
             Mesh m = cMesh.Mesh;
-            var verts = m.Vertices.ToPoint3dArray();
+            var verts = cMesh.Vertices;
             var endVerts = m.TopologyEdges.GetTopologyVertices(edgeIds);
             Point3d xp = verts[endVerts.I];
             Point3d xq = verts[endVerts.J];
@@ -64,7 +67,7 @@ namespace Crane.Constraints
                 elements.Add(new Tuple<int, int, double>(0, 3 * endVerts.I + i, drdxp[i]));
             }
 
-            return Matrix<double>.Build.SparseOfIndexed(1, 3 * verts.Length, elements);
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
     }
 }

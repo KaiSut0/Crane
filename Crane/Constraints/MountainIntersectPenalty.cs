@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;
@@ -16,7 +13,7 @@ namespace Crane.Constraints
     public class MountainIntersectPenalty : Constraint
     {
         public MountainIntersectPenalty() { }
-        public override Matrix<double> Jacobian(CMesh cMesh)
+        public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
@@ -25,7 +22,7 @@ namespace Crane.Constraints
             int columns = cMesh.Mesh.Vertices.Count * 3;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            MeshVertexList vert = m.Vertices;
+            var vert = cm.Vertices;
 
             if (cm.MountainEdges == null)
             {
@@ -76,7 +73,7 @@ namespace Crane.Constraints
                 {
                     rows++;
                     /// Compute Jacobian
-                    for (int v_ind = 0; v_ind < vert.Count; v_ind++)
+                    for (int v_ind = 0; v_ind < vert.Length; v_ind++)
                     {
                         if (v_ind == p)
                         {
@@ -149,17 +146,17 @@ namespace Crane.Constraints
             {
                 return null;
             }
-            return Matrix<double>.Build.SparseOfIndexed(rows, columns, elements);
+
+            return new SparseMatrixBuilder(rows, columns, elements);
         }
-        public override Vector<double> Error(CMesh cMesh)
+        public override double[] Error(CMesh cMesh)
         {
             CMesh cm = cMesh;
             Mesh m = cm.Mesh;
             List<double> ans = new List<double>();
 
-            m.FaceNormals.ComputeFaceNormals();
 
-            MeshVertexList vert = m.Vertices;
+            var vert = cm.Vertices;
 
             for (int e_ind = 0; e_ind < cm.MountainEdges.Count; e_ind++)
             {
@@ -197,7 +194,7 @@ namespace Crane.Constraints
                 Vector3d vec_uq = vert[q] - vert[u];
 
                 double volume = vec_up * Vector3d.CrossProduct(vec_uq, vec_uv);
-                double S_e = (double)(volume / (h_P_initial * h_Q_initial * len_e));
+                double S_e = (volume / (h_P_initial * h_Q_initial * len_e)) + 1e-3;
                 if (volume > 0)
                 {
                     ans.Add(S_e);
@@ -208,7 +205,7 @@ namespace Crane.Constraints
             {
                 return null;
             }
-            return Vector<double>.Build.DenseOfArray(ans.ToArray());
+            return ans.ToArray();
         }
     }
 }
