@@ -262,7 +262,7 @@ namespace Crane.Core
             this.SetMeshVerticesVector();
             this.SetConfigulationVector();
             this.SetPeriodicParameters();
-            if(mesh.GetNakedEdges().Length!=0) SetNakedLoopInfo();
+            if(mesh.GetNakedEdges()!=null) SetNakedLoopInfo();
             ComputeInitialProperties();
             SetNgon();
             SetFoldingSpeed(new double[this.InnerEdges.Count]);
