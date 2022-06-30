@@ -27,7 +27,7 @@ namespace Crane.Components.Patterns
             pManager.AddSurfaceParameter("S2", "S2", "The second surface.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("U", "U", "The U division count.", GH_ParamAccess.item, 5);
             pManager.AddIntegerParameter("V", "V", "The V division count.", GH_ParamAccess.item, 5);
-            pManager.AddNumberParameter("SlideParam", "SlideParam", "Slide parameter for Miura-Ori",
+            pManager.AddNumberParameter("SlideParam", "SlideParam", "Slide parameter for Waterbomb",
                 GH_ParamAccess.item, 0.1);
             pManager[2].Optional = true;
             pManager[3].Optional = true;

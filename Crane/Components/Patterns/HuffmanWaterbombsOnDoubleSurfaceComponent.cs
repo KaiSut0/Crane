@@ -6,14 +6,14 @@ using Rhino.Geometry;
 
 namespace Crane.Components.Patterns
 {
-    public class MiuraFoldingOnDoubleSurfaceComponent2 : GH_Component
+    public class HuffmanWaterbombsOnDoubleSurfaceComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the MiuraFoldingOnDoubleSurfaceComponent2 class.
+        /// Initializes a new instance of the HuffmanWaterbombsOnDoubleSurfaceComponent class.
         /// </summary>
-        public MiuraFoldingOnDoubleSurfaceComponent2()
-          : base("Miura Folding On Double Surface 2", "Miura Folding On Double Surface 2",
-              "Generate Miura-folding between two surfaces.",
+        public HuffmanWaterbombsOnDoubleSurfaceComponent()
+          : base("Huffman Waterbombs On Double Surface", "Huffman Waterbombs On Double Surface",
+              "Generate Huffman Waterbombs between two surfaces.",
               "Crane", "Pattern")
         {
         }
@@ -27,12 +27,11 @@ namespace Crane.Components.Patterns
             pManager.AddSurfaceParameter("S2", "S2", "The second surface.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("U", "U", "The U division count.", GH_ParamAccess.item, 5);
             pManager.AddIntegerParameter("V", "V", "The V division count.", GH_ParamAccess.item, 5);
-            pManager.AddNumberParameter("SlideParam", "SlideParam", "Slide parameter for Miura-Ori",
-                GH_ParamAccess.item, 0.25);
+            pManager.AddNumberParameter("SlideParam", "SlideParam", "Slide parameter for Huffman Waterbombs",
+                GH_ParamAccess.item, 0.05);
             pManager[2].Optional = true;
             pManager[3].Optional = true;
             pManager[4].Optional = true;
-
         }
 
         /// <summary>
@@ -53,14 +52,15 @@ namespace Crane.Components.Patterns
             Surface s2 = null;
             int u = 1;
             int v = 1;
-            double slide = 0.25;
+            double slide = 0.05;
             DA.GetData(0, ref s1);
             DA.GetData(1, ref s2);
             DA.GetData(2, ref u);
             DA.GetData(3, ref v);
             DA.GetData(4, ref slide);
             DA.SetData(0,
-                new MiuraFoldingOnDoubleSurface(s1, s2, u, v, new MiuraFoldingParam() { SlideParam = slide }).Tessellation);
+                new HuffmanWaterbombsOnDoubleSurface(s1, s2, u, v, new HuffmanWaterbomsParam() { SlideParam = slide }).Tessellation);
+
 
         }
 
@@ -82,7 +82,7 @@ namespace Crane.Components.Patterns
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("CE6AEC5A-FCA0-41AF-A3A9-DCB951339972"); }
+            get { return new Guid("150B1451-EFA1-4954-A1E2-925860DC761B"); }
         }
     }
 }

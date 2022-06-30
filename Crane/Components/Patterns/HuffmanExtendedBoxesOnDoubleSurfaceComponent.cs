@@ -6,14 +6,14 @@ using Rhino.Geometry;
 
 namespace Crane.Components.Patterns
 {
-    public class MiuraFoldingOnDoubleSurfaceComponent2 : GH_Component
+    public class HuffmanExtendedBoxesOnDoubleSurfaceComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the MiuraFoldingOnDoubleSurfaceComponent2 class.
+        /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public MiuraFoldingOnDoubleSurfaceComponent2()
-          : base("Miura Folding On Double Surface 2", "Miura Folding On Double Surface 2",
-              "Generate Miura-folding between two surfaces.",
+        public HuffmanExtendedBoxesOnDoubleSurfaceComponent()
+          : base("Huffman Extended Boxes On Double Surface", "Huffman Extended Boxes On Double Surface",
+              "Generate Huffman Extended Boxes between two surfaces.",
               "Crane", "Pattern")
         {
         }
@@ -27,12 +27,17 @@ namespace Crane.Components.Patterns
             pManager.AddSurfaceParameter("S2", "S2", "The second surface.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("U", "U", "The U division count.", GH_ParamAccess.item, 5);
             pManager.AddIntegerParameter("V", "V", "The V division count.", GH_ParamAccess.item, 5);
-            pManager.AddNumberParameter("SlideParam", "SlideParam", "Slide parameter for Miura-Ori",
-                GH_ParamAccess.item, 0.25);
+            pManager.AddNumberParameter("SlideParam1", "SlideParam1", "The first slide parameter for Huffman Extended Boxes",
+                GH_ParamAccess.item, 0.2);
+            pManager.AddNumberParameter("SlideParam2", "SlideParam2", "The second slide parameter for Huffman Extended Boxes",
+                GH_ParamAccess.item, 0.2);
+            pManager.AddNumberParameter("SlideParam3", "SlideParam3", "The third slide parameter for Huffman Extended Boxes",
+                GH_ParamAccess.item, 0.2);
             pManager[2].Optional = true;
             pManager[3].Optional = true;
             pManager[4].Optional = true;
-
+            pManager[5].Optional = true;
+            pManager[6].Optional = true;
         }
 
         /// <summary>
@@ -53,14 +58,18 @@ namespace Crane.Components.Patterns
             Surface s2 = null;
             int u = 1;
             int v = 1;
-            double slide = 0.25;
+            double slide1 = 0.2;
+            double slide2 = 0.2;
+            double slide3 = 0.2;
             DA.GetData(0, ref s1);
             DA.GetData(1, ref s2);
             DA.GetData(2, ref u);
             DA.GetData(3, ref v);
-            DA.GetData(4, ref slide);
+            DA.GetData(4, ref slide1);
+            DA.GetData(5, ref slide2);
+            DA.GetData(6, ref slide3);
             DA.SetData(0,
-                new MiuraFoldingOnDoubleSurface(s1, s2, u, v, new MiuraFoldingParam() { SlideParam = slide }).Tessellation);
+                new HuffmanExtendedBoxesOnDoubleSurface(s1, s2, u, v, new HuffmanExtendedBoxesParam() { SlideParam1 = slide1, SlideParam2 = slide2, SlideParam3 = slide3 }).Tessellation);
 
         }
 
@@ -82,7 +91,7 @@ namespace Crane.Components.Patterns
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("CE6AEC5A-FCA0-41AF-A3A9-DCB951339972"); }
+            get { return new Guid("7B7B5865-14A1-4552-831F-6BEED5C17D7F"); }
         }
     }
 }
