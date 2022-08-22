@@ -34,7 +34,7 @@ namespace Crane.Constraints
             //var pts = cMesh.Mesh.Vertices.ToPoint3dArray().ToList();
             SetIndexPairs(indexPairs);
             SetTransform(transform);
-            this._edgeAverageLength = cMesh.EdgeLengthSquared.Select(l => Math.Sqrt(l)).Average();
+            this._edgeAveragecLength = cMesh.EdgeLengthSquared.Select(l => Math.Sqrt(l)).Average();
         }
         private void SetLineFixedPointConstraint(CMesh cMesh, Line rotationAxis, List<int> fixedIndices)
         {

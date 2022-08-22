@@ -16,6 +16,7 @@ namespace Crane.Constraints
             int I = Util.GetPointID(cMesh.Mesh, ptI);
             int J = Util.GetPointID(cMesh.Mesh, ptJ);
             indexPair = new IndexPair(I, J);
+            isDist = false;
         }
         public GlueVertices(CMesh cMesh, int I, int J)
         {
@@ -26,40 +27,75 @@ namespace Crane.Constraints
 
         private IndexPair indexPair;
         private double edgeAverageLength;
+        private bool isDist = false;
         public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
-            int rows = 3;
-            int cols = cMesh.DOF;
-            var elements = new List<Tuple<int, int, double>>();
-
-            var verts = cMesh.Vertices;
-            var ptI = verts[indexPair.I];
-            var ptJ = verts[indexPair.J];
-
-            for(int i = 0; i < 3; i++)
+            if (isDist)
             {
-                elements.Add(new Tuple<int, int, double>(i, 3 * indexPair.I + i, -1.0 / edgeAverageLength));
-                elements.Add(new Tuple<int, int, double>(i, 3 * indexPair.J + i,  1.0 / edgeAverageLength));
-            }
+                int rows = 1;
+                int cols = cMesh.DOF;
+                var elements = new List<Tuple<int, int, double>>();
 
-            return new SparseMatrixBuilder(rows, cols, elements);
+                var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+                var ptI = verts[indexPair.I];
+                var ptJ = verts[indexPair.J];
+                var diff = ptI - ptJ;
+
+                for (int i = 0; i < 3; i++)
+                {
+                    elements.Add(new Tuple<int, int, double>(0, 3 * indexPair.I + i, diff[i] / (edgeAverageLength * edgeAverageLength)));
+                    elements.Add(new Tuple<int, int, double>(0, 3 * indexPair.J + i, -diff[i] / (edgeAverageLength * edgeAverageLength)));
+                }
+
+                return new SparseMatrixBuilder(rows, cols, elements);
+            }
+            else
+            {
+                int rows = 3;
+                int cols = cMesh.DOF;
+                var elements = new List<Tuple<int, int, double>>();
+
+                var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+                var ptI = verts[indexPair.I];
+                var ptJ = verts[indexPair.J];
+
+                for (int i = 0; i < 3; i++)
+                {
+                    elements.Add(new Tuple<int, int, double>(i, 3 * indexPair.I + i, 1.0 / (edgeAverageLength)));
+                    elements.Add(new Tuple<int, int, double>(i, 3 * indexPair.J + i, -1.0 / (edgeAverageLength)));
+                }
+
+                return new SparseMatrixBuilder(rows, cols, elements);
+            }
 
         }
         public override double[] Error(CMesh cMesh)
         {
-            var verts = cMesh.Vertices;
-            var ptI = verts[indexPair.I];
-            var ptJ = verts[indexPair.J];
-            //var error = 0.5 * ptI.DistanceToSquared(ptJ) / edgeAverageLength;
+            if (isDist)
+            {
+                var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+                var ptI = verts[indexPair.I];
+                var ptJ = verts[indexPair.J];
+                var err = 0.5 * ptI.DistanceToSquared(ptJ) / (edgeAverageLength * edgeAverageLength);
 
-            var diff = (ptJ - ptI) / edgeAverageLength;
-            double[] error = new double[3];
+                double[] error = new double[] { err };
 
-            error[0] = diff[0];
-            error[1] = diff[1];
-            error[2] = diff[2];
+                return error;
+            }
 
-            return error;
+            else
+            {
+                var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+                var ptI = verts[indexPair.I];
+                var ptJ = verts[indexPair.J];
+
+                var diff = (ptI - ptJ) / edgeAverageLength;
+                double[] error = new double[] { diff[0], diff[1], diff[2] };
+
+                return error;
+            }
+
+
         }
     }
 }

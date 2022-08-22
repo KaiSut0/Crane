@@ -891,9 +891,10 @@ namespace Crane.Core
 
         public Vector3d[] ComputeDerivativeOfSectorAngle(int fId, int v1Id, int v2Id, int v3Id)
         {
-            var v1 = Vertices[v1Id];
-            var v2 = Vertices[v2Id];
-            var v3 = Vertices[v3Id];
+            var pts = Mesh.Vertices.ToPoint3dArray();
+            var v1 = pts[v1Id];
+            var v2 = pts[v2Id];
+            var v3 = pts[v3Id];
             var sec = Util.ComputeAngleFrom3Pts(v1, v2, v3);
             var n = ComputeFaceNormal(fId);
             var v12 = v1 - v2;

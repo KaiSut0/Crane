@@ -56,7 +56,7 @@ namespace Crane.Components.Constraints
             DA.GetData(2, ref pt2);
             DA.GetData(3, ref tolerance);
 
-            var constraint = new GlueVertices2(cMesh, pt1, pt2, tolerance);
+            var constraint = new GlueVertices(cMesh, pt1, pt2, tolerance);
 
             DA.SetData(0, constraint);
         }

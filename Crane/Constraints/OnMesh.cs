@@ -19,5 +19,9 @@ namespace Crane.Constraints
         {
             return goalMesh.ClosestPoint(pt);
         }
+        protected override Matrix<double> Derivative(Point3d pt)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
