@@ -110,14 +110,20 @@ namespace Crane.Core
             }
             if (IsConstraintMode)
             {
-                Parallel.ForEach(Constraints, constraint =>
+                //Parallel.ForEach(Constraints, constraint =>
+                //{
+                //    var error = constraint.Error(CMesh).ToList();
+                //    lock (lockObj)
+                //    {
+                //        errorList.AddRange(error);
+                //    }
+                //});
+
+                foreach(var constraint in Constraints)
                 {
                     var error = constraint.Error(CMesh).ToList();
-                    lock (lockObj)
-                    {
-                        errorList.AddRange(error);
-                    }
-                });
+                    errorList.AddRange(error);
+                }
             }
             Error = Vector<double>.Build.DenseOfArray(errorList.ToArray());
         }
@@ -144,14 +150,19 @@ namespace Crane.Core
             if (IsConstraintMode)
             {
                 List<SparseMatrixBuilder> builders = new List<SparseMatrixBuilder>();
-                Parallel.ForEach(Constraints, constraint =>
+                //Parallel.ForEach(Constraints, constraint =>
+                //{
+                //    var b = constraint.Jacobian(CMesh);
+                //    lock (lockObj)
+                //    {
+                //        builder.Append(b);
+                //    }
+                //});
+
+                foreach(var constraint in Constraints)
                 {
-                    var b = constraint.Jacobian(CMesh);
-                    lock (lockObj)
-                    {
-                        builder.Append(b);
-                    }
-                });
+                    builder.Append(constraint.Jacobian(CMesh));
+                }
             }
 
             Jacobian = (SparseMatrix)builder.BuildSparseMatrix();
@@ -190,8 +201,8 @@ namespace Crane.Core
                     }
                 }
                 /// Compute normals
-                Vector3d normal_P = this.CMesh.FaceNormals[P];
-                Vector3d normal_Q = this.CMesh.FaceNormals[Q];
+                Vector3d normal_P = this.CMesh.Mesh.FaceNormals[P];
+                Vector3d normal_Q = this.CMesh.Mesh.FaceNormals[Q];
                 /// Compute h_P & cot_Pu
                 Vector3d vec_up = vert[p] - vert[u];
                 Vector3d vec_uv = vert[v] - vert[u];
@@ -480,58 +491,68 @@ namespace Crane.Core
             return Vector<double>.Build.DenseOfArray(answer);
 
         }
-        protected void LinearSearch(Vector<double> vector)
+        protected void LinearSearch(Vector<double> vector, int maxIter)
         {
             double goldenRatio = (Math.Sqrt(5) - 1) / 2;
-            Vector<double> nowCoordinates = this.CMesh.MeshVerticesVector;
+            Vector<double> nowCoordinates = 1.0 * CMesh.MeshVerticesVector;
 
-            // Compute upper and lower bound
-            Vector<double> lb = 0 * vector;
-            Vector<double> ub = 1 * vector;
+            Vector<double> updatedCoordinates = Vector<double>.Build.Dense(CMesh.DOF);
 
-            Vector<double> x1, x2; // 内分点（「１：goldenRatio」と「goldenRatio：１」に分割する点）
-            double e1, e2; // 内分点での誤差値
-
-            x1 = 1 / (goldenRatio + 1) * (goldenRatio * lb + ub);
-            Vector<double> updateVector = nowCoordinates + x1;
-            CMesh.UpdateMesh(updateVector);
-            ComputeError();
-            e1 = Error.L2Norm();
-
-            x2 = 1 / (goldenRatio + 1) * (lb + goldenRatio * ub);
-            updateVector = nowCoordinates + x2;
-
-            this.CMesh.UpdateMesh(updateVector);
-            ComputeError();
-            e2 = Error.L2Norm();
-
-            for (int i = 0; i < 5; i++)
+            if (maxIter < 1)
             {
-                if(e1 < e2)
-                {
-                    ub = x2;
-                    x2 = x1;
-                    e2 = e1;
-                    x1 = (1 / (goldenRatio + 1)) * (ub - lb) + lb;
-                    updateVector = nowCoordinates + x1;
-                    this.CMesh.UpdateMesh(updateVector);
-                    ComputeError();
-                    e1 = Error.L2Norm();
-                }
-                else
-                {
-                    lb = x1;
-                    x1 = x2;
-                    e1 = e2;
-                    x2 = (1 / goldenRatio) * (ub - lb) + lb;
-                    updateVector = nowCoordinates + x2;
-                    this.CMesh.UpdateMesh(updateVector);
-                    ComputeError();
-                    e2 = Error.L2Norm();
-                }
+                updatedCoordinates = nowCoordinates + vector;
             }
-            Vector<double> newCoordinates = nowCoordinates + 0.5 * (lb + ub);
-            this.CMesh.UpdateMesh(newCoordinates);
+
+            else
+            {
+                Vector<double> lb = 0 * vector;
+                Vector<double> ub = 1 * vector;
+
+                Vector<double> x1, x2; // 内分点（「１：goldenRatio」と「goldenRatio：１」に分割する点）
+                double e1, e2; // 内分点での誤差値
+
+                x1 = 1 / (goldenRatio + 1) * (goldenRatio * lb + ub);
+                Vector<double> updateVector = nowCoordinates + x1;
+                CMesh.UpdateMesh(updateVector);
+                ComputeError();
+                e1 = Error.L2Norm();
+
+                x2 = 1 / (goldenRatio + 1) * (lb + goldenRatio * ub);
+                updateVector = nowCoordinates + x2;
+
+                this.CMesh.UpdateMesh(updateVector);
+                ComputeError();
+                e2 = Error.L2Norm();
+
+                for (int i = 0; i < maxIter; i++)
+                {
+                    if (e1 < e2)
+                    {
+                        ub = x2;
+                        x2 = x1;
+                        e2 = e1;
+                        x1 = (1 / (goldenRatio + 1)) * (ub - lb) + lb;
+                        updateVector = nowCoordinates + x1;
+                        this.CMesh.UpdateMesh(updateVector);
+                        ComputeError();
+                        e1 = Error.L2Norm();
+                    }
+                    else
+                    {
+                        lb = x1;
+                        x1 = x2;
+                        e1 = e2;
+                        x2 = (1 / goldenRatio) * (ub - lb) + lb;
+                        updateVector = nowCoordinates + x2;
+                        this.CMesh.UpdateMesh(updateVector);
+                        ComputeError();
+                        e2 = Error.L2Norm();
+                    }
+                }
+                updatedCoordinates = nowCoordinates + 0.5 * (lb + ub);
+            }
+
+            this.CMesh.UpdateMesh(updatedCoordinates);
             ComputeJacobian();
             ComputeError();
 
@@ -551,15 +572,19 @@ namespace Crane.Core
         }
         public double NRSolve(Vector<double> initialMoveVector, double threshold, int iterationMaxNewtonMethod, int iterationMaxCGNR)
         {
+            bool useNativeCGNRMethod = false;
             ComputeJacobian();
             Residual = ComputeResidual();
             var cgnrComp = new List<double>();
             Vector<double> constrainedMoveVector = Vector<double>.Build.Dense(3 * CMesh.Mesh.Vertices.Count);
             if(initialMoveVector.L2Norm() != 0)
             {
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
-                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
-                LinearSearch(constrainedMoveVector);
+                int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount) - 1, iterationMaxCGNR);
+                if (useNativeCGNRMethod)
+                    constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, threshold, cgnrIterationMax);
+                else
+                    constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, threshold, cgnrIterationMax, ref cgnrComp);
+                LinearSearch(constrainedMoveVector, 0);
                 Residual = Error * Error / (Error.Count * Error.Count);
             }
             int iteration = 0;
@@ -567,21 +592,16 @@ namespace Crane.Core
             double nrComp = 0;
             var nrSw = new System.Diagnostics.Stopwatch();
             nrSw.Start();
-            var foldAngles = Vector<double>.Build.Dense(CMesh.GetFoldAngles().ToArray());
-            var nowFoldAngles = Vector<double>.Build.Dense(foldAngles.Count);
             while(iteration < iterationMaxNewtonMethod && Residual > threshold)
             {
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Jacobian.ColumnCount, Jacobian.RowCount), ref cgnrComp);
-                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual/100, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR), ref cgnrComp);
-                //constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount),iterationMaxCGNR));
-                LinearSearch(constrainedMoveVector);
+                int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount) - 1, iterationMaxCGNR);
+                if (useNativeCGNRMethod)
+                    constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, cgnrIterationMax);
+                else
+                    constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual, cgnrIterationMax, ref cgnrComp);
+                LinearSearch(constrainedMoveVector, 0);
                 Residual = Error * Error / (Error.Count * Error.Count);
-
-                nowFoldAngles = Vector<double>.Build.Dense(CMesh.GetFoldAngles().ToArray());
-                CMesh.SetFoldingSpeed((nowFoldAngles - foldAngles).ToArray());
-                foldAngles = 1.0 * nowFoldAngles;
-
                 iteration++;
             }
             nrSw.Stop();

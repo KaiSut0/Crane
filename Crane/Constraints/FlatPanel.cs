@@ -26,7 +26,7 @@ namespace Crane.Constraints
             CMesh cm = cMesh;
             Mesh m = cMesh.Mesh;
 
-            var vert = cm.Vertices;
+            var vert = m.Vertices.ToPoint3dArray();
 
             if (cm.TriangulatedEdges == null)
             {
@@ -167,7 +167,7 @@ namespace Crane.Constraints
 
             double[] error_ = new double[cm.TriangulatedEdges.Count];
 
-            var vert = cMesh.Vertices;
+            var vert = m.Vertices.ToPoint3dArray();
 
             for (int e_ind = 0; e_ind < cm.TriangulatedEdges.Count; e_ind++)
             {

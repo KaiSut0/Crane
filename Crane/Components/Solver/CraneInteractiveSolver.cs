@@ -165,54 +165,60 @@ namespace Crane.Components.Solver
 
                 bool isfold = rigidOrigami.Fold || rigidOrigami.UnFold;
                 bool isgrab = this.IsGrabMode & (Control.ModifierKeys == Keys.Alt);
-                bool iscompute = rigidOrigami.ComputeResidual() > threshold || isfold || isgrab;
+                double resi = rigidOrigami.ComputeResidual();
+                bool iscompute = ((residual > threshold) || isfold || isgrab);
 
-                rigidOrigami.Constraints = constraints;
+                if (resi < 1e+5)
+                {
+                    rigidOrigami.Constraints = constraints;
 
-                Vector<double> moveVector = Vector<double>.Build.Sparse(rigidOrigami.CMesh.DOF);
-                if (isfold)
-                {
-                    moveVector += rigidOrigami.ComputeFoldMotion(foldSpeed, cgnrIteration);
-                }
-                if (isgrab)
-                {
-                    myMouse = new MyMouseCallback();
-                    myMouse.Enabled = true;
-                    if(Control.MouseButtons == MouseButtons.Left)
+                    Vector<double> moveVector = Vector<double>.Build.Sparse(rigidOrigami.CMesh.DOF);
+                    if (isfold)
                     {
-                        moveVector += this.GetGrabMoveVector(out grabIds);
+                        moveVector += rigidOrigami.ComputeFoldMotion(foldSpeed, cgnrIteration);
+                    }
+                    if (isgrab)
+                    {
+                        myMouse = new MyMouseCallback();
+                        myMouse.Enabled = true;
+                        if (Control.MouseButtons == MouseButtons.Left)
+                        {
+                            moveVector += this.GetGrabMoveVector(out grabIds);
+                        }
+                        else
+                        {
+                            IsMouseDown = false;
+                        }
                     }
                     else
                     {
-                        IsMouseDown = false;
+                        myMouse = new MyMouseCallbackOff();
+                        myMouse.Enabled = true;
+                    }
+                    if (rigidOrigami.IsRigidMode && iscompute)
+                    {
+                        residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
+                    }
+                    else if (rigidOrigami.Constraints.Count != 0 && rigidOrigami.IsConstraintMode || iscompute)
+                    {
+                        residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
+                    }
+                    else
+                    {
+                        rigidOrigami.CMesh.UpdateMesh(rigidOrigami.CMesh.MeshVerticesVector + moveVector);
+                        rigidOrigami.CMesh.UpdateProperties();
+                    }
+                    if (!rigidOrigami.IsRigidMode)
+                        rigidOrigami.CMesh.UpdateEdgeLengthSquared();
+
+                    if (rigidOrigami.ComputeResidual() < threshold & !IsGrabMode & !isfold)
+                    {
+                        isOn = false;
+                        timer.Stop();
                     }
                 }
-                else
-                {
-                    myMouse = new MyMouseCallbackOff();
-                    myMouse.Enabled = true;
-                }
-                if (rigidOrigami.IsRigidMode && iscompute)
-                {
-                    residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
-                }
-                else if(rigidOrigami.Constraints.Count != 0 && rigidOrigami.IsConstraintMode || iscompute)
-                {
-                    residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
-                }
-                else
-                {
-                    rigidOrigami.CMesh.UpdateMesh(rigidOrigami.CMesh.MeshVerticesVector + moveVector);
-                    rigidOrigami.CMesh.UpdateProperties();
-                }
-                if(!rigidOrigami.IsRigidMode)
-                    rigidOrigami.CMesh.UpdateEdgeLengthSquared();
 
-                if (rigidOrigami.ComputeResidual() < threshold & !IsGrabMode & !isfold)
-                {
-                    isOn = false;
-                    timer.Stop();
-                }
+
             }
             else
             {
