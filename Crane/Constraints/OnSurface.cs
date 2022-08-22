@@ -24,6 +24,16 @@ namespace Crane.Constraints
             return goalSurface.PointAt(u, v);
         }
 
+        protected override Matrix<double> Derivative(Point3d pt)
+        {
+            double u, v;
+            goalSurface.ClosestPoint(pt, out u, out v);
+            Vector3d n = goalSurface.NormalAt(u, v);
+            Vector<double> nv = Vector<double>.Build.Dense(3);
+            for (int k = 0; k < 3; k++) nv[k] = n[k];
+            return nv.OuterProduct(nv);
+        }
+
     }
 }
 

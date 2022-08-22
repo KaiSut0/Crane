@@ -22,6 +22,11 @@ namespace Crane.Constraints
             goalCurve.ClosestPoint(pt, out t);
             return goalCurve.PointAt(t);
         }
+
+        protected override Matrix<double> Derivative(Point3d pt)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

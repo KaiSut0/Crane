@@ -22,5 +22,9 @@ namespace Crane.Constraints
         {
             return goalPoint;
         }
+        protected override Matrix<double> Derivative(Point3d pt)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -22,6 +22,8 @@ namespace Crane.Constraints
             var topo = m.TopologyVertices;
             topo.SortEdges();
 
+            var verts = m.Vertices.ToPoint3dArray();
+
             List<bool> isNaked = new List<bool>(m.GetNakedEdgePointStatus());
             List<int> internalVertices = new List<int>();
 
@@ -41,7 +43,7 @@ namespace Crane.Constraints
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
-                var center = new Vector3d(cMesh.Vertices[index_center]);
+                var center = new Vector3d(verts[index_center]);
 
                 //接続点のインデックス、位置ベクトル
                 List<int> index_neighbors = new List<int>();
@@ -57,7 +59,7 @@ namespace Crane.Constraints
                 //位置ベクトル取得
                 foreach (int index_neighbor in index_neighbors)
                 {
-                    neighbors.Add(new Vector3d(cMesh.Vertices[index_neighbor]));
+                    neighbors.Add(new Vector3d(verts[index_neighbor]));
                 }
 
                 //方向ベクトル取得
@@ -125,6 +127,8 @@ namespace Crane.Constraints
             var topo = m.TopologyVertices;
             topo.SortEdges();
 
+            var verts = m.Vertices.ToPoint3dArray();
+
             List<bool> isNaked = new List<bool>(m.GetNakedEdgePointStatus());
             List<int> internalVertices = new List<int>();
             for (int i = 0; i < topo.Count; i++)
@@ -140,7 +144,7 @@ namespace Crane.Constraints
             {
                 //内部頂点のインデックス、位置ベクトル
                 int index_center = internalVertices[r];
-                Vector3d center = new Vector3d(cMesh.Vertices[index_center]);
+                Vector3d center = new Vector3d(verts[index_center]);
 
                 //接続点のインデックス、位置ベクトル
                 List<int> index_neighbors = new List<int>();
@@ -156,7 +160,7 @@ namespace Crane.Constraints
                 //位置ベクトル取得
                 foreach (int index_neighbor in index_neighbors)
                 {
-                    neighbors.Add(new Vector3d(cMesh.Vertices[index_neighbor]));
+                    neighbors.Add(new Vector3d(verts[index_neighbor]));
                 }
 
                 //方向ベクトル取得

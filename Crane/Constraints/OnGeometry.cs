@@ -16,61 +16,108 @@ namespace Crane.Constraints
             this.anchorVertexIDs = anchorVertexIDs;
             this.strength = strength;
             edgeAverageLength = Math.Sqrt(cMesh.EdgeLengthSquared.Average());
+            isDist = false;
         }
 
         private readonly int[] anchorVertexIDs;
         private readonly double edgeAverageLength = 1.0;
         private readonly double strength = 1.0;
+        private readonly bool isDist = false;
         public override SparseMatrixBuilder Jacobian(CMesh cMesh)
         {
-            Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
-
-            List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
-            //int rows = 3 * anchorVertexIDs.Length;
-            int rows = anchorVertexIDs.Length;
-            int cols = 3 * verts.Length;
-
-            for (int i = 0; i < anchorVertexIDs.Length; i++)
+            if (isDist)
             {
-                //double param;
-                int id = anchorVertexIDs[i];
-                Point3d ptOnGeometry = ClosestPoint(verts[id]);
+                Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
 
-                for (int j = 0; j < 3; j++)
+                List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
+                int rows = anchorVertexIDs.Length;
+                int cols = 3 * verts.Length;
+
+                for (int i = 0; i < anchorVertexIDs.Length; i++)
                 {
-                    //elements.Add(new Tuple<int, int, double>(3 * i + j, 3 * id + j, strength / edgeAverageLength));
-                    double var = strength * (verts[id][j] - ptOnGeometry[j]) / (edgeAverageLength * edgeAverageLength);
-                    int rID = i;
-                    int cID = 3 * id + j;
-                    elements.Add(new Tuple<int, int, double>(rID, cID, var));
+                    int id = anchorVertexIDs[i];
+                    Point3d ptOnGeometry = ClosestPoint(verts[id]);
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        double var = strength * (verts[id][j] - ptOnGeometry[j]) / (edgeAverageLength * edgeAverageLength);
+                        int rID = i;
+                        int cID = 3 * id + j;
+                        elements.Add(new Tuple<int, int, double>(rID, cID, var));
+                    }
                 }
+
+                return new SparseMatrixBuilder(rows, cols, elements);
+            }
+            else
+            {
+                Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+
+                List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
+                int rows = 3 * anchorVertexIDs.Length;
+                int cols = 3 * verts.Length;
+
+                for (int i = 0; i < anchorVertexIDs.Length; i++)
+                {
+                    //double param;
+                    int id = anchorVertexIDs[i];
+                    Point3d pt = verts[id];
+                    Point3d ptOnGeometry = ClosestPoint(verts[id]);
+
+                    Vector3d vec = pt - ptOnGeometry;
+                    Matrix<double> nn = Derivative(pt);
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        for (int k = 0; k < 3; k++)
+                        {
+                            elements.Add(new Tuple<int, int, double>(3 * i + j, 3 * id + k, strength * nn[j, k] / edgeAverageLength));
+                        }
+                    }
+                }
+
+                return new SparseMatrixBuilder(rows, cols, elements);
             }
 
-            return new SparseMatrixBuilder(rows, cols, elements);
         }
         public override double[] Error(CMesh cMesh)
         {
-            Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
-            double[] err = new double[anchorVertexIDs.Length];
-            //double[] err = new double[3 * anchorVertexIDs.Length];
-
-            for (int i = 0; i < anchorVertexIDs.Length; i++)
+            if (isDist)
             {
-                int id = anchorVertexIDs[i];
-                Point3d pt = ClosestPoint(verts[id]);
+                Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+                double[] err = new double[anchorVertexIDs.Length];
+                for (int i = 0; i < anchorVertexIDs.Length; i++)
+                {
+                    int id = anchorVertexIDs[i];
+                    Point3d pt = ClosestPoint(verts[id]);
+                    double dist = pt.DistanceTo(verts[id]);
+                    err[i] = 0.5 * strength * dist * dist / (edgeAverageLength * edgeAverageLength);
+                }
 
-                //for(int j = 0; j < 3; j++)
-                //{
-                //    err[3 * i + j] = strength * (verts[id][j] - pt[j]) / edgeAverageLength;
-                //}
+                return err;
+            }
+            else
+            {
+                Point3d[] verts = cMesh.Mesh.Vertices.ToPoint3dArray();
+                double[] err = new double[3 * anchorVertexIDs.Length];
 
-                double dist = pt.DistanceTo(verts[id]);
-                err[i] = strength * dist * dist / (2 * edgeAverageLength * edgeAverageLength);
+                for (int i = 0; i < anchorVertexIDs.Length; i++)
+                {
+                    int id = anchorVertexIDs[i];
+                    Point3d pt = verts[id];
+                    Point3d ptOnGeometry = ClosestPoint(verts[id]);
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        err[3 * i + j] = strength * (verts[id][j] - ptOnGeometry[j]) / edgeAverageLength;
+                    }
+                }
+                return err;
             }
 
-            return err;
         }
 
         protected abstract Point3d ClosestPoint(Point3d pt);
+        protected abstract Matrix<double> Derivative(Point3d pt);
     }
 }

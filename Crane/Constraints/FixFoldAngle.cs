@@ -26,10 +26,8 @@ namespace Crane.Constraints
             int columns = cMesh.DOF;
             Mesh mesh = cMesh.Mesh;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
-
-            //mesh.FaceNormals.ComputeFaceNormals();
             
-            MeshVertexList vert = mesh.Vertices;
+            var vert = mesh.Vertices.ToPoint3dArray();
 
             var foldAngles = cMesh.GetFoldAngles();
 
@@ -37,8 +35,6 @@ namespace Crane.Constraints
             {
                 int e_ind = innerEdgeIds[id];
 
-                double foldAngle = foldAngles[e_ind];
-                double setAngle = setAngles[id];
                 double k = Math.Sqrt(stiffness[id]);
 
                 /// Register indices
@@ -107,7 +103,7 @@ namespace Crane.Constraints
                 double co_pu = (-1 * cot_Pu) / (cot_Pu + cot_Pv);
                 double co_qu = (-1 * cot_Qu) / (cot_Qu + cot_Qv);
                 /// Compute Jacobian
-                for (int v_ind = 0; v_ind < vert.Count; v_ind++)
+                for (int v_ind = 0; v_ind < vert.Length; v_ind++)
                 {
                     if (v_ind == p)
                     {

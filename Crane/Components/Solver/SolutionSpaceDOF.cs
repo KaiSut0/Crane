@@ -13,6 +13,7 @@ namespace Crane.Components.Solver
         //private Svd<double> svd = null;
         private double[] s = null;
         private int dof = 0;
+        private double[] rv = null;
         /// <summary>
         /// Initializes a new instance of the SolutionSpaceDOF class.
         /// </summary>
@@ -39,6 +40,7 @@ namespace Crane.Components.Solver
         {
             pManager.AddIntegerParameter("DOF", "DOF", "DOF", GH_ParamAccess.item);
             pManager.AddNumberParameter("SV", "SV", "Singular values", GH_ParamAccess.list);
+            pManager.AddNumberParameter("RV", "RV", "Residual vector", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -67,11 +69,15 @@ namespace Crane.Components.Solver
                 
                 s = rigidOrigami.ComputeSvdOfJacobian();
 
-                dof = 3* rigidOrigami.CMesh.NumberOfVertices - Core.Util.SvdRank(s);
+                dof = 3 * rigidOrigami.CMesh.NumberOfVertices - Core.Util.SvdRank(s);
+                rigidOrigami.ComputeResidual();
+                rv = rigidOrigami.Error.ToArray();
             }
 
             DA.SetData(0, dof);
             DA.SetDataList(1, s);
+            DA.SetDataList(2, rv);
+
 
         }
 

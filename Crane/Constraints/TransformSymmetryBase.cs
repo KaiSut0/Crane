@@ -12,7 +12,7 @@ namespace Crane.Constraints
     {
 
         public List<IndexPair> indexPairs;
-        protected double _edgeAverageLength = 1.0;
+        protected double _edgeAveragecLength = 1.0;
         private Transform trans;
         private Transform inv;
         private Transform transLinear;
@@ -56,8 +56,8 @@ namespace Crane.Constraints
                 Point3d pt2Trans = inv * pt2;
                 Point3d pt1Trans = trans * pt1;
 
-                Vector3d dif1 = (pt1 - pt2Trans) / _edgeAverageLength;
-                Vector3d dif2 = (pt2 - pt1Trans) / _edgeAverageLength;
+                Vector3d dif1 = (pt1 - pt2Trans) / cMesh.AverageEdgeLength;
+                Vector3d dif2 = (pt2 - pt1Trans) / cMesh.AverageEdgeLength;
 
                 for (int j = 0; j < 3; j++) error.Add(dif1[j]);
                 for (int j = 0; j < 3; j++) error.Add(dif2[j]);
@@ -84,13 +84,13 @@ namespace Crane.Constraints
 
                 for (int j = 0; j < 3; j++)
                 {
-                    elements.Add(new Tuple<int, int, double>(6 * i + j,     3 * id1 + j, 1.0 / _edgeAverageLength));
-                    elements.Add(new Tuple<int, int, double>(6 * i + j + 3, 3 * id2 + j, 1.0 / _edgeAverageLength));
+                    elements.Add(new Tuple<int, int, double>(6 * i + j,     3 * id1 + j, 1.0 / cMesh.AverageEdgeLength));
+                    elements.Add(new Tuple<int, int, double>(6 * i + j + 3, 3 * id2 + j, 1.0 / cMesh.AverageEdgeLength));
 
                     for(int k = 0; k < 3; k++)
                     {
-                        elements.Add(new Tuple<int, int, double>(6 * i + j,     3 * id2 + k, -  inv[j, k] / _edgeAverageLength));
-                        elements.Add(new Tuple<int, int, double>(6 * i + j + 3, 3 * id1 + k, - trans[j, k] / _edgeAverageLength));
+                        elements.Add(new Tuple<int, int, double>(6 * i + j,     3 * id2 + k, -  inv[j, k] / cMesh.AverageEdgeLength));
+                        elements.Add(new Tuple<int, int, double>(6 * i + j + 3, 3 * id1 + k, - trans[j, k] / cMesh.AverageEdgeLength));
                     }
                 }
             }
