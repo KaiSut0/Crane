@@ -1105,12 +1105,11 @@ namespace Crane.Core
             ConnectedTopologyEdgesList = new List<List<int>>();
             for (int i = 0; i < Mesh.Vertices.Count; i++)
             {
-                var connectedTopologyVertices = new List<int>();
-                connectedTopologyVertices.AddRange(Mesh.TopologyVertices.ConnectedTopologyVertices(i));
-                ConnectedTopologyVerticesList.Add(connectedTopologyVertices);
+                var conVerts = Mesh.TopologyVertices.ConnectedTopologyVertices(i);
+                 ConnectedTopologyVerticesList.Add(conVerts.ToList());
 
                 var connectedTopologyEdges = new List<int>();
-                foreach(int j in connectedTopologyVertices)
+                foreach(int j in conVerts)
                 {
                     int edgeId = Util.GetTopologyEdgeIndex(Mesh, new IndexPair(i, j));
                     connectedTopologyEdges.Add(edgeId);

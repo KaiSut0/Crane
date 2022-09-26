@@ -62,9 +62,9 @@ namespace Crane.Constraints
                     //double param;
                     int id = anchorVertexIDs[i];
                     Point3d pt = verts[id];
-                    Point3d ptOnGeometry = ClosestPoint(verts[id]);
+                    //Point3d ptOnGeometry = ClosestPoint(verts[id]);
 
-                    Vector3d vec = pt - ptOnGeometry;
+                    //Vector3d vec = pt - ptOnGeometry;
                     Matrix<double> nn = Derivative(pt);
 
                     for (int j = 0; j < 3; j++)

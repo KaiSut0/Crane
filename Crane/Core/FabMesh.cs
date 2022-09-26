@@ -102,7 +102,42 @@ namespace Crane.Core
             return offsetFaces;
         }
 
-        public List<Polyline> OffsetFaceInkjet4D(double panelThickness, double sheetThickness, double shrinkRatio, bool topOrBottom)
+        public List<Polyline> OffsetFaceInkjet4DConstant(double offsetWidth, int topOrMidOrBottom)
+        {
+            List<Polyline> offsetFaces = new List<Polyline>();
+            for (int i = 0; i < FaceCount; i++)
+            {
+                var facePolyline = FacePolylines[i];
+                List<double> offsets = new List<double>();
+                for (int j = 0; j < facePolyline.SegmentCount; j++)
+                {
+                    double offset = offsetWidth;
+                    double foldAng = NgonEdgeFoldAngle[new IndexPair(i, j)];
+
+                    if (topOrMidOrBottom == 0)
+                    {
+                        if (foldAng < 0)
+                        {
+                            offset = 0;
+                        }
+                    }
+                    else if (topOrMidOrBottom == 2)
+                    {
+                        if (foldAng > 0)
+                        {
+                            offset = 0;
+                        }
+                    }
+                    offsets.Add(offset);
+                }
+
+                var normal = NgonNormals[i];
+                offsetFaces.Add(OffsetPolyline(facePolyline, normal, offsets));
+            }
+            return offsetFaces;
+        }
+
+        public List<Polyline> OffsetFaceInkjet4D(double panelThickness, double sheetThickness, double shrinkRatio, int topOrMidOrBottom)
         {
             List<Polyline> offsetFaces = new List<Polyline>();
             for (int i = 0; i < FaceCount; i++)
@@ -114,7 +149,7 @@ namespace Crane.Core
                     double foldAng = NgonEdgeFoldAngle[new IndexPair(i, j)];
                     double rho = Math.PI - Math.Abs(foldAng);
 
-                    if (topOrBottom)
+                    if (topOrMidOrBottom == 0)
                     {
                         if (foldAng < 0)
                         {
@@ -122,7 +157,7 @@ namespace Crane.Core
                             foldAng = 0;
                         }
                     }
-                    else
+                    else if(topOrMidOrBottom == 2)
                     {
                         if (foldAng > 0)
                         {
@@ -144,6 +179,8 @@ namespace Crane.Core
             return offsetFaces;
 
         }
+
+
 
         private Polyline OffsetPolyline(Polyline polyline, Vector3d normal, List<double> offsets)
         {
