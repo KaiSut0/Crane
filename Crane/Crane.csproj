@@ -52,11 +52,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CGNRNative64, Version=1.0.7885.6715, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>dll\CGNRNative64.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="GH_IO">
       <HintPath>..\..\..\..\..\..\Program Files\Rhino 7\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
       <Private>False</Private>
@@ -110,6 +105,7 @@
     <Compile Include="Components\Constraints\OnGeometry\OnSurfaceComponent.cs" />
     <Compile Include="Components\Constraints\SetMinMax\SetMaxFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\Origami\ValleyOnlyFlatFoldableComponent.cs" />
+    <Compile Include="Components\FabTools\ConstaintOffsetInkjet4D.cs" />
     <Compile Include="Components\FabTools\OffsetInkjet4D.cs" />
     <Compile Include="Components\FabTools\OffsetThickPanel.cs" />
     <Compile Include="Components\Inputs\CMeshFromFoldFormat.cs" />
@@ -175,6 +171,8 @@
     <Compile Include="Constraints\ValleyOnlyFlatFoldable.cs" />
     <Compile Include="Core\FabMesh.cs" />
     <Compile Include="Core\FoldFormat.cs" />
+    <Compile Include="Core\LinearAlgebra.cs" />
+    <Compile Include="Core\NativeMethods.cs" />
     <Compile Include="Core\RhinoCommonExtensions.cs" />
     <Compile Include="Core\SparseMatrixBuilder.cs" />
     <Compile Include="Misc\Approx2dSymmetry.cs" />
@@ -390,12 +388,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(ProjectDir)\dll\mkl_avx2.dll" "$(TragetDir)mkl_avx2.dll"
-Copy "$(ProjectDir)\dll\mkl_core.dll" "$(TragetDir)mkl_core.dll"
-Copy "$(ProjectDir)\dll\mkl_intel_thread.dll" "$(TragetDir)mkl_intel_thread.dll"
-Copy "$(ProjectDir)\dll\mkl_rt.dll" "$(TragetDir)mkl_rt.dll"
-Copy "$(ProjectDir)\dll\mkl_vml_avx2.dll" "$(TragetDir)mkl_vml_avx2.dll"
-Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
 Erase "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

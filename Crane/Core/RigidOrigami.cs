@@ -377,8 +377,7 @@ namespace Crane.Core
                 drivingForce = ComputeInitialFoldAngleVectorForFold(foldSpeed);
             }
             Vector<double> b = ComputeFoldMotionVector(foldJacobian, drivingForce);
-            //Vector<double> foldMotion = -CGNRSolveForSymmetricPositiveDefiniteMatrixNative(A, b, 1e-6, iterationMax);
-            Vector<double> foldMotion = -CGNRSolveForSymmetricPositiveDefiniteMatrix(A, b, 1e-6, iterationMax);
+            Vector<double> foldMotion = -LinearAlgebra.SolveSym(A, b, 1e-6, iterationMax);
 
             return foldMotion;
         }
@@ -472,7 +471,11 @@ namespace Crane.Core
             int[] csrRowPtr = storage.RowPointers;
             int[] csrColInd = storage.ColumnIndices;
             double[] csrVal = storage.Values;
-            double[] answer = CGNR.CGNR.CGNRForRect(n, m, csrRowPtr, csrColInd, csrVal, b.ToArray(), x.ToArray(), threshold, iterationMax);
+            double[] answer = x.ToArray();
+            //double[] answer = CGNR.CGNR.CGNRForRect(n, m, csrRowPtr, csrColInd, csrVal, b.ToArray(), x.ToArray(), threshold, iterationMax);
+            NativeMethods.CGNRForRect(n, m, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
+
+
             return Vector<double>.Build.DenseOfArray(answer);
         }
 
@@ -487,7 +490,9 @@ namespace Crane.Core
             int[] csrRowPtr = storage.RowPointers;
             int[] csrColInd = storage.ColumnIndices;
             double[] csrVal = storage.Values;
-            double[] answer = CGNR.CGNR.CGNRForSymmetricPositiveDefinite(n, csrRowPtr, csrColInd, csrVal, b.ToArray(), threshold, iterationMax);
+            //double[] answer = CGNR.CGNR.CGNRForSymmetricPositiveDefinite(n, csrRowPtr, csrColInd, csrVal, b.ToArray(), threshold, iterationMax);
+            double[] answer = new double[n];
+            NativeMethods.CGNRForSym(n, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
             return Vector<double>.Build.DenseOfArray(answer);
 
         }
@@ -549,7 +554,8 @@ namespace Crane.Core
                         e2 = Error.L2Norm();
                     }
                 }
-                updatedCoordinates = nowCoordinates + 0.5 * (lb + ub);
+                //updatedCoordinates = nowCoordinates + 0.5 * (lb + ub);
+                updatedCoordinates = nowCoordinates + ub;
             }
 
             this.CMesh.UpdateMesh(updatedCoordinates);
@@ -572,34 +578,28 @@ namespace Crane.Core
         }
         public double NRSolve(Vector<double> initialMoveVector, double threshold, int iterationMaxNewtonMethod, int iterationMaxCGNR)
         {
-            bool useNativeCGNRMethod = false;
+            bool useNativeCGNRMethod = true;
             ComputeJacobian();
             Residual = ComputeResidual();
             var cgnrComp = new List<double>();
-            Vector<double> constrainedMoveVector = Vector<double>.Build.Dense(3 * CMesh.Mesh.Vertices.Count);
+            Vector<double> constrainedMoveVector;
             if(initialMoveVector.L2Norm() != 0)
             {
                 int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount) - 1, iterationMaxCGNR);
-                if (useNativeCGNRMethod)
-                    constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, initialMoveVector, threshold, cgnrIterationMax);
-                else
-                    constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, threshold, cgnrIterationMax, ref cgnrComp);
+                constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, initialMoveVector, Residual, cgnrIterationMax);
                 LinearSearch(constrainedMoveVector, 0);
                 Residual = Error * Error / (Error.Count * Error.Count);
             }
             int iteration = 0;
             cgnrComp = new List<double>();
-            double nrComp = 0;
+            double nrComp;
             var nrSw = new System.Diagnostics.Stopwatch();
             nrSw.Start();
             while(iteration < iterationMaxNewtonMethod && Residual > threshold)
             {
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
-                int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount) - 1, iterationMaxCGNR);
-                if (useNativeCGNRMethod)
-                    constrainedMoveVector = -CGNRSolveForRectangleMatrixNative(Jacobian, Error, zeroVector, Residual, cgnrIterationMax);
-                else
-                    constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Residual, cgnrIterationMax, ref cgnrComp);
+                int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount), iterationMaxCGNR);
+                constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, zeroVector, Residual, cgnrIterationMax);
                 LinearSearch(constrainedMoveVector, 0);
                 Residual = Error * Error / (Error.Count * Error.Count);
                 iteration++;

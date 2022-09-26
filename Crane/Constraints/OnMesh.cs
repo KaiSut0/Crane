@@ -21,7 +21,13 @@ namespace Crane.Constraints
         }
         protected override Matrix<double> Derivative(Point3d pt)
         {
-            throw new NotImplementedException();
+            Point3d closestPt = new Point3d();
+            Vector3d normal = new Vector3d();
+            goalMesh.ClosestPoint(pt, out closestPt, out normal, 1e+5);
+            Vector3d n = normal;
+            Vector<double> nv = Vector<double>.Build.Dense(3);
+            for (int k = 0; k < 3; k++) nv[k] = n[k];
+            return nv.OuterProduct(nv);
         }
     }
 }

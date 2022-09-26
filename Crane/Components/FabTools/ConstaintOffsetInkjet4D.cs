@@ -1,21 +1,19 @@
-﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Crane.Core;
-using Point2d = Rhino.Geometry.Point2d;
-using Point3d = Rhino.Geometry.Point3d;
+using Grasshopper.Kernel;
+using Rhino.Geometry;
 
 namespace Crane.Components.FabTools
 {
-    public class OffsetInkjet4D : GH_Component
+    public class ConstaintOffsetInkjet4D : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the OffsetInkjet4D class.
+        /// Initializes a new instance of the ConstaintOffsetInkjet4D class.
         /// </summary>
-        public OffsetInkjet4D()
-          : base("Offset Inkjet4D", "Offset Inkjet4D",
-              "Offset Inkjet4D",
+        public ConstaintOffsetInkjet4D()
+          : base("Constaint Offset Inkjet 4D", "Cons Ink 4D",
+              "Constant offset inkjet 4d.",
               "Crane", "FabTools")
         {
         }
@@ -26,9 +24,8 @@ namespace Crane.Components.FabTools
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Ink Thickness", "Ink Thickness", "Ink Thickness", GH_ParamAccess.item, 0.1);
-            pManager.AddNumberParameter("Sheet Thickness", "Sheet Thickness", "Sheet Thickness", GH_ParamAccess.item, 0.015);
-            pManager.AddNumberParameter("Shrink Ratio", "Shrink Ratio", "Shrink Ratio", GH_ParamAccess.item, 0.059);
+            pManager.AddNumberParameter("Ink Thickness", "Thickness", "Ink Thickness", GH_ParamAccess.item, 0.1);
+            pManager.AddNumberParameter("Offset Width", "Offset", "Offset width for folding lines.", GH_ParamAccess.item, 1);
             pManager.AddNumberParameter("Tolerance", "Tolerance", "Tolerance", GH_ParamAccess.item, 1e-3);
             pManager.AddPointParameter("Origin", "Origin", "Origin", GH_ParamAccess.item, new Point3d(0, 0, 0));
             pManager.AddNumberParameter("RotAng", "RotAng", "Rotation angle.", GH_ParamAccess.item, 0);
@@ -48,7 +45,6 @@ namespace Crane.Components.FabTools
             pManager.AddMeshParameter("Top Panel", "Top Panel", "Thick panels of the top faces.", GH_ParamAccess.list);
             pManager.AddMeshParameter("Bottom Panel", "Fold Panel", "Thick panels of the bottom faces.", GH_ParamAccess.list);
             pManager.AddTransformParameter("Trans", "Trans", "Transformation Dev to Fold.", GH_ParamAccess.list);
-
         }
 
         /// <summary>
@@ -59,23 +55,21 @@ namespace Crane.Components.FabTools
         {
             CMesh cMesh = new CMesh();
             double inkThickness = 0.1;
-            double sheetThickness = 0.015;
-            double shrinkRatio = 0.059;
+            double offset = 1;
             double tolerance = 1e-3;
             Point3d origin = Point3d.Origin;
             double rotAng = 0;
             DA.GetData(0, ref cMesh);
             DA.GetData(1, ref inkThickness);
-            DA.GetData(2, ref sheetThickness);
-            DA.GetData(3, ref shrinkRatio);
-            DA.GetData(4, ref tolerance);
-            DA.GetData(5, ref origin);
-            DA.GetData(6, ref rotAng);
+            DA.GetData(2, ref offset);
+            DA.GetData(3, ref tolerance);
+            DA.GetData(4, ref origin);
+            DA.GetData(5, ref rotAng);
 
             FabMesh fabMesh = new FabMesh(cMesh, new Point2d(origin.X, origin.Y), rotAng, tolerance);
-            var top = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, 0);
-            var bottom = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, 2);
-            var mid = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, 1);
+            var top = fabMesh.OffsetFaceInkjet4DConstant(offset, 0);
+            var bottom = fabMesh.OffsetFaceInkjet4DConstant(offset, 2);
+            var mid = fabMesh.OffsetFaceInkjet4DConstant(offset, 1);
             var devPolyline = fabMesh.GetFacePolylines(fabMesh.DevCMesh);
             var foldPolyline = fabMesh.GetFacePolylines(fabMesh.CMesh);
             var topPanel = fabMesh.ThickPanels(top, inkThickness);
@@ -109,7 +103,7 @@ namespace Crane.Components.FabTools
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("15cc67d9-8b4b-4a75-8426-2378644b568b"); }
+            get { return new Guid("6CAF2978-E991-4836-BF13-B46098DC53A0"); }
         }
     }
 }
