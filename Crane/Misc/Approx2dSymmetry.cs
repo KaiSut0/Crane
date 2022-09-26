@@ -7,6 +7,7 @@ using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
 using Rhino.Geometry;
 using Rhino.UI;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Crane.Misc
 {
@@ -52,7 +53,7 @@ namespace Crane.Misc
             var speed = new List<double>();
             while (residual > tolerance && iteration < iterationMax)
             {
-                diff = RigidOrigami.CGNRSolveForRectangleMatrix(jac, -err, zero, 1e-23, 8, ref speed);
+                diff = -LinearAlgebra.Solve((SparseMatrix)jac, err, zero, 1e-23, 8);
                 update(diff);
                 err = error();
                 jac = jacobian();
