@@ -83,6 +83,7 @@
     <Compile Include="Components\Constraints\Equal\EqualSectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleSumComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixMountainValley180FoldComponent.cs" />
     <Compile Include="Components\Constraints\Glue\GlueVertexToFaceComponent.cs" />
     <Compile Include="Components\Constraints\Origami\DevelopableComponent.cs" />
     <Compile Include="Components\Constraints\Equal\EqualEdgeLengthComponent.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Constraints\HoleAngleDevelopable.cs" />
     <Compile Include="Constraints\HoleVectorDevelopable.cs" />
     <Compile Include="Constraints\MountainOnlyFlatFoldable.cs" />
+    <Compile Include="Constraints\MountainValley180Fold.cs" />
     <Compile Include="Constraints\PlasticMoment.cs" />
     <Compile Include="Constraints\SetMaxFoldAngle.cs" />
     <Compile Include="Constraints\SetMinEdgeLength.cs" />

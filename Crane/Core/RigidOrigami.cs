@@ -478,7 +478,17 @@ namespace Crane.Core
         public double ComputeResidual()
         {
             ComputeError();
-            return Error * Error / (Error.Count * Error.Count);
+            double norm = Error.L2Norm();
+            double err = norm/Error.Count;
+            err = err * err;
+            return err;
+        }
+        public double ComputeResidualNoEvaluation()
+        {
+            double norm = Error.L2Norm();
+            double err = norm/Error.Count;
+            err = err * err;
+            return err;
         }
         public double[] ComputeSvdOfJacobian()
         {
@@ -499,7 +509,7 @@ namespace Crane.Core
                 int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount) - 1, iterationMaxCGNR);
                 constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, initialMoveVector, Residual, cgnrIterationMax);
                 LinearSearch(constrainedMoveVector, 0);
-                Residual = Error * Error / (Error.Count * Error.Count);
+                Residual = ComputeResidualNoEvaluation();
             }
             int iteration = 0;
             cgnrComp = new List<double>();
@@ -512,7 +522,7 @@ namespace Crane.Core
                 int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount), iterationMaxCGNR);
                 constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, zeroVector, Residual, cgnrIterationMax);
                 LinearSearch(constrainedMoveVector, 0);
-                Residual = Error * Error / (Error.Count * Error.Count);
+                Residual = ComputeResidualNoEvaluation();
                 iteration++;
             }
             nrSw.Stop();
