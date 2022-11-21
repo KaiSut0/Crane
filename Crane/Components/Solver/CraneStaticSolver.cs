@@ -99,7 +99,7 @@ namespace Crane.Components.Solver
 
             RigidOrigami rigidOrigami = new RigidOrigami(cMesh, constraints);
 
-            rigidOrigami.SaveMode(isRigid, isPanelFlat, isFoldBlock, isConstraint);
+            rigidOrigami.SaveModes(isRigid, isPanelFlat, isFoldBlock, isConstraint);
 
 
             if (solve)

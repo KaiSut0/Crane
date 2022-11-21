@@ -35,9 +35,10 @@ namespace Crane.Core
             this.IsPanelFlatMode = rigidOrigami.IsPanelFlatMode;
             this.IsFoldBlockMode = rigidOrigami.IsFoldBlockMode;
             this.IsConstraintMode = rigidOrigami.IsConstraintMode;
-            this.IsRecordMode = false;
+            this.IsRecordMode = rigidOrigami.IsRecordMode;
             this.CGNRComputationSpeeds = new List<List<double>>();
             this.NRComputationSpeeds = new List<double>();
+            NowRecordedIndexPosition = 0;
         }
 
         public RigidOrigami(CMesh cMesh, List<Constraint> constraints)
@@ -55,6 +56,7 @@ namespace Crane.Core
             this.IsRecordMode = false;
             this.CGNRComputationSpeeds = new List<List<double>>();
             this.NRComputationSpeeds = new List<double>();
+            NowRecordedIndexPosition = 0;
         }
         #endregion
         #region Properties
@@ -76,6 +78,8 @@ namespace Crane.Core
         public List<List<double>> CGNRComputationSpeeds { get; private set; }
         public List<double> NRComputationSpeeds { get; private set; }
         public bool UseNative { get; set; }
+
+        public int NowRecordedIndexPosition { get; set; }
         #endregion
 
         #region Private Members
@@ -530,14 +534,19 @@ namespace Crane.Core
             NRComputationSpeeds.Add(nrComp);
             CGNRComputationSpeeds.Add(cgnrComp);
 
-            if (this.IsRecordMode)
+            if (true)
             {
+                if(NowRecordedIndexPosition < RecordedMeshPoints.Count - 1)
+                {
+                    RecordedMeshPoints.RemoveRange(NowRecordedIndexPosition, RecordedMeshPoints.Count - NowRecordedIndexPosition);
+                }
                 this.RecordedMeshPoints.Add(this.CMesh.MeshVerticesVector);
+                NowRecordedIndexPosition = RecordedMeshPoints.Count - 1;
             }
             return Residual;
         }
 
-        public void SaveMode(bool isRigidMode, bool isPanelFlatMode, bool isFoldBlockMode, bool isConstraintMode)
+        public void SaveModes(bool isRigidMode, bool isPanelFlatMode, bool isFoldBlockMode, bool isConstraintMode)
         {
             IsRigidMode = isRigidMode;
             IsPanelFlatMode = isPanelFlatMode;
