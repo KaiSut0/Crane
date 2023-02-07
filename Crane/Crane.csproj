@@ -83,6 +83,7 @@
     <Compile Include="Components\Constraints\Equal\EqualSectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleSumComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixFaceNormalConponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixMountainValley180FoldComponent.cs" />
     <Compile Include="Components\Constraints\Glue\GlueVertexToFaceComponent.cs" />
     <Compile Include="Components\Constraints\Origami\DevelopableComponent.cs" />
@@ -136,7 +137,6 @@
     <Compile Include="Components\Patterns\DoublyPeriodicTessellationComponent.cs" />
     <Compile Include="Components\Patterns\ExtrudedWaterbombOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\MapMiuraParameterComponent.cs" />
-    <Compile Include="Components\Patterns\MiuraFoldingOnDoubleSurfaceComponent.cs" />
     <Compile Include="Components\Patterns\StarOrigamizeComponent.cs" />
     <Compile Include="Components\Patterns\TruncatedStarOrigamizeComponent.cs" />
     <Compile Include="Components\Patterns\TwistOrigamizeComponent.cs" />
@@ -154,6 +154,7 @@
     <Compile Include="Components\Util\MapDev2Fold.cs" />
     <Compile Include="Components\Outputs\WriteFoldFormat.cs" />
     <Compile Include="Components\Util\UnWeldMeshAlongPolylines.cs" />
+    <Compile Include="Constraints\AlignNormal.cs" />
     <Compile Include="Constraints\EqualBoundarySectorAngle.cs" />
     <Compile Include="Constraints\EqualEdgeLengthSum.cs" />
     <Compile Include="Constraints\EqualFoldAngle.cs" />
@@ -183,7 +184,7 @@
     <Compile Include="Misc\MapMiuraParameter.cs" />
     <Compile Include="Misc\ScaleRotation.cs" />
     <Compile Include="Patterns\Chair.cs" />
-    <Compile Include="Patterns\ChickenWireOnSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\ChickenWireOnSurface.cs" />
     <Compile Include="Constraints\Anchor.cs" />
     <Compile Include="Constraints\AnchorToGround.cs" />
     <Compile Include="Core\CMesh.cs" />
@@ -214,8 +215,7 @@
     <Compile Include="Constraints\OnSurface.cs" />
     <Compile Include="CraneInfo.cs" />
     <Compile Include="Patterns\DoublyPeriodicTessellation.cs" />
-    <Compile Include="Patterns\ExtrudedWaterbombOnDoubleSurface.cs" />
-    <Compile Include="Patterns\MiuraFoldingOnDoubleSurface.cs" />
+    <Compile Include="Patterns\TessellationOnSurface\ExtrudedWaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtendedBoxesOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtendedBoxesParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\HuffmanExtrudedBoxesOnDoubleSurface.cs" />
@@ -232,9 +232,9 @@
     <Compile Include="Patterns\TessellationOnSurface\TessellationParam.cs" />
     <Compile Include="Patterns\TessellationOnSurface\WaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\TessellationOnSurface\WaterbombParam.cs" />
-    <Compile Include="Patterns\TruncatedStarOrigamize.cs" />
-    <Compile Include="Patterns\TuckOrigamize.cs" />
-    <Compile Include="Patterns\TwistOrigamize.cs" />
+    <Compile Include="Patterns\TessellationOnMesh\TruncatedStarOrigamize.cs" />
+    <Compile Include="Patterns\TessellationOnMesh\TuckOrigamize.cs" />
+    <Compile Include="Patterns\TessellationOnMesh\TwistOrigamize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RigidOrigami.cs" />
     <Compile Include="Core\UnWeldMesh.cs" />
@@ -246,7 +246,7 @@
     <Compile Include="Constraints\TransformSymmetryBase.cs" />
     <Compile Include="Constraints\TranslationalSymmetry.cs" />
     <Compile Include="Constraints\ValleyIntersectPenalty.cs" />
-    <Compile Include="Patterns\StarOrigamize.cs" />
+    <Compile Include="Patterns\TessellationOnMesh\StarOrigamize.cs" />
     <Compile Include="Patterns\TessellationOnDoubleSurface.cs" />
     <Compile Include="Patterns\WaterbombOnDoubleSurface.cs" />
     <Compile Include="Patterns\YoshimuraPatternOnSurface.cs" />

@@ -17,6 +17,7 @@ namespace Crane.Core
         public Mesh Mesh { get; private set; }
         public Mesh InitialMesh { get; private set; }
         public PointCloud VerticesCloud { get; private set; }
+        public PointCloud FaceCenterCloud { get; private set; }
         public Point3d[] Vertices { get; private set; }
         public Vector3d[] FaceNormals { get; private set; }
         public double VertexSearchTolerance { get; private set; }
@@ -71,7 +72,7 @@ namespace Crane.Core
         public Dictionary<int, int> EdgeIds2InnerEdgeIds { get; private set; }
 
 
-#endregion
+        #endregion
 
         public CMesh() { }
         public CMesh(Mesh mesh)
@@ -138,6 +139,7 @@ namespace Crane.Core
             this.BoundaryLoopVertexIds = cMesh.BoundaryLoopVertexIds;
             //this.InitialEdgesLength = new List<double>(cMesh.InitialEdgesLength.ToArray());
 
+            this.FaceCenterCloud = cMesh.FaceCenterCloud;
         }
         public CMesh(Mesh mesh, List<Line> M, List<Line> V)
         {
@@ -180,6 +182,7 @@ namespace Crane.Core
             this.OriginalFaces = mesh.Faces;
             var tri = this.InsertTriangulate();
             UpdateVerticesCloud();
+            UpdateFaceCenterCloud();
             UpdateFaceNormals();
 
             //this.Mesh.TopologyVertices.SortEdges();
@@ -834,6 +837,10 @@ namespace Crane.Core
             return id;
         }
 
+        public int GetFaceIdFromFaceCenter(Point3d faceCenter)
+        {
+            return FaceCenterCloud.ClosestPoint(faceCenter);
+        }
         public int GetFaceIdFrom3Pts(Point3d pt1, Point3d pt2, Point3d pt3)
         {
             int id1 = GetVertexId(pt1);
@@ -1468,6 +1475,16 @@ namespace Crane.Core
         {
             VerticesCloud = new PointCloud(Mesh.Vertices.ToPoint3dArray());
             Vertices = Mesh.Vertices.ToPoint3dArray();
+        }
+
+        private void UpdateFaceCenterCloud()
+        {
+            Point3d[] faceCenter = new Point3d[Mesh.Faces.Count];
+            for (int i = 0; i < Mesh.Faces.Count; i++)
+            {
+                faceCenter[i] = Mesh.Faces.GetFaceCenter(i);
+            }
+            FaceCenterCloud = new PointCloud(faceCenter);
         }
         public void SetFoldingSpeed(double[] foldingSpeed)
         {
