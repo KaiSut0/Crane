@@ -124,6 +124,7 @@
     <Compile Include="Components\Patterns\TuckOrigamize.cs" />
     <Compile Include="Components\Patterns\WaterbombOnDoubleSurfaceComponent2.cs" />
     <Compile Include="Components\Solver\CraneAsyncSolver.cs" />
+    <Compile Include="Components\Util\DeformationGradientComponent.cs" />
     <Compile Include="Components\Util\IndexPairsForSymmetry.cs" />
     <Compile Include="Components\Inputs\PaperMesh.cs" />
     <Compile Include="Components\Util\Approx2dSymmetryComponent.cs" />
