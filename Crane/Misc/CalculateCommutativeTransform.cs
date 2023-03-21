@@ -93,13 +93,14 @@ namespace Crane.Misc
             double[] d2 = copy(D2ini);
             Vector<double> err = error(l1, l2, d1, d2);
             Matrix<double> jac = jacobian(l1, l2, d1, d2);
+            SparseMatrix jac_ = (SparseMatrix)Matrix<double>.Build.SparseOfMatrix(jac);
             Vector<double> dif = Vector<double>.Build.Dense(24);
             double residual = err.L2Norm();
             int iteration = 0;
             var speed = new List<double>();
             while (residual > tolerance && iteration < iterationMax)
             {
-                dif = -LinearAlgebra.Solve((SparseMatrix)jac, err, Vector<double>.Build.Dense(24), 1e-12, 24);
+                dif = -LinearAlgebra.Solve(jac_, err, Vector<double>.Build.Dense(24), 1e-12, 24);
                 update(dif, ref l1, ref l2, ref d1, ref d2);
                 err = error(l1, l2, d1, d2);
                 jac = jacobian(l1, l2, d1, d2);
