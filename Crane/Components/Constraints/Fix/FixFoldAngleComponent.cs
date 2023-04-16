@@ -63,6 +63,14 @@ namespace Crane.Components.Constraints
                     foldAngles.Add(foldAngles[0]);
                 }
             }
+            if (strengths.Count != lines.Count)
+            {
+                for (int i = strengths.Count; i < lines.Count; i++)
+                {
+                    strengths.Add(strengths[0]);
+                }
+            }
+
 
             FixFoldAngle constraint = new FixFoldAngle(cMesh, lines.ToArray(), foldAngles.ToArray(), strengths.ToArray());
             DA.SetData(0, constraint);

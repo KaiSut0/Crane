@@ -525,7 +525,7 @@ namespace Crane.Core
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF);
                 int cgnrIterationMax = Math.Min(Math.Min(Jacobian.RowCount, Jacobian.ColumnCount), iterationMaxCGNR);
                 constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, zeroVector, Residual, cgnrIterationMax);
-                LinearSearch(constrainedMoveVector, 0);
+                LinearSearch(constrainedMoveVector, 3);
                 Residual = ComputeResidualNoEvaluation();
                 iteration++;
             }

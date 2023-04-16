@@ -81,8 +81,11 @@
     <Compile Include="Components\Constraints\Equal\EqualEdgeLengthSumComponent.cs" />
     <Compile Include="Components\Constraints\Equal\EqualFoldAngleComponent.cs" />
     <Compile Include="Components\Constraints\Equal\EqualSectorAngleComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixAreaComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixAreaSumComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixBoundarySectorAngleSumComponent.cs" />
+    <Compile Include="Components\Constraints\Fix\FixEdgeLengthShorterLongerComponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixFaceNormalConponent.cs" />
     <Compile Include="Components\Constraints\Fix\FixMountainValley180FoldComponent.cs" />
     <Compile Include="Components\Constraints\Glue\GlueVertexToFaceComponent.cs" />
@@ -160,6 +163,8 @@
     <Compile Include="Constraints\EqualEdgeLengthSum.cs" />
     <Compile Include="Constraints\EqualFoldAngle.cs" />
     <Compile Include="Constraints\EqualSectorAngle.cs" />
+    <Compile Include="Constraints\FixArea.cs" />
+    <Compile Include="Constraints\FixAreaSum.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngle.cs" />
     <Compile Include="Constraints\FixBoundarySectorAngleSum.cs" />
     <Compile Include="Constraints\GlueVertexToEdge2.cs" />

@@ -1,28 +1,35 @@
-﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Crane.Components.Constraints
+using Grasshopper.Kernel;
+using Rhino.Geometry;
+
+using Crane.Constraints;
+
+namespace Crane.Components.Constraints.Fix
 {
-    public class EqualFoldAngleComponent : GH_Component
+    public class FixAreaSumComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the EqualFoldAngleComponent class.
+        /// Initializes a new instance of the FixAreaSumComponent class.
         /// </summary>
-        public EqualFoldAngleComponent()
-          : base("Equal Fold Angle", "Equal Fold Angle",
-              "Equal fold angle constraint.",
+        public FixAreaSumComponent()
+          : base("Fix Area Sum", "Fix Area Sum",
+              "Set fix sum of mesh area constraint.",
               "Crane", "Constraints")
         {
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Goal Area", "Goal Area", "Goal Area", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Stiffness", "Stiffness", "Stiffness", GH_ParamAccess.item, 1);
+            pManager[1].Optional = true;
         }
 
         /// <summary>
@@ -30,6 +37,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("Constraint", "Constraint", "Constraint", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -38,6 +46,11 @@ namespace Crane.Components.Constraints
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            double goalArea = 0;
+            double stiffness = 1;
+            DA.GetData(0, ref goalArea);
+            DA.GetData(1, ref stiffness);
+            DA.SetData(0, new FixAreaSum(goalArea, stiffness));
         }
 
         /// <summary>
@@ -49,7 +62,7 @@ namespace Crane.Components.Constraints
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_equal_fold_angle;
+                return null;
             }
         }
 
@@ -58,9 +71,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("4ab8e7f1-c05b-4702-91dd-04e1308b590e"); }
+            get { return new Guid("4FE7C04E-DB09-463A-8691-F5CF4C4058A0"); }
         }
-
-        public override GH_Exposure Exposure => GH_Exposure.primary;
     }
 }
