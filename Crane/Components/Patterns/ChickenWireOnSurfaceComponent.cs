@@ -17,6 +17,8 @@ namespace Crane.Components.Patterns
               "Crane", "Pattern")
         {
         }
+                public override GH_Exposure Exposure => GH_Exposure.tertiary;
+
 
         /// <summary>
         /// Registers all the input parameters for this component.
