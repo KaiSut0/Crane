@@ -273,6 +273,16 @@ namespace Crane.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap icons_cal_commutative_trans {
+            get {
+                object obj = ResourceManager.GetObject("icons_cal_commutative_trans", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap icons_chair {
             get {
                 object obj = ResourceManager.GetObject("icons_chair", resourceCulture);
@@ -393,6 +403,16 @@ namespace Crane.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap icons_deformation_grad {
+            get {
+                object obj = ResourceManager.GetObject("icons_deformation_grad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap icons_developable {
             get {
                 object obj = ResourceManager.GetObject("icons_developable", resourceCulture);
@@ -406,6 +426,16 @@ namespace Crane.Properties {
         internal static System.Drawing.Bitmap icons_double_thick_panel {
             get {
                 object obj = ResourceManager.GetObject("icons_double_thick_panel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_doubly_periodic {
+            get {
+                object obj = ResourceManager.GetObject("icons_doubly_periodic", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -663,9 +693,69 @@ namespace Crane.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap icons_haffman_extended_boxes_srf {
+            get {
+                object obj = ResourceManager.GetObject("icons_haffman_extended_boxes_srf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_haffman_extruded_boxes_srf_67 {
+            get {
+                object obj = ResourceManager.GetObject("icons_haffman_extruded_boxes_srf_67", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_haffman_extruded_boxes_srf_69 {
+            get {
+                object obj = ResourceManager.GetObject("icons_haffman_extruded_boxes_srf_69", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_haffman_star_triangle_srf {
+            get {
+                object obj = ResourceManager.GetObject("icons_haffman_star_triangle_srf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_haffman_waterbomb_srf {
+            get {
+                object obj = ResourceManager.GetObject("icons_haffman_waterbomb_srf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap icons_hole_developable {
             get {
                 object obj = ResourceManager.GetObject("icons_hole_developable", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_index_pair_symmetry {
+            get {
+                object obj = ResourceManager.GetObject("icons_index_pair_symmetry", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -693,6 +783,16 @@ namespace Crane.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap icons_map_dev2fold {
+            get {
+                object obj = ResourceManager.GetObject("icons_map_dev2fold", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap icons_mirror_symmetry {
             get {
                 object obj = ResourceManager.GetObject("icons_mirror_symmetry", resourceCulture);
@@ -706,6 +806,16 @@ namespace Crane.Properties {
         internal static System.Drawing.Bitmap icons_miura {
             get {
                 object obj = ResourceManager.GetObject("icons_miura", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_miura_param {
+            get {
+                object obj = ResourceManager.GetObject("icons_miura_param", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -813,6 +923,16 @@ namespace Crane.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap icons_scale_rotation {
+            get {
+                object obj = ResourceManager.GetObject("icons_scale_rotation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap icons_selective_developable {
             get {
                 object obj = ResourceManager.GetObject("icons_selective_developable", resourceCulture);
@@ -856,6 +976,16 @@ namespace Crane.Properties {
         internal static System.Drawing.Bitmap icons_set_min_sector_angle {
             get {
                 object obj = ResourceManager.GetObject("icons_set_min_sector_angle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_star_origamize {
+            get {
+                object obj = ResourceManager.GetObject("icons_star_origamize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -916,6 +1046,16 @@ namespace Crane.Properties {
         internal static System.Drawing.Bitmap icons_twist_origamize {
             get {
                 object obj = ResourceManager.GetObject("icons_twist_origamize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap icons_unweld_polyline {
+            get {
+                object obj = ResourceManager.GetObject("icons_unweld_polyline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

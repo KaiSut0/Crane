@@ -80,7 +80,7 @@ namespace Crane.Components.Patterns
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_truncated_origamize;
+                return Properties.Resource.icons_twist_origamize;
             }
         }
 

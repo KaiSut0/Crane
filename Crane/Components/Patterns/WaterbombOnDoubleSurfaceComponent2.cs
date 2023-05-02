@@ -12,7 +12,7 @@ namespace Crane.Components.Patterns
         /// Initializes a new instance of the WaterbombOnDoubleSurfaceComponent2 class.
         /// </summary>
         public WaterbombOnDoubleSurfaceComponent2()
-          : base("Waterbomb On Double Surface 2", "Waterbomb On Double Surface 2",
+          : base("Waterbomb On Double Surface", "Waterbomb On Double Surface",
               "Generate a Waterbomb pattern between two surfaces.",
               "Crane", "Pattern")
         {
@@ -74,7 +74,7 @@ namespace Crane.Components.Patterns
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resource.icons_water_bomb_srf;
             }
         }
 

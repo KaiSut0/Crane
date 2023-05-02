@@ -83,7 +83,7 @@ namespace Crane.Components.Patterns
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resource.icons_haffman_extruded_boxes_srf_69;
             }
         }
 

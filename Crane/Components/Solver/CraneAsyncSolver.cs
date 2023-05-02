@@ -78,7 +78,7 @@ namespace Crane.Components.Solver
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_interactive_solver;
+                return Properties.Resource.icons_async_static_solver;
             }
         }
 

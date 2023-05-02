@@ -60,7 +60,7 @@ namespace Crane.Components.Constraints.Equal
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_equal_sector_angle_54;
+                return Properties.Resource.icons_equal_boundary_sector_angle;
             }
         }
 
