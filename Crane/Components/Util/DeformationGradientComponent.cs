@@ -37,6 +37,9 @@ namespace Crane.Components.Util
             pManager.AddNumberParameter("Sigma2", "Sigma2", "Sigma2", GH_ParamAccess.list);
             pManager.AddNumberParameter("ThetaV", "ThetaV", "ThetaV", GH_ParamAccess.list);
             pManager.AddNumberParameter("ThetaU", "ThetaU", "ThetaU", GH_ParamAccess.list);
+            pManager.AddPlaneParameter("PD", "PD", "Principal Direction", GH_ParamAccess.list);
+            pManager.AddPlaneParameter("R", "R", "Rotation Plane", GH_ParamAccess.list);
+            pManager.AddVectorParameter("S", "S", "S", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -63,6 +66,9 @@ namespace Crane.Components.Util
             var sigma2 = new double[from.Faces.Count];
             var thetaV = new double[from.Faces.Count];
             var thetaU = new double[from.Faces.Count];
+            var planes = new Plane[from.Faces.Count];
+            var rots = new Plane[from.Faces.Count];
+            var scales = new Vector3d[from.Faces.Count];
 
             for (int fid = 0; fid < from.Faces.Count; fid++)
             {
@@ -101,6 +107,25 @@ namespace Crane.Components.Util
                 localCoordinateTo.ClosestParameter(vt1, out uxt, out vxt);
                 localCoordinateTo.ClosestParameter(vt2, out uyt, out vyt);
 
+                var dxf_ = new Transform();
+                dxf_[0, 0] = vf01[0]; dxf_[0, 1] = vf02[0]; dxf_[0, 2] = nf[0];
+                dxf_[1, 0] = vf01[1]; dxf_[1, 1] = vf02[1]; dxf_[1, 2] = nf[1];
+                dxf_[2, 0] = vf01[2]; dxf_[2, 1] = vf02[2]; dxf_[2, 2] = nf[2];
+                dxf_[3, 3] = 1;
+
+                var dxt_ = new Transform();
+                dxt_[0, 0] = vt01[0]; dxt_[0, 1] = vt02[0]; dxt_[0, 2] = nt[0];
+                dxt_[1, 0] = vt01[1]; dxt_[1, 1] = vt02[1]; dxt_[1, 2] = nt[1];
+                dxt_[2, 0] = vt01[2]; dxt_[2, 1] = vt02[2]; dxt_[2, 2] = nt[2];
+                dxt_[3, 3] = 1;
+
+                var dxf_inv = new Transform();
+                dxf_.TryGetInverse(out dxf_inv);
+                var F_ = dxt_ * dxf_inv;
+
+                
+
+ 
                 Matrix<double> dxf = Matrix<double>.Build.DenseOfArray(new double[,]
                 {
                     { uxf, uyf },
@@ -119,7 +144,26 @@ namespace Crane.Components.Util
                 sigma1[fid] = FSVD.S[0];
                 sigma2[fid] = FSVD.S[1];
 
-                
+                //var F_ = new Transform();
+                //F_[0, 0] = F[0, 0]; F_[0, 1] = F[0, 1];
+                //F_[1, 0] = F[1, 0]; F_[1, 1] = F[1, 1];
+                //F_[2, 2] = 1; F_[3, 3] = 1;
+                var ortho = new Transform();
+                var rot = new Transform();
+                var scale = new Vector3d();
+                var trans = new Vector3d();
+                F_.DecomposeAffine(out trans, out rot, out ortho, out scale);
+
+                Vector3d x = new Vector3d(ortho[0, 0], ortho[1, 0], 0);
+                Vector3d y = new Vector3d(ortho[0, 1], ortho[1, 1], 0);
+                Vector3d rotX = new Vector3d(rot[0, 0], rot[1, 0], 0);
+                Vector3d rotY = new Vector3d(rot[0, 1], rot[1, 1], 0);
+                var pln = new Plane(Point3d.Origin, x, y);
+                var rotPln = new Plane(Point3d.Origin, rotX, rotY);
+                planes[fid] = pln;
+                rots[fid] = rotPln;
+                scales[fid] = scale;
+
 
                 var cosThetaV = FSVD.VT[0, 0];
                 var sinThetaV = FSVD.VT[1, 0];
@@ -134,6 +178,9 @@ namespace Crane.Components.Util
             DA.SetDataList(1, sigma2);
             DA.SetDataList(2, thetaV);
             DA.SetDataList(3, thetaU);
+            DA.SetDataList(4, planes);
+            DA.SetDataList(5, rots);
+            DA.SetDataList(6, scales);
 
         }
 

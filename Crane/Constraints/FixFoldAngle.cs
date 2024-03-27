@@ -29,7 +29,6 @@ namespace Crane.Constraints
             
             var vert = mesh.Vertices.ToPoint3dArray();
 
-            var foldAngles = cMesh.GetFoldAngles();
 
             for (int id = 0; id < innerEdgeIds.Length; id++)
             {
