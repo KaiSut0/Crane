@@ -16,12 +16,13 @@ namespace Crane.Constraints
             int rows = cMesh.Mesh.TopologyEdges.Count;
             int columns = cMesh.Mesh.Vertices.Count * 3;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
+            var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
 
             Parallel.For(0, cMesh.Mesh.TopologyEdges.Count, i =>
             {
                 IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
-                Point3d a = cMesh.Vertices[ind.I];
-                Point3d b = cMesh.Vertices[ind.J];
+                Point3d a = verts[ind.I];
+                Point3d b = verts[ind.J];
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -49,11 +50,12 @@ namespace Crane.Constraints
         {
             int n = cMesh.Mesh.TopologyEdges.Count;
             double[] error_ = new double[n];
+            var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
             for (int i = 0; i < n; i++)
             {
                 IndexPair ind = cMesh.Mesh.TopologyEdges.GetTopologyVertices(i);
-                Point3d a = cMesh.Vertices[ind.I];
-                Point3d b = cMesh.Vertices[ind.J];
+                Point3d a = verts[ind.I];
+                Point3d b = verts[ind.J];
                 error_[i] = (a.DistanceToSquared(b) / cMesh.EdgeLengthSquared[i] - 1) / 2;
             }
             return error_;

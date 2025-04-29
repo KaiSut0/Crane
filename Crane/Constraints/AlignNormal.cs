@@ -76,10 +76,16 @@ namespace Crane.Constraints
         public override double[] Error(CMesh cMesh)
         {
             double[] err = new double[alignFaceIds.Count];
+            var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
             for (int i = 0; i < alignFaceIds.Count; i++)
             {
+                var face = cMesh.Mesh.Faces[i];
+                var p1 = verts[face.A];
+                var p2 = verts[face.B];
+                var p3 = verts[face.C];
                 Vector3d goalNormal = goalNormals[i];
-                Vector3d normal = cMesh.Mesh.FaceNormals[i];
+                Vector3d normal = Vector3d.CrossProduct(p2 - p1, p3 - p1);
+                normal.Unitize();
                 double strength = strengths[i];
                 err[i] = strength * (normal * goalNormal - 1);
             }

@@ -80,6 +80,8 @@ namespace Crane.Components.Util
                 var vt0 = vartsTo[ft.A];
                 var vt1 = vartsTo[ft.B];
                 var vt2 = vartsTo[ft.C];
+                var ffc = from.Faces.GetFaceCenter(fid);
+                var ftc = to.Faces.GetFaceCenter(fid);
 
                 var vf01 = vf1 - vf0;
                 var vf02 = vf2 - vf0;
@@ -96,11 +98,11 @@ namespace Crane.Components.Util
                 var xt = vt01 / vt01.Length;
                 var yt = Vector3d.CrossProduct(nt, xt);
 
-                var localCoordinateFrom = new Plane(vf0, xf, yf);
-                var localCoordinateTo = new Plane(vt0, xt, yt);
+                var localCoordinateFrom = new Plane(ffc, xf, yf);
+                var localCoordinateTo = new Plane(ftc, xt, yt);
 
                 double uxf, vxf, uyf, vyf;
-                double uxt, vxt, uyt, vyt;
+                double uxt, vxt, uyt, vyt;                
 
                 localCoordinateFrom.ClosestParameter(vf1, out uxf, out vxf);
                 localCoordinateFrom.ClosestParameter(vf2, out uyf, out vyf);
@@ -119,9 +121,11 @@ namespace Crane.Components.Util
                 dxt_[2, 0] = vt01[2]; dxt_[2, 1] = vt02[2]; dxt_[2, 2] = nt[2];
                 dxt_[3, 3] = 1;
 
+
                 var dxf_inv = new Transform();
                 dxf_.TryGetInverse(out dxf_inv);
                 var F_ = dxt_ * dxf_inv;
+
 
                 
 
@@ -139,6 +143,21 @@ namespace Crane.Components.Util
                 });
 
                 Matrix<double> F = dxt * dxf.Inverse();
+
+                var U = Matrix<double>.Build.Dense(2, 2);
+                var u = Matrix<double>.Build.Dense(2, 2);
+
+                var Theta = Vector3d.VectorAngle(vf01, vf02);
+                U[0, 0] = vf01.Length;
+                U[0, 1] = vf02.Length * Math.Cos(Theta);
+                U[1, 1] = vf02.Length * Math.Sin(Theta);
+                
+                var theta = Vector3d.VectorAngle(vt01, vt02);
+                u[0, 0] = vt01.Length;
+                u[0, 1] = vt02.Length * Math.Cos(theta);
+                u[1, 1] = vt02.Length * Math.Sin(theta);
+
+                F = u * U.Inverse();
 
                 var FSVD = F.Svd();
                 sigma1[fid] = FSVD.S[0];
@@ -160,13 +179,13 @@ namespace Crane.Components.Util
                 Vector3d rotY = new Vector3d(rot[0, 1], rot[1, 1], 0);
                 var pln = new Plane(Point3d.Origin, x, y);
                 var rotPln = new Plane(Point3d.Origin, rotX, rotY);
-                planes[fid] = pln;
-                rots[fid] = rotPln;
+                planes[fid] = localCoordinateFrom;
+                rots[fid] = localCoordinateTo;
                 scales[fid] = scale;
 
 
                 var cosThetaV = FSVD.VT[0, 0];
-                var sinThetaV = FSVD.VT[1, 0];
+                var sinThetaV = FSVD.VT[0, 1];
                 thetaV[fid] = Math.Atan2(sinThetaV, cosThetaV);
                 
                 var cosThetaU = FSVD.U[0, 0];

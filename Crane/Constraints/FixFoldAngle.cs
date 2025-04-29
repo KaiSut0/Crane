@@ -60,8 +60,9 @@ namespace Crane.Constraints
                     }
                 }
                 /// Compute normals
-                Vector3d normal_P = mesh.FaceNormals[P];
-                Vector3d normal_Q = mesh.FaceNormals[Q];
+                //Vector3d normal_P = mesh.FaceNormals[P];
+                //Vector3d normal_Q = mesh.FaceNormals[Q];
+                
                 /// Compute h_P & cot_Pu
                 Vector3d vec_up = vert[p] - vert[u];
                 Vector3d vec_uv = vert[v] - vert[u];
@@ -80,6 +81,7 @@ namespace Crane.Constraints
                 Vector3d vec_uq = vert[q] - vert[u];
                 double sin_Qu = (Vector3d.CrossProduct(vec_uq, vec_uv) / (vec_uq.Length * vec_uv.Length)).Length;
                 double cos_Qu = (vec_uq * vec_uv) / (vec_uq.Length * vec_uv.Length);
+                //double sin_Qu = Math.Sqrt(1 - cos_Qu * cos_Qu);
                 double cot_Qu = cos_Qu / sin_Qu;
                 double len_uq = vec_uq.Length;
                 double h_Q = len_uq * sin_Qu;
@@ -88,6 +90,11 @@ namespace Crane.Constraints
                 double sin_Qv = (Vector3d.CrossProduct(vec_vq, vec_vu) / (vec_vq.Length * vec_vu.Length)).Length;
                 double cos_Qv = vec_vq * vec_vu / (vec_vq.Length * vec_vu.Length);
                 double cot_Qv = cos_Qv / sin_Qv;
+                Vector3d normal_P = Vector3d.CrossProduct(vec_uv, vec_up);
+                normal_P /= normal_P.Length;
+                Vector3d normal_Q = Vector3d.CrossProduct(vec_uq, vec_uv);
+                normal_Q /= normal_Q.Length;
+
                 List<double> normal_P_list = new List<double>();
                 List<double> normal_Q_list = new List<double>();
                 normal_P_list.Add(normal_P.X);
@@ -102,56 +109,41 @@ namespace Crane.Constraints
                 double co_pu = (-1 * cot_Pu) / (cot_Pu + cot_Pv);
                 double co_qu = (-1 * cot_Qu) / (cot_Qu + cot_Qv);
                 /// Compute Jacobian
-                for (int v_ind = 0; v_ind < vert.Length; v_ind++)
+                var v_ind = p;
+                for (int x = 0; x < 3; x++)
                 {
-                    if (v_ind == p)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = k * normal_P_list[x] / h_P;
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
-                    if (v_ind == q)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = k * normal_Q_list[x] / h_Q;
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
-                    if (v_ind == u)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = k * (co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q));
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
-                    if (v_ind == v)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = k * (co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q));
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
+                    double var = normal_P_list[x] / h_P;
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
+                }
+                v_ind = q;
+                for (int x = 0; x < 3; x++)
+                {
+                    double var = normal_Q_list[x] / h_Q;
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
+                }
+                v_ind = u;
+                for (int x = 0; x < 3; x++)
+                {
+                    double var = co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q);
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
+                }
+                v_ind = v;
+                for (int x = 0; x < 3; x++)
+                {
+                    double var = co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q);
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
                 }
             }
 
@@ -176,7 +168,6 @@ namespace Crane.Constraints
 
                 err[i] = k * (foldAngle - setAngle);
 
-                //err[i] = 0.5 * Math.Pow(foldAngle - setAngle, 2);
             }
 
             return err;

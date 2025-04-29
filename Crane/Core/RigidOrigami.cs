@@ -94,7 +94,6 @@ namespace Crane.Core
         {
             int n = this.CMesh.Mesh.Vertices.Count * 3;
             List<double> errorList = new List<double>();
-            errorList.Add(0);
             if (IsRigidMode)
             {
                 errorList.AddRange(EdgeLength.Error(this.CMesh).ToList());
@@ -129,11 +128,15 @@ namespace Crane.Core
                     errorList.AddRange(error);
                 }
             }
+            if (errorList.Count == 0)
+            {
+                errorList.Add(0);
+            }
             Error = Vector<double>.Build.DenseOfArray(errorList.ToArray());
         }
         protected void ComputeJacobian()
         {
-            SparseMatrixBuilder builder = new SparseMatrixBuilder(1, CMesh.DOF);
+            SparseMatrixBuilder builder = new SparseMatrixBuilder(0, CMesh.DOF);
             if (IsRigidMode)
             {
                 builder.Append(EdgeLength.Jacobian(CMesh));
@@ -167,6 +170,10 @@ namespace Crane.Core
                 {
                     builder.Append(constraint.Jacobian(CMesh));
                 }
+            }
+            if (builder.Rows==0)
+            {
+                builder = new SparseMatrixBuilder(1, CMesh.DOF);
             }
 
             Jacobian = (SparseMatrix)builder.BuildSparseMatrix();

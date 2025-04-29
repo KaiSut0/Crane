@@ -62,6 +62,8 @@ namespace Crane.Components.Solver
             pManager.AddGenericParameter("CMesh", "CMesh", "Output the CMesh", GH_ParamAccess.item);
             pManager.AddGenericParameter("RigidOrigami", "RigidOrigami", "Output the RigidOrigami", GH_ParamAccess.item);
             pManager.AddNumberParameter("Residual", "Residual", "Residual", GH_ParamAccess.item);
+            pManager.AddNumberParameter("RVec", "RVec", "Residual vector.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Jacobian", "Jacobian", "Jacobian", GH_ParamAccess.list);
 
         }
 
@@ -112,7 +114,8 @@ namespace Crane.Components.Solver
             DA.SetData(0, rigidOrigami.CMesh);
             DA.SetData(1, rigidOrigami);
             DA.SetData(2, residual);
-
+            DA.SetDataList(3, rigidOrigami.Error.ToArray());
+            DA.SetDataList(4, rigidOrigami.Jacobian.ToArray());
 
 
         }
