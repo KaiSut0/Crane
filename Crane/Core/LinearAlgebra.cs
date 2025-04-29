@@ -14,15 +14,7 @@ namespace Crane.Core
     {
         internal static Vector<double> Solve(SparseMatrix A, Vector<double> b, Vector<double> x, double threshold, int iterationMax)
         {
-            var cpuArchitecture = RuntimeInformation.ProcessArchitecture;
-            if(cpuArchitecture == Architecture.X64)
-            {
-                return SolveMKL(A, b, x, threshold, iterationMax);
-            }
-            else
-            {
-                return SolveManaged(A, b, x, threshold, iterationMax);
-            }
+            return SolveManaged(A, b, x, threshold, iterationMax);
         }
         private static Vector<double> SolveManaged(SparseMatrix A, Vector<double> b, Vector<double> x, double threshold, int iterationMax)
         {
@@ -47,45 +39,10 @@ namespace Crane.Core
             }
             return x;
         }
-        private static Vector<double> SolveMKL(SparseMatrix A, Vector<double> b, Vector<double> x, double threshold, int iterationMax)
-        {
-
-            SparseCompressedRowMatrixStorage<double> storage =
-            (SparseCompressedRowMatrixStorage<double>)A.Storage;
-            int n = storage.RowCount;
-            int m = storage.ColumnCount;
-            int[] csrRowPtr = storage.RowPointers;
-            int[] csrColInd = storage.ColumnIndices;
-            double[] csrVal = storage.Values;
-            double[] answer = x.ToArray();
-            NativeMethods.CGNRForRect(n, m, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
-
-            return Vector<double>.Build.DenseOfArray(answer);
-        }
     
         internal static Vector<double> SolveSym(SparseMatrix A, Vector<double> b, double threshold, int iterationMax)
         {
-            var cpuArchitecture = RuntimeInformation.ProcessArchitecture;
-            if(cpuArchitecture == Architecture.X64)
-            {
-                return SolveSymMKL(A, b, threshold, iterationMax);
-            }
-            else
-            {
-                return SolveSymManaged(A, b, threshold, iterationMax);
-            }
-        }
-        private static Vector<double> SolveSymMKL(SparseMatrix A, Vector<double> b, double threshold, int iterationMax)
-        {
-            SparseCompressedRowMatrixStorage<double> storage =
-                (SparseCompressedRowMatrixStorage<double>)A.Storage;
-            int n = storage.RowCount;
-            int[] csrRowPtr = storage.RowPointers;
-            int[] csrColInd = storage.ColumnIndices;
-            double[] csrVal = storage.Values;
-            double[] answer = new double[n];
-            NativeMethods.CGNRForSym(n, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
-            return Vector<double>.Build.DenseOfArray(answer);
+            return SolveSymManaged(A, b, threshold, iterationMax);
         }
         private static Vector<double> SolveSymManaged(SparseMatrix A, Vector<double> b, double threshold, int iterationMax)
         {

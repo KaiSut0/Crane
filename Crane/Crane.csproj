@@ -194,7 +194,6 @@
     <Compile Include="Core\FabMesh.cs" />
     <Compile Include="Core\FoldFormat.cs" />
     <Compile Include="Core\LinearAlgebra.cs" />
-    <Compile Include="Core\NativeMethods.cs" />
     <Compile Include="Core\RhinoCommonExtensions.cs" />
     <Compile Include="Core\SparseMatrixBuilder.cs" />
     <Compile Include="Misc\Approx2dSymmetry.cs" />
