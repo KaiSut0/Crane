@@ -26,6 +26,18 @@ namespace Crane.Core
                     return SolveManaged(A, b, x, threshold, iterationMax);
                 }
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                if (cpuArchitecture == Architecture.Arm64)
+                {
+
+                    return SolveArmpl(A, b, x, threshold, iterationMax);
+                }
+                else
+                {
+                    return SolveManaged(A, b, x, threshold, iterationMax);
+                }
+            }
             else
             {
                 return SolveManaged(A, b, x, threshold, iterationMax);
@@ -69,13 +81,47 @@ namespace Crane.Core
 
             return Vector<double>.Build.DenseOfArray(answer);
         }
+
+        private static Vector<double> SolveArmpl(SparseMatrix A, Vector<double> b, Vector<double> x, double threshold, int iterationMax)
+        {
+            SparseCompressedRowMatrixStorage<double> storage =
+            (SparseCompressedRowMatrixStorage<double>)A.Storage;
+            int n = storage.RowCount;
+            int m = storage.ColumnCount;
+            int[] csrRowPtr = storage.RowPointers;
+            int[] csrColInd = storage.ColumnIndices;
+            double[] csrVal = storage.Values;
+            double[] answer = x.ToArray();
+            NativeMethods.CGNRSolve_macOS(n, m, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
+
+            return Vector<double>.Build.DenseOfArray(answer);
+        }
     
         internal static Vector<double> SolveSym(SparseMatrix A, Vector<double> b, double threshold, int iterationMax)
         {
             var cpuArchitecture = RuntimeInformation.ProcessArchitecture;
-            if(cpuArchitecture == Architecture.X64)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return SolveSymMKL(A, b, threshold, iterationMax);
+                if(cpuArchitecture == Architecture.X64)
+                {
+                    return SolveSymMKL(A, b, threshold, iterationMax);
+                }
+                else
+                {
+                    return SolveSymManaged(A, b, threshold, iterationMax);
+                }
+
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                if(cpuArchitecture == Architecture.Arm64)
+                {
+                    return SolveSymArmpl(A, b, threshold, iterationMax);
+                }
+                else
+                {
+                    return SolveSymManaged(A, b, threshold, iterationMax);
+                }
             }
             else
             {
@@ -94,6 +140,19 @@ namespace Crane.Core
             NativeMethods.CGNRForSym(n, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
             return Vector<double>.Build.DenseOfArray(answer);
         }
+        private static Vector<double> SolveSymArmpl(SparseMatrix A, Vector<double> b, double threshold, int iterationMax)
+        {
+            SparseCompressedRowMatrixStorage<double> storage =
+                (SparseCompressedRowMatrixStorage<double>)A.Storage;
+            int n = storage.RowCount;
+            int[] csrRowPtr = storage.RowPointers;
+            int[] csrColInd = storage.ColumnIndices;
+            double[] csrVal = storage.Values;
+            double[] answer = new double[n];
+            NativeMethods.CgSolve(n, csrRowPtr, csrColInd, csrVal, b.ToArray(), answer, threshold, iterationMax);
+            return Vector<double>.Build.DenseOfArray(answer);
+        }
+
         private static Vector<double> SolveSymManaged(SparseMatrix A, Vector<double> b, double threshold, int iterationMax)
         {
             Vector<double> x = new DenseVector(A.ColumnCount);

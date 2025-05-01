@@ -17,6 +17,7 @@ using Crane.Core;
 using Rhino.UI;
 using Rhino.Display;
 using System.Windows.Forms.VisualStyles;
+using System.Runtime.InteropServices;
 
 
 // In order to load the result of this wizard, you will also need to
@@ -263,6 +264,9 @@ namespace Crane.Components.Solver
                 this.timer.Stop();
             }
 
+            mess = "OS is Win : "+ RuntimeInformation.IsOSPlatform(OSPlatform.Windows) + "\n";
+            mess += "OS is Mac : "+ RuntimeInformation.IsOSPlatform(OSPlatform.OSX) + "\n";
+            mess += "CPU : " + RuntimeInformation.ProcessArchitecture.ToString() + "\n";
 
             DA.SetData(0, rigidOrigami.CMesh);
             DA.SetData(1, rigidOrigami);

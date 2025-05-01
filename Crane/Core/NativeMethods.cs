@@ -16,6 +16,26 @@ namespace Crane.Core
         [DllImport(DLLName, EntryPoint = "CGNRForSym", CallingConvention = CallingConvention.Cdecl)]
         internal extern static void CGNRForSym(int n, [In] int[] csrRowPtr, [In] int[] csrColInd,
             [In] double[] csrVal, [In] double[] b, [In, Out] double[] x, double threshold, int iterationMax);
+
+        [DllImport("cgnr", EntryPoint = "cgnr_solve_lp64", CallingConvention = CallingConvention.Cdecl)]
+        internal extern static void CGNRSolve_macOS(
+            int n, int m,
+            int[] rowptr,
+            int[] colind,
+            double[] vals,
+            double[] b,
+            [In, Out] double[] x,
+            double tol,
+            int maxit);
+        [DllImport("cgnr", EntryPoint = "cg_solve_lp64", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int CgSolve(
+            int n,
+            int[] rowptr, int[] col, double[] vals,
+            double[] b,
+            [In, Out] double[] x,
+            double tol, int maxit);
+
+
         static NativeMethods()
         {
             NativeLibrary.SetDllImportResolver(
@@ -27,6 +47,17 @@ namespace Crane.Core
                         if(RuntimeInformation.ProcessArchitecture == Architecture.X64)
                         {
                             return NativeLibrary.Load("cgnr.dll", asm, path);
+                        }
+                        else
+                        {
+                            return IntPtr.Zero;
+                        }
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        if(RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+                        {
+                            return NativeLibrary.Load("cgnr", asm, path);
                         }
                         else
                         {
