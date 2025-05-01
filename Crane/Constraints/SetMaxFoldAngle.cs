@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
-using Microsoft.FSharp.Core;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;

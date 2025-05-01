@@ -4,7 +4,6 @@ using System.ComponentModel;
 using Crane.Core;
 using Crane.Constraints;
 using Grasshopper.Kernel;
-using OpenCvSharp.CPlusPlus.Detail;
 using Rhino.Geometry;
 
 namespace Crane.Components.Constraints.Fix

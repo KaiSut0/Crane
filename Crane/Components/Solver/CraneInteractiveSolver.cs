@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
+using Eto.Forms;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -43,7 +43,7 @@ namespace Crane.Components.Solver
         public bool IsRestart { get; set; } = false;
         public bool isOn = false;
         Rhino.UI.MouseCallback myMouse;
-        public Timer timer;
+        public System.Windows.Forms.Timer timer;
         public double residual = 0;
 
         public CraneInteractiveSolver()
@@ -59,8 +59,9 @@ namespace Crane.Components.Solver
             IsUndo = false;
             IsGrabMode = false;
             IsMouseDown = false;
-            timer = new Timer();
+            timer = new System.Windows.Forms.Timer();
             timer.Interval = 30;
+            
             timer.Tick += new EventHandler(tick);
             IsMouseDown = false;
             IsStart = true;
@@ -168,7 +169,8 @@ namespace Crane.Components.Solver
                 this.isOn = true;
 
                 bool isfold = rigidOrigami.Fold || rigidOrigami.UnFold;
-                bool isgrab = this.IsGrabMode & (Control.ModifierKeys == Keys.Alt);
+                
+                bool isgrab = this.IsGrabMode & (Keyboard.Modifiers == Keys.Alt);
                 double resi = rigidOrigami.ComputeResidual();
                 bool iscompute = ((residual > threshold) || isfold || isgrab);
 
@@ -203,7 +205,7 @@ namespace Crane.Components.Solver
                     {
                         myMouse = new MyMouseCallback();
                         myMouse.Enabled = true;
-                        if (Control.MouseButtons == MouseButtons.Left)
+                        if (Mouse.Buttons == MouseButtons.Primary)
                         {
                             moveVector += this.GetGrabMoveVector(out grabIds);
                         }
@@ -642,7 +644,7 @@ namespace Crane.Components.Solver
         public override GH_ObjectResponse RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             // ButtonBoundsを押したときのイベント
-            if (e.Button == MouseButtons.Left)
+            if (Mouse.Buttons == MouseButtons.Primary)
             {
                 CraneInteractiveSolver comp = this.Owner as CraneInteractiveSolver;
                 RectangleF rec = ButtonBounds;

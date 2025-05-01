@@ -2,7 +2,6 @@
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Windows.Data;
 using Crane.Core;
 using Crane.Misc;
 

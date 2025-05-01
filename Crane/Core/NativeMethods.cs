@@ -16,6 +16,5 @@ namespace Crane.Core
         [DllImport(DLLName, EntryPoint = "CGNRForSym", CallingConvention = CallingConvention.Cdecl)]
         internal extern static void CGNRForSym(int n, [In] int[] csrRowPtr, [In] int[] csrColInd,
             [In] double[] csrVal, [In] double[] b, [In, Out] double[] x, double threshold, int iterationMax);
-       
     }
 }

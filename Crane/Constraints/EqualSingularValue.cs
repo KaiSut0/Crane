@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
-using QuickGraph.Serialization;
 using Rhino.Geometry;
 
 namespace Crane.Constraints
