@@ -15,9 +15,16 @@ namespace Crane.Core
         internal static Vector<double> Solve(SparseMatrix A, Vector<double> b, Vector<double> x, double threshold, int iterationMax)
         {
             var cpuArchitecture = RuntimeInformation.ProcessArchitecture;
-            if(cpuArchitecture == Architecture.X64)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return SolveMKL(A, b, x, threshold, iterationMax);
+                if (cpuArchitecture == Architecture.X64)
+                {
+                    return SolveMKL(A, b, x, threshold, iterationMax);
+                }
+                else
+                {
+                    return SolveManaged(A, b, x, threshold, iterationMax);
+                }
             }
             else
             {

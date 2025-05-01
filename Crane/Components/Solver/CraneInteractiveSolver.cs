@@ -14,6 +14,9 @@ using Rhino.Geometry;
 
 using MathNet.Numerics.LinearAlgebra;
 using Crane.Core;
+using Rhino.UI;
+using Rhino.Display;
+using System.Windows.Forms.VisualStyles;
 
 
 // In order to load the result of this wizard, you will also need to
@@ -45,6 +48,7 @@ namespace Crane.Components.Solver
         Rhino.UI.MouseCallback myMouse;
         public System.Windows.Forms.Timer timer;
         public double residual = 0;
+        string mess = "";
 
         public CraneInteractiveSolver()
           : base("Crane Interactive Solver", "Solver",
@@ -66,6 +70,7 @@ namespace Crane.Components.Solver
             IsMouseDown = false;
             IsStart = true;
             residual = 0;
+            //cursorTrucker = new CursorTrucker(this);
         }
 
         public override void CreateAttributes()
@@ -205,9 +210,10 @@ namespace Crane.Components.Solver
                     {
                         myMouse = new MyMouseCallback();
                         myMouse.Enabled = true;
+
                         if (Mouse.Buttons == MouseButtons.Primary)
                         {
-                            moveVector += this.GetGrabMoveVector(out grabIds);
+                            moveVector += GetGrabMoveVector(out grabIds);
                         }
                         else
                         {
@@ -218,6 +224,7 @@ namespace Crane.Components.Solver
                     {
                         myMouse = new MyMouseCallbackOff();
                         myMouse.Enabled = true;
+                        //cursorTrucker.Enabled = false;
                     }
                     if(moveVector.L2Norm() > 1e-5 || rigidOrigami.ComputeResidual() > threshold)
                     {
@@ -260,7 +267,7 @@ namespace Crane.Components.Solver
             DA.SetData(0, rigidOrigami.CMesh);
             DA.SetData(1, rigidOrigami);
             DA.SetData(2, residual);
-            DA.SetData(3, message);
+            DA.SetData(3, mess);
             DA.SetDataList(4, rigidOrigami.NRComputationSpeeds);
             DA.SetDataList(5, grabIds.Select(id => rigidOrigami.CMesh.Mesh.Vertices[id]));
 
@@ -291,17 +298,38 @@ namespace Crane.Components.Solver
         }
         private Vector<double> GetGrabMoveVector(out List<int> grabIds)
         {
+            
             double radius = rigidOrigami.CMesh.WholeScale / 10;
             List<Vector3d> grabForces = new List<Vector3d>();
-            var doc = RhinoDoc.ActiveDoc;
-            var pt = Rhino.UI.MouseCursor.Location;
-            var screenPt = new System.Drawing.Point((int)pt.X, (int)pt.Y);
-            var clientPt = doc.Views.ActiveView.ScreenToClient(screenPt);
-            var l = doc.Views.ActiveView.ActiveViewport.ClientToWorld(clientPt);
-            var dir = doc.Views.ActiveView.ActiveViewport.CameraDirection;
-            Plane pl = new Plane(new Point3d(0, 0, 0), dir);
-            double t;
-            Rhino.Geometry.Intersect.Intersection.LinePlane(l, pl, out t);
+            var doc = RhinoDoc.ActiveDoc?.Views?.ActiveView;
+            var p = Eto.Forms.Mouse.Position;
+            var scr = Eto.Forms.Screen.FromPoint(p);
+            var factor = scr.LogicalPixelSize;
+            var physical = new System.Drawing.Point((int)(p.X * factor), (int)(p.Y * factor));
+            var screenRect = doc.ScreenRectangle.Location;
+            
+            if(factor == 1)
+            {
+                screenRect.X = 0;
+                screenRect.Y = 0;
+            }
+
+            var clientPt = new Point2d(doc.ScreenToClient(physical).X - screenRect.X, doc.ScreenToClient(physical).Y - screenRect.Y);
+            var l = doc.ActiveViewport.ClientToWorld(clientPt);
+
+
+            //mess = "Rhino View Bounds Location = (" + loc.X.ToString() + ", " + loc.Y.ToString() + ")\n";
+            //mess += "Eto View Bounds Location = (" + loc_Eto.X.ToString() + ", " + loc_Eto.Y.ToString() + ")\n";
+            //mess += "Eto Mouse Point = (" + p.X.ToString() + ", " + p.Y.ToString() + ")\n";
+            //mess += "Windows Forms Cursor Postion = (" + phys.X.ToString() + ", " + phys.Y.ToString() + ")\n";
+            //mess += "LogicalPixelSize = " + factor.ToString() + "\n";
+            //mess += "Physical Point = (" + physical.X.ToString() + ", " + physical.Y.ToString() + ")\n";
+            //mess += "ClientPt = (" + clientPt.X.ToString() + ", " + clientPt.Y.ToString() + ")\n";
+            //mess += "ClientLocation = (" + clientLoc.X.ToString() + ", " + clientLoc.Y.ToString() + ")\n";
+            //mess += "ActiveViewPortLocation = (" + activeViewLoc.X.ToString() + ", " + activeViewLoc.Y.ToString() + ")\n";
+            //mess += "ScreenRectLocation = (" + screenRect.X.ToString() + ", " + screenRect.Y.ToString() + ")\n";
+
+            
 
             if (!this.IsMouseDown)
             {
@@ -366,8 +394,8 @@ namespace Crane.Components.Solver
         {
             get { return new Guid("9ccad0dd-e7a5-4208-a2ff-ac6169f803f3"); }
         }
-    }
 
+    }
     public class Attributes_Custom : GH_ComponentAttributes
     {
         public Attributes_Custom(GH_Component owner) : base(owner) { }
