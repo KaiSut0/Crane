@@ -44,7 +44,7 @@ int cgnr_solve_lp64(int m, int n,
     /* r0 = b - A·x0  (ここでは x0=0 を想定) */
     memcpy(r, b, m*sizeof(double));
     armpl_spmv_exec_d(ARMPL_SPARSE_OPERATION_NOTRANS, -1.0, A, x, 0.0, r);
-    cblas_daxpy(n, 1.0, b, 1, r, 1);
+    cblas_daxpy(m, 1.0, b, 1, r, 1);
 
     /* p0 = Aᵀ r0 */
     armpl_spmv_exec_d(ARMPL_SPARSE_OPERATION_TRANS, 1.0, A, r, 0.0, p);
