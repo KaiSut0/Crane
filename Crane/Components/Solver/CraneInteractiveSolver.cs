@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Eto.Forms;
+using System.IO;
+using System.Reflection;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;

@@ -311,10 +311,7 @@ namespace Crane.Core
         }
         protected SparseMatrix ComputeFoldMotionMatrix(SparseMatrix foldAngleJacobian, SparseMatrix jacobian, double weight)
         {
-            SparseMatrix foldJacobianSquared = (SparseMatrix) foldAngleJacobian.Transpose() * foldAngleJacobian;
-            SparseMatrix jacobianSquared = (SparseMatrix) jacobian.Transpose() * jacobian;
-            SparseMatrix foldMotionMatrix = (1 / weight) * foldJacobianSquared + ((weight - 1) / weight) * jacobianSquared;
-            return foldMotionMatrix;
+            return LinearAlgebra.Gram(foldAngleJacobian, jacobian, weight);
         }
         protected Vector<double> ComputeFoldMotionVector(Matrix<double> foldAngleJacobian, Vector<double> initialFoldAngleVector)
         {

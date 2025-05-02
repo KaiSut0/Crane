@@ -12,6 +12,117 @@ namespace Crane.Core
 {
     internal static class LinearAlgebra
     {
+        internal static SparseMatrix Gram(SparseMatrix A, SparseMatrix B, double w)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if(RuntimeInformation.ProcessArchitecture == Architecture.X64)
+                {
+                    SparseCompressedRowMatrixStorage<double> storageA =
+                    (SparseCompressedRowMatrixStorage<double>)A.Storage;
+                    int mA = storageA.RowCount;
+                    int n = storageA.ColumnCount;
+                    int[] Ap = storageA.RowPointers;
+                    int[] Ac = storageA.ColumnIndices;
+                    double[] Av = storageA.Values;
+
+                    SparseCompressedRowMatrixStorage<double> storageB =
+                    (SparseCompressedRowMatrixStorage<double>)B.Storage;
+                    int mB = storageB.RowCount;
+                    int[] Bp = storageB.RowPointers;
+                    int[] Bc = storageB.ColumnIndices;
+                    double[] Bv = storageB.Values;
+
+                    if (w <= 0) throw new ArgumentOutOfRangeException(nameof(w));
+                    if (Ap is null || Bp is null) throw new ArgumentNullException();
+
+                    IntPtr pRow, pCol, pVal;
+                    int rc = NativeMethods.BuildMkl(
+                        mA, n, Ap, Ac, Av,
+                        mB, Bp, Bc, Bv,
+                        w,
+                        out pRow, out pCol, out pVal);
+
+                    if (rc != 0)
+                        throw new InvalidOperationException($"gram_mkl error code {rc}");
+
+                    // row[n] (= nnz) を読み取る
+                    int nnz = Marshal.ReadInt32(pRow, n * sizeof(int));
+
+                    var row = new int[n + 1];
+                    var col = new int[nnz];
+                    var val = new double[nnz];
+
+                    Marshal.Copy(pRow, row, 0, n + 1);
+                    Marshal.Copy(pCol, col, 0, nnz);
+                    Marshal.Copy(pVal, val, 0, nnz);
+
+                    // ネイティブ側で malloc した領域を解放
+                    Marshal.FreeHGlobal(pRow);
+                    Marshal.FreeHGlobal(pCol);
+                    Marshal.FreeHGlobal(pVal);
+
+                    return (SparseMatrix)Matrix<double>.Build.SparseFromCompressedSparseRowFormat(n, n, nnz, row, col, val);
+                }
+                else
+                {
+                    return (SparseMatrix)((1 / w) * A.Transpose() * A + ((1 - w) / w) * B.Transpose() * B);
+                }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                if(RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+                {
+                    
+                    //SparseCompressedRowMatrixStorage<double> storageA =
+                    //(SparseCompressedRowMatrixStorage<double>)A.Storage;
+                    //int mA = storageA.RowCount;
+                    //int n = storageA.ColumnCount;
+                    //int[] Ap = storageA.RowPointers;
+                    //int[] Ac = storageA.ColumnIndices;
+                    //double[] Av = storageA.Values;
+
+                    //SparseCompressedRowMatrixStorage<double> storageB =
+                    //(SparseCompressedRowMatrixStorage<double>)B.Storage;
+                    //int mB = storageB.RowCount;
+                    //int[] Bp = storageB.RowPointers;
+                    //int[] Bc = storageB.ColumnIndices;
+                    //double[] Bv = storageB.Values;
+
+                    //if(w<=0) throw new ArgumentOutOfRangeException(nameof(w));
+                    //IntPtr pPtr,pCol,pVal;
+                    //int rc = NativeMethods.Build(mA,n,Ap,Ac,Av,mB,Bp,Bc,Bv,w,
+                    //   out pPtr,out pCol,out pVal);
+                    //if(rc!=0) throw new Exception($"Gram25 error {rc}");
+
+                    //int nnz = Marshal.ReadInt32(pPtr, n * sizeof(int)); // ptr[n]
+
+                    //int[] row = new int[n+1];
+                    //int[] col = new int[nnz];
+                    //double[] val = new double[nnz];
+
+                    //Marshal.Copy(pPtr, row, 0, n+1);
+                    //Marshal.Copy(pCol, col, 0, nnz);
+                    //Marshal.Copy(pVal, val, 0, nnz);
+
+                    //Marshal.FreeHGlobal(pPtr);
+                    //Marshal.FreeHGlobal(pCol);
+                    //Marshal.FreeHGlobal(pVal);
+
+                    //return (SparseMatrix)Matrix<double>.Build.SparseFromCompressedSparseRowFormat(n, n, nnz, row, col, val);
+
+
+                    return (SparseMatrix)((1 / w) * A.Transpose() * A + ((1 - w) / w) * B.Transpose() * B);
+                }
+                else
+                {
+                    return (SparseMatrix)((1 / w) * A.Transpose() * A + ((1 - w) / w) * B.Transpose() * B);
+                }
+            }
+            else
+            {
+                return (SparseMatrix)((1 / w) * A.Transpose() * A + ((1 - w) / w) * B.Transpose() * B);
+            }
+
+        }
         internal static Vector<double> Solve(SparseMatrix A, Vector<double> b, Vector<double> x, double threshold, int iterationMax)
         {
             var cpuArchitecture = RuntimeInformation.ProcessArchitecture;
