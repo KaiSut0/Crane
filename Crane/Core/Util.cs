@@ -569,5 +569,21 @@ namespace Crane.Core
             if (mesh.TopologyEdges.GetConnectedFaces(edgeIndex).Length == 1) isInnerEdge = false;
             return isInnerEdge;
         }
+
+        public static Vector3d MatrixVector3dMulltiplication(Matrix<double> mat, Vector3d vec)
+        {
+            var resvec = mat * Vector<double>.Build.Dense(new double[] { vec.X, vec.Y, vec.Z });
+            return new Vector3d(resvec[0], resvec[1], resvec[2]);
+        }
+
+        public static Matrix<double> OutorProduct(Vector3d a, Vector3d b)
+        {
+            return Matrix<double>.Build.DenseOfArray(new double[,]
+            {
+                { a.X * b.X, a.X * b.Y, a.X * b.Z },
+                { a.Y * b.X, a.Y * b.Y, a.Y * b.Z },
+                { a.Z * b.X, a.Z * b.Y, a.Z * b.Z },
+            });
+        }
     }
 }

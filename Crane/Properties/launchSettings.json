@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Crane": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

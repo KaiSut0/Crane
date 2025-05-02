@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Crane.Constraints;
 using Crane.Core;
-using QuickGraph;
 using Rhino;
 using Rhino.Geometry;
 

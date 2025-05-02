@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
+using Eto.Forms;
+using System.IO;
+using System.Reflection;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Attributes;
@@ -14,6 +16,10 @@ using Rhino.Geometry;
 
 using MathNet.Numerics.LinearAlgebra;
 using Crane.Core;
+using Rhino.UI;
+using Rhino.Display;
+using System.Windows.Forms.VisualStyles;
+using System.Runtime.InteropServices;
 
 
 // In order to load the result of this wizard, you will also need to
@@ -36,13 +42,16 @@ namespace Crane.Components.Solver
         public bool SolverOn { get; set; } = false;
         public bool IsStart { get; set; } = true;
         public bool IsReset { get; set; } = false;
+        public bool IsRedo { get; set; } = false;
+        public bool IsUndo { get; set; } = false;
         public bool IsGrabMode { get; set; } = false;
         public bool IsMouseDown { get; set; } = false;
         public bool IsRestart { get; set; } = false;
         public bool isOn = false;
         Rhino.UI.MouseCallback myMouse;
-        public Timer timer;
+        public System.Windows.Forms.Timer timer;
         public double residual = 0;
+        string mess = "";
 
         public CraneInteractiveSolver()
           : base("Crane Interactive Solver", "Solver",
@@ -53,14 +62,18 @@ namespace Crane.Components.Solver
             SolverOn = false;
             IsStart = true;
             IsReset = false;
+            IsRedo = false;
+            IsUndo = false;
             IsGrabMode = false;
             IsMouseDown = false;
-            timer = new Timer();
+            timer = new System.Windows.Forms.Timer();
             timer.Interval = 30;
+            
             timer.Tick += new EventHandler(tick);
             IsMouseDown = false;
             IsStart = true;
             residual = 0;
+            //cursorTrucker = new CursorTrucker(this);
         }
 
         public override void CreateAttributes()
@@ -144,7 +157,7 @@ namespace Crane.Components.Solver
             }
             if (this.IsReset)
             {
-                rigidOrigamiSI.SaveMode(rigidOrigami.IsRigidMode, rigidOrigami.IsPanelFlatMode, rigidOrigami.IsFoldBlockMode, rigidOrigami.IsConstraintMode);
+                rigidOrigamiSI.SaveModes(rigidOrigami.IsRigidMode, rigidOrigami.IsPanelFlatMode, rigidOrigami.IsFoldBlockMode, rigidOrigami.IsConstraintMode);
                 rigidOrigami = new RigidOrigami(rigidOrigamiSI);
             }
 
@@ -164,9 +177,28 @@ namespace Crane.Components.Solver
                 this.isOn = true;
 
                 bool isfold = rigidOrigami.Fold || rigidOrigami.UnFold;
-                bool isgrab = this.IsGrabMode & (Control.ModifierKeys == Keys.Alt);
+                
+                bool isgrab = this.IsGrabMode & (Keyboard.Modifiers == Keys.Alt);
                 double resi = rigidOrigami.ComputeResidual();
                 bool iscompute = ((residual > threshold) || isfold || isgrab);
+
+                if(IsUndo)
+                {
+                    if(rigidOrigami.NowRecordedIndexPosition > 0)
+                    {
+                        rigidOrigami.NowRecordedIndexPosition -= 1;
+                        rigidOrigami.CMesh.UpdateMesh(rigidOrigami.RecordedMeshPoints[rigidOrigami.NowRecordedIndexPosition]);
+                    }
+                }
+                if (IsRedo)
+                {
+                    if(rigidOrigami.NowRecordedIndexPosition < rigidOrigami.RecordedMeshPoints.Count - 1)
+                    {
+                        rigidOrigami.NowRecordedIndexPosition += 1;
+                        rigidOrigami.CMesh.UpdateMesh(rigidOrigami.RecordedMeshPoints[rigidOrigami.NowRecordedIndexPosition]);
+                    }
+                        
+                }
 
                 if (resi < 1e+5)
                 {
@@ -181,9 +213,10 @@ namespace Crane.Components.Solver
                     {
                         myMouse = new MyMouseCallback();
                         myMouse.Enabled = true;
-                        if (Control.MouseButtons == MouseButtons.Left)
+
+                        if (Mouse.Buttons == MouseButtons.Primary)
                         {
-                            moveVector += this.GetGrabMoveVector(out grabIds);
+                            moveVector += GetGrabMoveVector(out grabIds);
                         }
                         else
                         {
@@ -194,27 +227,34 @@ namespace Crane.Components.Solver
                     {
                         myMouse = new MyMouseCallbackOff();
                         myMouse.Enabled = true;
+                        //cursorTrucker.Enabled = false;
                     }
-                    if (rigidOrigami.IsRigidMode && iscompute)
+                    if(moveVector.L2Norm() > 1e-5 || rigidOrigami.ComputeResidual() > threshold)
                     {
-                        residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
-                    }
-                    else if (rigidOrigami.Constraints.Count != 0 && rigidOrigami.IsConstraintMode || iscompute)
-                    {
-                        residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
+                        if (rigidOrigami.IsRigidMode && iscompute)
+                        {
+                            residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
+                        }
+                        else if (rigidOrigami.Constraints.Count != 0 && rigidOrigami.IsConstraintMode || iscompute)
+                        {
+                            residual = rigidOrigami.NRSolve(-moveVector, threshold, nrIteration, cgnrIteration);
+                        }
+                        else
+                        {
+                            rigidOrigami.CMesh.UpdateMesh(rigidOrigami.CMesh.MeshVerticesVector + moveVector);
+                            rigidOrigami.CMesh.UpdateProperties();
+                        }
+                        if (!rigidOrigami.IsRigidMode)
+                            rigidOrigami.CMesh.UpdateEdgeLengthSquared();
+
                     }
                     else
                     {
-                        rigidOrigami.CMesh.UpdateMesh(rigidOrigami.CMesh.MeshVerticesVector + moveVector);
-                        rigidOrigami.CMesh.UpdateProperties();
-                    }
-                    if (!rigidOrigami.IsRigidMode)
-                        rigidOrigami.CMesh.UpdateEdgeLengthSquared();
-
-                    if (rigidOrigami.ComputeResidual() < threshold & !IsGrabMode & !isfold)
-                    {
-                        isOn = false;
-                        timer.Stop();
+                        if (rigidOrigami.ComputeResidual() < threshold & !IsGrabMode & !isfold)
+                        {
+                            isOn = false;
+                            timer.Stop();
+                        }
                     }
                 }
 
@@ -226,11 +266,14 @@ namespace Crane.Components.Solver
                 this.timer.Stop();
             }
 
+            mess = "OS is Win : "+ RuntimeInformation.IsOSPlatform(OSPlatform.Windows) + "\n";
+            mess += "OS is Mac : "+ RuntimeInformation.IsOSPlatform(OSPlatform.OSX) + "\n";
+            mess += "CPU : " + RuntimeInformation.ProcessArchitecture.ToString() + "\n";
 
             DA.SetData(0, rigidOrigami.CMesh);
             DA.SetData(1, rigidOrigami);
             DA.SetData(2, residual);
-            DA.SetData(3, message);
+            DA.SetData(3, mess);
             DA.SetDataList(4, rigidOrigami.NRComputationSpeeds);
             DA.SetDataList(5, grabIds.Select(id => rigidOrigami.CMesh.Mesh.Vertices[id]));
 
@@ -261,17 +304,38 @@ namespace Crane.Components.Solver
         }
         private Vector<double> GetGrabMoveVector(out List<int> grabIds)
         {
+            
             double radius = rigidOrigami.CMesh.WholeScale / 10;
             List<Vector3d> grabForces = new List<Vector3d>();
-            var doc = RhinoDoc.ActiveDoc;
-            var pt = Rhino.UI.MouseCursor.Location;
-            var screenPt = new System.Drawing.Point((int)pt.X, (int)pt.Y);
-            var clientPt = doc.Views.ActiveView.ScreenToClient(screenPt);
-            var l = doc.Views.ActiveView.ActiveViewport.ClientToWorld(clientPt);
-            var dir = doc.Views.ActiveView.ActiveViewport.CameraDirection;
-            Plane pl = new Plane(new Point3d(0, 0, 0), dir);
-            double t;
-            Rhino.Geometry.Intersect.Intersection.LinePlane(l, pl, out t);
+            var doc = RhinoDoc.ActiveDoc?.Views?.ActiveView;
+            var p = Eto.Forms.Mouse.Position;
+            var scr = Eto.Forms.Screen.FromPoint(p);
+            var factor = scr.LogicalPixelSize;
+            var physical = new System.Drawing.Point((int)(p.X * factor), (int)(p.Y * factor));
+            var screenRect = doc.ScreenRectangle.Location;
+            
+            if(factor == 1)
+            {
+                screenRect.X = 0;
+                screenRect.Y = 0;
+            }
+
+            var clientPt = new Point2d(doc.ScreenToClient(physical).X - screenRect.X, doc.ScreenToClient(physical).Y - screenRect.Y);
+            var l = doc.ActiveViewport.ClientToWorld(clientPt);
+
+
+            //mess = "Rhino View Bounds Location = (" + loc.X.ToString() + ", " + loc.Y.ToString() + ")\n";
+            //mess += "Eto View Bounds Location = (" + loc_Eto.X.ToString() + ", " + loc_Eto.Y.ToString() + ")\n";
+            //mess += "Eto Mouse Point = (" + p.X.ToString() + ", " + p.Y.ToString() + ")\n";
+            //mess += "Windows Forms Cursor Postion = (" + phys.X.ToString() + ", " + phys.Y.ToString() + ")\n";
+            //mess += "LogicalPixelSize = " + factor.ToString() + "\n";
+            //mess += "Physical Point = (" + physical.X.ToString() + ", " + physical.Y.ToString() + ")\n";
+            //mess += "ClientPt = (" + clientPt.X.ToString() + ", " + clientPt.Y.ToString() + ")\n";
+            //mess += "ClientLocation = (" + clientLoc.X.ToString() + ", " + clientLoc.Y.ToString() + ")\n";
+            //mess += "ActiveViewPortLocation = (" + activeViewLoc.X.ToString() + ", " + activeViewLoc.Y.ToString() + ")\n";
+            //mess += "ScreenRectLocation = (" + screenRect.X.ToString() + ", " + screenRect.Y.ToString() + ")\n";
+
+            
 
             if (!this.IsMouseDown)
             {
@@ -336,8 +400,8 @@ namespace Crane.Components.Solver
         {
             get { return new Guid("9ccad0dd-e7a5-4208-a2ff-ac6169f803f3"); }
         }
-    }
 
+    }
     public class Attributes_Custom : GH_ComponentAttributes
     {
         public Attributes_Custom(GH_Component owner) : base(owner) { }
@@ -346,71 +410,95 @@ namespace Crane.Components.Solver
             base.Layout();
 
             // コンポーネントのサイズを取得し、ボタン分の長さをプラス(+220)する
-            Rectangle rec0 = GH_Convert.ToRectangle(Bounds);
-            rec0.Height += 220;
+            Rectangle recAll = GH_Convert.ToRectangle(Bounds);
+            int buttonHeight = 176;
+            recAll.Height += buttonHeight;
+
+
             // 22の高さの長方形を配置する
-            Rectangle rec1 = rec0;
-            rec1.Y = rec1.Bottom - 220;
-            rec1.Height = 22;
-            rec1.Inflate(-2, -2);
 
-            Rectangle rec2 = rec0;
-            rec2.Y = rec0.Bottom - 198;
-            rec2.Height = 22;
-            rec2.Inflate(-2, -2);
+            Rectangle recSolverOn = recAll;
+            recSolverOn.Y = recAll.Bottom - buttonHeight;
+            recSolverOn.Height = 22;
+            recSolverOn.Width = recSolverOn.Width / 2;
+            recSolverOn.Inflate(-2, -2);
+            Rectangle recReset = recSolverOn;
+            recReset.Location = new System.Drawing.Point(recSolverOn.X + recSolverOn.Width + 4, recSolverOn.Location.Y);
+            buttonHeight -= 22;
 
-            Rectangle rec3 = rec0;
-            rec3.Y = rec0.Bottom - 176;
-            rec3.Height = 22;
-            rec3.Inflate(-2, -2);
-
-            Rectangle rec4 = rec0;
-            rec4.Y = rec0.Bottom - 154;
-            rec4.Height = 22;
-            rec4.Inflate(-2, -2);
-
-            Rectangle rec5 = rec0;
-            rec5.Y = rec0.Bottom - 132;
-            rec5.Height = 22;
-            rec5.Inflate(-2, -2);
-
-            Rectangle rec6 = rec0;
-            rec6.Y = rec0.Bottom - 110;
-            rec6.Height = 22;
-            rec6.Inflate(-2, -2);
-
-            Rectangle rec7 = rec0;
-            rec7.Y = rec0.Bottom - 88;
-            rec7.Height = 22;
-            rec7.Inflate(-2, -2);
-
-            Rectangle rec8 = rec0;
-            rec8.Y = rec0.Bottom - 66;
-            rec8.Height = 22;
-            rec8.Inflate(-2, -2);
-
-            Rectangle rec9 = rec0;
-            rec9.Y = rec0.Bottom - 44;
-            rec9.Height = 22;
-            rec9.Inflate(-2, -2);
-
-            Rectangle rec10 = rec0;
-            rec10.Y = rec0.Bottom - 22;
-            rec10.Height = 22;
-            rec10.Inflate(-2, -2);
+            Rectangle recUndo = recAll;
+            recUndo.Y = recAll.Bottom - buttonHeight;
+            recUndo.Height = 22;
+            recUndo.Width = recUndo.Width / 2;
+            recUndo.Inflate(-2, -2);
+            Rectangle recRedo = recUndo;
+            recRedo.Location = new System.Drawing.Point(recRedo.X + recRedo.Width + 4, recRedo.Location.Y);
+            buttonHeight -= 22;
 
 
-            Bounds = rec0;
-            ButtonBounds = rec1;
-            ButtonBounds2 = rec2;
-            ButtonBounds3 = rec3;
-            ButtonBounds4 = rec4;
-            ButtonBounds5 = rec5;
-            ButtonBounds6 = rec6;
-            ButtonBounds7 = rec7;
-            ButtonBounds8 = rec8;
-            ButtonBounds9 = rec9;
-            ButtonBounds10 = rec10;
+            Rectangle recFold = recAll;
+            recFold.Y = recFold.Bottom - buttonHeight;
+            recFold.Height = 22;
+            recFold.Width = recFold.Width / 2;
+            recFold.Inflate(-2, -2);
+            Rectangle recUnFold = recFold;
+            recUnFold.Location = new System.Drawing.Point(recUnFold.Location.X + recUnFold.Width + 4, recUnFold.Location.Y);
+            buttonHeight -= 22;
+
+
+
+
+            Rectangle recRigidEdgeMode = recAll;
+            recRigidEdgeMode.Y = recAll.Bottom - buttonHeight;
+            recRigidEdgeMode.Height = 22;
+            recRigidEdgeMode.Inflate(-2, -2);
+            buttonHeight -= 22;
+
+            Rectangle recFlatPanelMode = recAll;
+            recFlatPanelMode.Y = recAll.Bottom - buttonHeight;
+            recFlatPanelMode.Height = 22;
+            recFlatPanelMode.Inflate(-2, -2);
+            buttonHeight -= 22;
+
+            Rectangle recFoldBlockMode = recAll;
+            recFoldBlockMode.Y = recAll.Bottom - buttonHeight;
+            recFoldBlockMode.Height = 22;
+            recFoldBlockMode.Inflate(-2, -2);
+            buttonHeight -= 22;
+
+            Rectangle recGrabMode = recAll;
+            recGrabMode.Y = recAll.Bottom - buttonHeight;
+            recGrabMode.Height = 22;
+            recGrabMode.Inflate(-2, -2);
+            buttonHeight -= 22;
+
+            Rectangle recConstraintMode = recAll;
+            recConstraintMode.Y = recAll.Bottom - buttonHeight;
+            recConstraintMode.Height = 22;
+            recConstraintMode.Inflate(-2, -2);
+            //buttonHeight -= 22;
+
+            //Rectangle recRecordMode = recAll;
+            //recRecordMode.Y = recAll.Bottom - buttonHeight;
+            //recRecordMode.Height = 22;
+            //recRecordMode.Inflate(-2, -2);
+
+
+
+
+            Bounds = recAll;
+            ButtonBounds = recFold;
+            ButtonBounds2 = recUnFold;
+            ButtonBounds3 = recReset;
+            ButtonBounds4 = recSolverOn;
+            ButtonBounds5 = recRigidEdgeMode;
+            ButtonBounds6 = recFlatPanelMode;
+            ButtonBounds7 = recFoldBlockMode;
+            ButtonBounds8 = recGrabMode;
+            ButtonBounds9 = recConstraintMode;
+            //ButtonBounds10 = recRecordMode;
+            ButtonBounds11 = recRedo;
+            ButtonBounds12 = recUndo;
         }
         private Rectangle ButtonBounds { get; set; } // Fold
         private Rectangle ButtonBounds2 { get; set; } // UnFold
@@ -421,7 +509,9 @@ namespace Crane.Components.Solver
         private Rectangle ButtonBounds7 { get; set; } // 180 Fold Blocking Mode On/Off
         private Rectangle ButtonBounds8 { get; set; } // Grab Mode On/Off
         private Rectangle ButtonBounds9 { get; set; } // Constraint Mode On/Off
-        private Rectangle ButtonBounds10 { get; set; } // Record Mode On/Off
+        //private Rectangle ButtonBounds10 { get; set; } // Record Mode On/Off
+        private Rectangle ButtonBounds11 { get; set; } // Redo
+        private Rectangle ButtonBounds12 { get; set; } // Undo
 
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
@@ -430,19 +520,19 @@ namespace Crane.Components.Solver
             CraneInteractiveSolver comp = this.Owner as CraneInteractiveSolver;
             if (channel == GH_CanvasChannel.Objects)
             {
-                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds, ButtonBounds, GH_Palette.Black, "Push Button to Fold", 2, 0);
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds, ButtonBounds, GH_Palette.Black, "Fold", 2, 0);
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
             if (channel == GH_CanvasChannel.Objects)
             {
-                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds2, ButtonBounds2, GH_Palette.Black, "Push Button to Unfold", 2, 0);
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds2, ButtonBounds2, GH_Palette.Black, "Unfold", 2, 0);
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
             if (channel == GH_CanvasChannel.Objects)
             {
-                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds3, ButtonBounds3, GH_Palette.Black, "Push Button to Reset", 2, 0);
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds3, ButtonBounds3, GH_Palette.Black, "Reset", 2, 0);
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
@@ -482,12 +572,26 @@ namespace Crane.Components.Solver
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
+            //if (channel == GH_CanvasChannel.Objects)
+            //{
+            //    GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds10, ButtonBounds10, GH_Palette.Black, "Record Mode: Off", 2, 0);
+            //    button.Render(graphics, Selected, Owner.Locked, false);
+            //    button.Dispose();
+            //}
             if (channel == GH_CanvasChannel.Objects)
             {
-                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds10, ButtonBounds10, GH_Palette.Black, "Record Mode: Off", 2, 0);
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds11, ButtonBounds11, GH_Palette.Black, "Redo", 2, 0);
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
+            if (channel == GH_CanvasChannel.Objects)
+            {
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds12, ButtonBounds12, GH_Palette.Black, "Undo", 2, 0);
+                button.Render(graphics, Selected, Owner.Locked, false);
+                button.Dispose();
+            }
+
+
             if (comp.rigidOrigami.Fold & !comp.rigidOrigami.UnFold)
             {
                 GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds, ButtonBounds, GH_Palette.Black, "Folding", 2, 0);
@@ -542,12 +646,26 @@ namespace Crane.Components.Solver
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
-            if (comp.rigidOrigami.IsRecordMode)
+            //if (comp.rigidOrigami.IsRecordMode)
+            //{
+            //    GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds10, ButtonBounds10, GH_Palette.Black, "Record Mode: On", 2, 0);
+            //    button.Render(graphics, Selected, Owner.Locked, false);
+            //    button.Dispose();
+            //}
+            if (comp.IsRedo)
             {
-                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds10, ButtonBounds10, GH_Palette.Black, "Record Mode: On", 2, 0);
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds11, ButtonBounds11, GH_Palette.Black, "Redoing", 2, 0);
                 button.Render(graphics, Selected, Owner.Locked, false);
                 button.Dispose();
             }
+            if (comp.IsUndo)
+            {
+                GH_Capsule button = GH_Capsule.CreateTextCapsule(ButtonBounds12, ButtonBounds12, GH_Palette.Black, "Undoing", 2, 0);
+                button.Render(graphics, Selected, Owner.Locked, false);
+                button.Dispose();
+            }
+
+
 
         }
 
@@ -560,7 +678,7 @@ namespace Crane.Components.Solver
         public override GH_ObjectResponse RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
             // ButtonBoundsを押したときのイベント
-            if (e.Button == MouseButtons.Left)
+            if (Mouse.Buttons == MouseButtons.Primary)
             {
                 CraneInteractiveSolver comp = this.Owner as CraneInteractiveSolver;
                 RectangleF rec = ButtonBounds;
@@ -594,11 +712,6 @@ namespace Crane.Components.Solver
                 {
                     comp.IsReset = true;
                     comp.ExpireSolution(true);
-                    //if (comp.SolverOn & !comp.isOn)
-                    //{
-                    //    comp.IsReset = true;
-                    //    comp.ExpireSolution(true);
-                    //}
 
                     return GH_ObjectResponse.Handled;
                 }
@@ -705,22 +818,37 @@ namespace Crane.Components.Solver
                     return GH_ObjectResponse.Handled;
                 }
 
-                RectangleF rec10 = ButtonBounds10;
-                if (rec10.Contains(e.CanvasLocation))
-                {
-                    if (comp.rigidOrigami.IsRecordMode)
-                    {
-                        comp.rigidOrigami.IsRecordMode = false;
-                        comp.ExpireSolution(true);
-                    }
-                    else if (!comp.rigidOrigami.IsRecordMode)
-                    {
-                        comp.rigidOrigami.IsRecordMode = true;
-                        comp.ExpireSolution(true);
-                    }
+                //RectangleF rec10 = ButtonBounds10;
+                //if (rec10.Contains(e.CanvasLocation))
+                //{
+                //    if (comp.rigidOrigami.IsRecordMode)
+                //    {
+                //        comp.rigidOrigami.IsRecordMode = false;
+                //        comp.ExpireSolution(true);
+                //    }
+                //    else if (!comp.rigidOrigami.IsRecordMode)
+                //    {
+                //        comp.rigidOrigami.IsRecordMode = true;
+                //        comp.ExpireSolution(true);
+                //    }
 
-                    return GH_ObjectResponse.Handled;
+                //    return GH_ObjectResponse.Handled;
+                //}
+
+                RectangleF rec11 = ButtonBounds11;
+                if (rec11.Contains(e.CanvasLocation))
+                {
+                    comp.IsRedo = true;
+                    comp.ExpireSolution(true);
                 }
+                RectangleF rec12 = ButtonBounds12;
+                if (rec12.Contains(e.CanvasLocation))
+                {
+                    comp.IsUndo = true;
+                    comp.ExpireSolution(true);
+                }
+
+
 
             }
 
@@ -751,7 +879,22 @@ namespace Crane.Components.Solver
                 comp.ExpireSolution(true);
                 return GH_ObjectResponse.Handled;
             }
-            RectangleF rec4 = ButtonBounds4;
+            RectangleF rec11 = ButtonBounds11;
+            if (rec11.Contains(e.CanvasLocation))
+            {
+                comp.IsRedo = false;
+                comp.ExpireSolution(true);
+                return GH_ObjectResponse.Handled;
+            }
+            RectangleF rec12 = ButtonBounds12;
+            if (rec12.Contains(e.CanvasLocation))
+            {
+                comp.IsUndo = false;
+                comp.ExpireSolution(true);
+                return GH_ObjectResponse.Handled;
+            }
+
+
             return base.RespondToMouseUp(sender, e);
         }
     }

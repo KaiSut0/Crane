@@ -64,7 +64,7 @@ namespace Crane.Components.Constraints
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.upper_fold_angle;
+                return Properties.Resource.icons_set_max_fold_angle;
             }
         }
 

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rhino.Geometry;
-using QuickGraph;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.Search;
+using QuikGraph;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.Search;
 using Rhino;
 
 namespace Crane.Core

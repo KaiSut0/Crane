@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
-using OpenCvSharp.CPlusPlus;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 

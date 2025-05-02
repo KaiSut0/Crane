@@ -78,7 +78,7 @@ namespace Crane.Components.Solver
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resource.icons_interactive_solver;
+                return Properties.Resource.icons_async_static_solver;
             }
         }
 
@@ -132,7 +132,7 @@ namespace Crane.Components.Solver
                 return;
             } 
             rigidOrigami = new RigidOrigami(cMesh, constraints);
-            rigidOrigami.SaveMode(isRigid, isPanelFlat, isFoldBlock, isConstraint);
+            rigidOrigami.SaveModes(isRigid, isPanelFlat, isFoldBlock, isConstraint);
             if (solve)
             {
                 var moveVector = Vector<double>.Build.Dense(rigidOrigami.CMesh.DOF);

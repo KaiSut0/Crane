@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using Crane.Constraints;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -92,7 +91,7 @@ namespace Crane.Core
             ComputeJacobian();
             ComputeError();
             var cgnrComp = new List<double>();
-            Vector<double> constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, initialMoveVector, 1e-10, 100, ref cgnrComp);
+            Vector<double> constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, initialMoveVector, 1e-10, 100);
             this.CMesh.ConfigulationVector += constrainedMoveVector;
             this.CMesh.UpdateMesh();
             int iteration = 0;
@@ -100,7 +99,7 @@ namespace Crane.Core
             while(iteration < iterationMax && residual > threshold)
             {
                 Vector<double> zeroVector = SparseVector.Build.Sparse(this.CMesh.DOF + 4);
-                constrainedMoveVector = -CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, 1e-15, Error.Count, ref cgnrComp);
+                constrainedMoveVector = -LinearAlgebra.Solve(Jacobian, Error, zeroVector, threshold, Error.Count);
                 //constrainedMoveVector = CGNRSolveForRectangleMatrix(Jacobian, Error, zeroVector, Error.L2Norm()/100, Error.Count);
                 //LinearSearch(constrainedMoveVector);
                 this.CMesh.ConfigulationVector += constrainedMoveVector;

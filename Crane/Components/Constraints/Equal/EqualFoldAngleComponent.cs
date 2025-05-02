@@ -1,7 +1,9 @@
-﻿using Grasshopper.Kernel;
+﻿using Crane.Core;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
+using Crane.Constraints;
 
 namespace Crane.Components.Constraints
 {
@@ -22,6 +24,13 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddGenericParameter("CMesh", "CMesh", "CMesh", GH_ParamAccess.item);
+            pManager.AddLineParameter("FirstLine", "SecondLine", "The first lines for detecting the edge.", GH_ParamAccess.list);
+            pManager.AddLineParameter("SecondLine", "SecondLine", "The second lines for detecting the edge.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Strength", "Strength", "Strength", GH_ParamAccess.list, new List<double> { 1 });
+            pManager.AddNumberParameter("Tolerance", "Tolerance", "The tolerance for detecting an inner edge from the given line.", GH_ParamAccess.item, 1e-3);
+            pManager[3].Optional = true;
+            pManager[4].Optional = true;
         }
 
         /// <summary>
@@ -29,6 +38,7 @@ namespace Crane.Components.Constraints
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("Constraint", "Constraint", "Equal fold angle constraint.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -37,6 +47,32 @@ namespace Crane.Components.Constraints
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            CMesh cMesh = null;
+            List<Line> firstLines = new List<Line>();
+            List<Line> secondLines = new List<Line>();
+            List<double> strength = new List<double>();
+            double tolerance = 1e-3;
+            DA.GetData(0, ref cMesh);
+            DA.GetDataList(1, firstLines);
+            DA.GetDataList(2, secondLines);
+            DA.GetDataList(3, strength);
+            DA.GetData(4, ref tolerance);
+            if (firstLines.Count != secondLines.Count)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The number of first lines and second lines should be the same.");
+                return;
+            }
+            if (strength.Count != firstLines.Count)
+            {
+                for (int i = strength.Count; i < firstLines.Count; i++)
+                {
+                    strength.Add(strength[0]);
+                }
+            }
+
+            EqualFoldAngle constraint = new EqualFoldAngle(cMesh, firstLines.ToArray(), secondLines.ToArray(), strength.ToArray());
+            DA.SetData(0, constraint);
+
         }
 
         /// <summary>

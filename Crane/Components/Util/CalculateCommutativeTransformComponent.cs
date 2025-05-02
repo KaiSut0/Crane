@@ -2,7 +2,6 @@
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Windows.Data;
 using Crane.Core;
 using Crane.Misc;
 
@@ -131,7 +130,7 @@ namespace Crane.Components.Misc
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resource.icons_cal_commutative_trans;
             }
         }
 

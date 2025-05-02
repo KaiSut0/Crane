@@ -17,6 +17,7 @@ namespace Crane.Core
         public Mesh Mesh { get; private set; }
         public Mesh InitialMesh { get; private set; }
         public PointCloud VerticesCloud { get; private set; }
+        public PointCloud FaceCenterCloud { get; private set; }
         public Point3d[] Vertices { get; private set; }
         public Vector3d[] FaceNormals { get; private set; }
         public double VertexSearchTolerance { get; private set; }
@@ -71,7 +72,7 @@ namespace Crane.Core
         public Dictionary<int, int> EdgeIds2InnerEdgeIds { get; private set; }
 
 
-#endregion
+        #endregion
 
         public CMesh() { }
         public CMesh(Mesh mesh)
@@ -138,6 +139,7 @@ namespace Crane.Core
             this.BoundaryLoopVertexIds = cMesh.BoundaryLoopVertexIds;
             //this.InitialEdgesLength = new List<double>(cMesh.InitialEdgesLength.ToArray());
 
+            this.FaceCenterCloud = cMesh.FaceCenterCloud;
         }
         public CMesh(Mesh mesh, List<Line> M, List<Line> V)
         {
@@ -180,6 +182,7 @@ namespace Crane.Core
             this.OriginalFaces = mesh.Faces;
             var tri = this.InsertTriangulate();
             UpdateVerticesCloud();
+            UpdateFaceCenterCloud();
             UpdateFaceNormals();
 
             //this.Mesh.TopologyVertices.SortEdges();
@@ -354,58 +357,35 @@ namespace Crane.Core
         public List<double> GetFoldAngles()
         {
             var edges = this.InnerEdges;
-            var verts = this.Mesh.Vertices;
+            var verts = this.Mesh.Vertices.ToPoint3dArray();
             var faces = this.FacePairs;
 
             List<double> foldang = new List<double>();
 
-            this.Mesh.FaceNormals.ComputeFaceNormals();
 
             for (int e = 0; e < edges.Count; e++)
             {
+                var uvpq = GetUVPQFromInnerEdgeIndex(e);
+
                 double foldang_e = 0;
-                int u = edges[e].I;
-                int v = edges[e].J;
-                int p = faces[e].I;
-                int q = faces[e].J;
-                Vector3d normal_i = this.Mesh.FaceNormals[p];
-                Vector3d normal_j = this.Mesh.FaceNormals[q];
+                int u = uvpq[0];
+                int v = uvpq[1];
+                int p = uvpq[2];
+                int q = uvpq[3];
+                Vector3d v_uq = verts[q] - verts[u];
+                Vector3d v_uv = verts[v] - verts[u];
+                Vector3d v_up = verts[p] - verts[v];
+                Vector3d normal_i = Vector3d.CrossProduct(v_uv, v_up);
+                Vector3d normal_j = Vector3d.CrossProduct(v_uq, v_uv);
+                normal_i.Unitize();
+                normal_j.Unitize();
                 /// cos(foldang_e) = n_i * n_j
                 double cos_foldang_e = normal_i * normal_j;
                 /// sin(foldang_e) = n_i × n_j
                 Vector3d vec_e = verts[u] - verts[v];
                 vec_e.Unitize();
                 double sin_foldang_e = Vector3d.CrossProduct(normal_i, normal_j) * vec_e;
-                if (sin_foldang_e >= 0)
-                {
-                    if (cos_foldang_e >= 1.0)
-                    {
-                        foldang_e = 0;
-                    }
-                    else if (cos_foldang_e <= -1.0)
-                    {
-                        foldang_e = Math.PI;
-                    }
-                    else
-                    {
-                        foldang_e = Math.Acos(cos_foldang_e);
-                    }
-                }
-                else
-                {
-                    if (cos_foldang_e >= 1.0)
-                    {
-                        foldang_e = 0;
-                    }
-                    else if (cos_foldang_e <= -1.0)
-                    {
-                        foldang_e = -Math.PI;
-                    }
-                    else
-                    {
-                        foldang_e = -Math.Acos(cos_foldang_e);
-                    }
-                }
+                foldang_e = Math.Atan2(sin_foldang_e, cos_foldang_e);
                 foldang.Add(foldang_e);
             }
             return foldang;
@@ -834,6 +814,10 @@ namespace Crane.Core
             return id;
         }
 
+        public int GetFaceIdFromFaceCenter(Point3d faceCenter)
+        {
+            return FaceCenterCloud.ClosestPoint(faceCenter);
+        }
         public int GetFaceIdFrom3Pts(Point3d pt1, Point3d pt2, Point3d pt3)
         {
             int id1 = GetVertexId(pt1);
@@ -1098,6 +1082,40 @@ namespace Crane.Core
             return face_pair;
 
         }
+        public int[] GetUVPQFromInnerEdgeIndex(int e)
+        {
+            int[] uvpq = new int[4];
+            IndexPair edge_ind = this.InnerEdges[e];
+            int u = edge_ind.I;
+            int v = edge_ind.J;
+            IndexPair face_ind = this.FacePairs[e];
+            int P = face_ind.I;
+            int Q = face_ind.J;
+
+            MeshFace face_P = Mesh.Faces[P];
+            MeshFace face_Q = Mesh.Faces[Q];
+            int p = 0;
+            int q = 0;
+                
+            for (int i = 0; i < 3; i++)
+            {
+                if (!edge_ind.Contains(face_P[i]))
+                {
+                    p = face_P[i];
+                }
+                if (!edge_ind.Contains(face_Q[i]))
+                {
+                    q = face_Q[i];
+                }
+            }
+
+            uvpq[0] = u;
+            uvpq[1] = v;
+            uvpq[2] = p;
+            uvpq[3] = q;
+
+            return uvpq;
+        }
         private void SetConnectedTopologyVertices()
         {
             Mesh.TopologyVertices.SortEdges();
@@ -1105,12 +1123,11 @@ namespace Crane.Core
             ConnectedTopologyEdgesList = new List<List<int>>();
             for (int i = 0; i < Mesh.Vertices.Count; i++)
             {
-                var connectedTopologyVertices = new List<int>();
-                connectedTopologyVertices.AddRange(Mesh.TopologyVertices.ConnectedTopologyVertices(i));
-                ConnectedTopologyVerticesList.Add(connectedTopologyVertices);
+                var conVerts = Mesh.TopologyVertices.ConnectedTopologyVertices(i);
+                 ConnectedTopologyVerticesList.Add(conVerts.ToList());
 
                 var connectedTopologyEdges = new List<int>();
-                foreach(int j in connectedTopologyVertices)
+                foreach(int j in conVerts)
                 {
                     int edgeId = Util.GetTopologyEdgeIndex(Mesh, new IndexPair(i, j));
                     connectedTopologyEdges.Add(edgeId);
@@ -1469,6 +1486,16 @@ namespace Crane.Core
         {
             VerticesCloud = new PointCloud(Mesh.Vertices.ToPoint3dArray());
             Vertices = Mesh.Vertices.ToPoint3dArray();
+        }
+
+        private void UpdateFaceCenterCloud()
+        {
+            Point3d[] faceCenter = new Point3d[Mesh.Faces.Count];
+            for (int i = 0; i < Mesh.Faces.Count; i++)
+            {
+                faceCenter[i] = Mesh.Faces.GetFaceCenter(i);
+            }
+            FaceCenterCloud = new PointCloud(faceCenter);
         }
         public void SetFoldingSpeed(double[] foldingSpeed)
         {

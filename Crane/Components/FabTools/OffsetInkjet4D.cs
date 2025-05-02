@@ -42,6 +42,7 @@ namespace Crane.Components.FabTools
         {
             pManager.AddCurveParameter("Top", "Top", "Top face polylines.", GH_ParamAccess.list);
             pManager.AddCurveParameter("Bottom", "Bottom", "Bottom face polylines.", GH_ParamAccess.list);
+            pManager.AddCurveParameter("Mid", "Mid", "Mid face polylines.", GH_ParamAccess.list);
             pManager.AddCurveParameter("Dev", "Dev", "Development polylines.", GH_ParamAccess.list);
             pManager.AddCurveParameter("Fold", "Fold", "Folded state polylines.", GH_ParamAccess.list);
             pManager.AddMeshParameter("Top Panel", "Top Panel", "Thick panels of the top faces.", GH_ParamAccess.list);
@@ -72,19 +73,21 @@ namespace Crane.Components.FabTools
             DA.GetData(6, ref rotAng);
 
             FabMesh fabMesh = new FabMesh(cMesh, new Point2d(origin.X, origin.Y), rotAng, tolerance);
-            var top = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, true);
-            var bottom = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, false);
+            var top = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, 0);
+            var bottom = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, 2);
+            var mid = fabMesh.OffsetFaceInkjet4D(inkThickness, sheetThickness, shrinkRatio, 1);
             var devPolyline = fabMesh.GetFacePolylines(fabMesh.DevCMesh);
             var foldPolyline = fabMesh.GetFacePolylines(fabMesh.CMesh);
             var topPanel = fabMesh.ThickPanels(top, inkThickness);
             var bottomPanel = fabMesh.ThickPanels(bottom, -inkThickness);
             DA.SetDataList(0, top);
             DA.SetDataList(1, bottom);
-            DA.SetDataList(2, devPolyline);
-            DA.SetDataList(3, foldPolyline);
-            DA.SetDataList(4, topPanel);
-            DA.SetDataList(5, bottomPanel);
-            DA.SetDataList(6, fabMesh.GetDev2FoldTransforms());
+            DA.SetDataList(2, mid);
+            DA.SetDataList(3, devPolyline);
+            DA.SetDataList(4, foldPolyline);
+            DA.SetDataList(5, topPanel);
+            DA.SetDataList(6, bottomPanel);
+            DA.SetDataList(7, fabMesh.GetDev2FoldTransforms());
 
         }
 

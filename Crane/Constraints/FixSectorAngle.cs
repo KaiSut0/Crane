@@ -43,17 +43,18 @@ namespace Crane.Constraints
             Mesh mesh = cMesh.Mesh;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            var verts = mesh.Vertices;
-            var normals = mesh.FaceNormals;
+            var verts = mesh.Vertices.ToPoint3dArray();
 
             for (int i = 0; i < rows; i++)
             {
-                var center = mesh.Vertices[centerPtIds[i]];
-                var left = mesh.Vertices[leftPtIds[i]];
-                var right = mesh.Vertices[rightPtIds[i]];
+                var center = verts[centerPtIds[i]];
+                var left = verts[leftPtIds[i]];
+                var right = verts[rightPtIds[i]];
                 double sectorAngle = Util.ComputeAngleFrom3Pts(left, center, right);
-                var n = normals[faceIds[i]];
+                var n = Vector3d.CrossProduct(right - center, left - center);
+                n.Unitize();
                 double k = Math.Sqrt(stiffness[i]);
+
 
                 var p12 = left - center;
                 var p32 = right - center;
@@ -101,14 +102,15 @@ namespace Crane.Constraints
             int rows = centerPtIds.Length;
             int columns = cMesh.DOF;
             Mesh mesh = cMesh.Mesh;
+            var verts = cMesh.Mesh.Vertices.ToPoint3dArray();
 
             var err = new double[rows];
 
             for (int i = 0; i < rows; i++)
             {
-                var center = mesh.Vertices[centerPtIds[i]];
-                var left = mesh.Vertices[leftPtIds[i]];
-                var right = mesh.Vertices[rightPtIds[i]];
+                var center = verts[centerPtIds[i]];
+                var left = verts[leftPtIds[i]];
+                var right = verts[rightPtIds[i]];
                 double sectorAngle = Util.ComputeAngleFrom3Pts(left, center, right);
                 double setAngle = setAngles[i];
                 double k = Math.Sqrt(stiffness[i]);

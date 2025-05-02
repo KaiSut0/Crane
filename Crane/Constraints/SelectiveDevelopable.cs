@@ -33,7 +33,6 @@ namespace Crane.Constraints
 
             double[] err = new double[numInnerVerts];
 
-            m.Normals.ComputeNormals();
             var topo = m.TopologyVertices;
             topo.SortEdges();
 

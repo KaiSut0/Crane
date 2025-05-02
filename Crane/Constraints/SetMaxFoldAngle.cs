@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Crane.Core;
 using MathNet.Numerics.LinearAlgebra;
-using Microsoft.FSharp.Core;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Collections;
@@ -46,9 +45,9 @@ namespace Crane.Constraints
             Mesh mesh = cMesh.Mesh;
             List<Tuple<int, int, double>> elements = new List<Tuple<int, int, double>>();
 
-            mesh.FaceNormals.ComputeFaceNormals();
+            //mesh.FaceNormals.ComputeFaceNormals();
 
-            MeshVertexList vert = mesh.Vertices;
+            var vert = mesh.Vertices.ToPoint3dArray();
 
 
             for (int id = 0; id < excededEdgeIds.Count; id++)
@@ -80,8 +79,8 @@ namespace Crane.Constraints
                     }
                 }
                 /// Compute normals
-                Vector3d normal_P = mesh.FaceNormals[P];
-                Vector3d normal_Q = mesh.FaceNormals[Q];
+                //Vector3d normal_P = mesh.FaceNormals[P];
+                //Vector3d normal_Q = mesh.FaceNormals[Q];
                 /// Compute h_P & cot_Pu
                 Vector3d vec_up = vert[p] - vert[u];
                 Vector3d vec_uv = vert[v] - vert[u];
@@ -110,6 +109,11 @@ namespace Crane.Constraints
                 double cot_Qv = cos_Qv / sin_Qv;
                 List<double> normal_P_list = new List<double>();
                 List<double> normal_Q_list = new List<double>();
+                Vector3d normal_P = Vector3d.CrossProduct(vec_uv, vec_up);
+                normal_P /= normal_P.Length;
+                Vector3d normal_Q = Vector3d.CrossProduct(vec_uq, vec_uv);
+                normal_Q /= normal_Q.Length;
+
                 normal_P_list.Add(normal_P.X);
                 normal_P_list.Add(normal_P.Y);
                 normal_P_list.Add(normal_P.Z);
@@ -122,57 +126,43 @@ namespace Crane.Constraints
                 double co_pu = (-1 * cot_Pu) / (cot_Pu + cot_Pv);
                 double co_qu = (-1 * cot_Qu) / (cot_Qu + cot_Qv);
                 /// Compute Jacobian
-                for (int v_ind = 0; v_ind < vert.Count; v_ind++)
+                var v_ind = p;
+                for (int x = 0; x < 3; x++)
                 {
-                    if (v_ind == p)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = normal_P_list[x] / h_P;
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
-                    if (v_ind == q)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = normal_Q_list[x] / h_Q;
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
-                    if (v_ind == u)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q);
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
-                    if (v_ind == v)
-                    {
-                        for (int x = 0; x < 3; x++)
-                        {
-                            double var = co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q);
-                            //var *= foldAngle - setAngle;
-                            int rind = id;
-                            int cind = 3 * v_ind + x;
-                            Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
-                            elements.Add(element);
-                        }
-                    }
+                    double var = normal_P_list[x] / h_P;
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
                 }
+                v_ind = q;
+                for (int x = 0; x < 3; x++)
+                {
+                    double var = normal_Q_list[x] / h_Q;
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
+                }
+                v_ind = u;
+                for (int x = 0; x < 3; x++)
+                {
+                    double var = co_pv * (normal_P_list[x] / h_P) + co_qv * (normal_Q_list[x] / h_Q);
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
+                }
+                v_ind = v;
+                for (int x = 0; x < 3; x++)
+                {
+                    double var = co_pu * (normal_P_list[x] / h_P) + co_qu * (normal_Q_list[x] / h_Q);
+                    int rind = id;
+                    int cind = 3 * v_ind + x;
+                    Tuple<int, int, double> element = Tuple.Create(rind, cind, var);
+                    elements.Add(element);
+                }
+
             }
 
             return new SparseMatrixBuilder(rows, columns, elements);
