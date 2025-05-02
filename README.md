@@ -1,3 +1,5 @@
+[Link to DeepWiki](https://deepwiki.com/KaiSut0/Crane)
+
 Crane is a Grasshopper plugin to design origami products.
 
 Designing foldable products with rigid folding motion is difficult for designers, architects, and researchers who are not origami experts. Crane is a powerful tool for not only such people but also origami experts [1]. This software focuses on design, rigid folding simulation, form-finding, and fabrication for origami. Because Crane Solver is a hard constraint solver, it can precisely simulate a rigid folding motion and form-finding with geometrical constraints like Freeform Origami [2][3].
