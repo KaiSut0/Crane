@@ -1,3 +1,4 @@
+[Link to Food4Rhino](https://www.food4rhino.com/en/app/crane)
 [Link to DeepWiki](https://deepwiki.com/KaiSut0/Crane)
 
 Crane is a Grasshopper plugin to design origami products.
@@ -10,15 +11,15 @@ Kotaro Tanimichi (Nature Architects Inc.)
 Kanata Warisaya (Origami Lab/Tachi Lab)
 
 How to Install Crane:
-- Using PackageManager (Rhino7 only)
-1. Open Rhino7
-2. Type "PackageManager" as RhinoCommand
+- Using PackageManager (Rhino7 or 8 only)
+1. Open Rhino7 or 8
+2. Type "PackageManager" as RhinoCommand
 3. Search Crane and install it.
 4. Then play some example files that can be downloaded from this page.
-- Manual install (Rhino6 and Rhino7)
+- Manual install (Rhino6, 7, and 8)
 1. Download crane_xxx.zip from Crane_ver_xxx
-2. "Unblock" crane_xxx.zip (for more detail, please check "Troubleshooting".) and unzip it.
-3. Open the Library folder and paste all files in "Crane_xxx/Libraries/Crane_xxx" into it.
+2. "Unblock" crane_xxx.zip (for more detail, please check "Troubleshooting".) and unzip it.
+3. Open the Library folder and paste all files in "Crane_xxx/Libraries/Crane_xxx" into it.
 4. Open the UserObjects folder and paste all files in "Crane_xxx/UserObjects/" into it.
 5. Then play some example file at "Crane_xxx/Examples".
 
